@@ -1,0 +1,70 @@
+:host {
+  display: block;
+}
+
+.site-footer {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  background: #f3f4f6;
+  margin-top: 3rem;
+}
+
+.site-footer__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.2rem 1.2rem 1rem;
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.brand__name {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+  margin-bottom: 0.65rem;
+  display: inline-block;
+}
+
+.brand__edu {
+  color: var(--slate-900);
+}
+
+.brand__stay {
+  color: var(--brand-700);
+}
+
+.brand p {
+  max-width: 260px;
+  color: var(--slate-600);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.links a {
+  color: var(--slate-600);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.links a:hover,
+.links a:focus-visible {
+  color: var(--brand-700);
+}
+
+.copyright {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.2rem 1.25rem;
+  color: var(--slate-500);
+  font-size: 0.84rem;
+}
