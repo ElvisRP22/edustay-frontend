@@ -1,0 +1,99 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: block;
+  backdrop-filter: blur(8px);
+  background: rgba(249, 250, 251, 0.82);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 72px;
+  padding: 0 1.2rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.logo__edu {
+  color: var(--slate-900);
+}
+
+.logo__stay {
+  color: var(--brand-700);
+}
+
+.menu {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.menu__link {
+  color: var(--slate-600);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.menu__link:hover,
+.menu__link:focus-visible {
+  color: var(--brand-700);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn--ghost {
+  color: var(--brand-700);
+  background: transparent;
+}
+
+.btn--primary {
+  background: var(--brand-700);
+  color: #fff;
+}
+
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  background: var(--brand-800);
+}
+
+@media (max-width: 880px) {
+  .navbar {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding-top: 0.6rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: center;
+  }
+}

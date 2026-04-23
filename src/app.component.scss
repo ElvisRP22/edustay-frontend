@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.app-content {
+  width: min(1300px, 96vw);
+  margin: 0 auto;
+  padding: 0.6rem 0 0;
+}
