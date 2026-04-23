@@ -1,13 +1,82 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>EdustayFrontend</title>
-  <base href="/">
+  <title>EduStay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <app-root></app-root>
+  <header class="navbar">
+    <div class="logo">Edu<span>Stay</span></div>
+    <nav>
+      <a href="#">Explore</a>
+      <a href="#">About Us</a>
+      <a href="#">Help</a>
+    </nav>
+    <div class="actions">
+      <button class="link">Sign In</button>
+      <button class="primary" (click)="irARegistro()">Publicar Alojamiento</button>
+      <router-outlet></router-outlet>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="overlay"></div>
+
+    <div class="hero-content">
+      <h1>¿Buscas un lugar para vivir y alojarte?</h1>
+      <p>Espacios diseñados para tu comodidad y estudio</p>
+
+      <div class="search-box">
+        <input type="text" placeholder="Buscar ciudad o zona..." />
+        <button>Buscar</button>
+      </div>
+
+      <div class="filters">
+        <span>Precio: Menor a $300</span>
+        <span>Distancia: &lt; 2km</span>
+        <span>Tipo: Cuarto privado</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section class="spaces">
+    <div class="header">
+      <h2>ESPACIOS SELECCIONADOS</h2>
+      <a href="#">Ver todos</a>
+    </div>
+
+    <div class="grid">
+      <div class="card big">
+        <div class="info">
+          <h3>The Scholar’s Loft</h3>
+          <p>Estudio premium con espacio de trabajo</p>
+          <strong>$450 / mes</strong>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="card small">
+          <h3>Quiet Corner Room</h3>
+          <span>$280 / mes</span>
+        </div>
+
+        <div class="card small">
+          <h3>Sunny Shared Suite</h3>
+          <span>$210 / mes</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 EduStay - Todos los derechos reservados</p>
+  </footer>
+
 </body>
 </html>
