@@ -1,17 +1,59 @@
-<header class="navbar" aria-label="Navegacion principal">
-  <a class="logo" routerLink="/" aria-label="Ir al inicio de EduStay">
+<header class="navbar" aria-label="Navegación principal">
+  <a class="logo" routerLink="/" aria-label="Ir al inicio de EduStay" (click)="menuOpen.set(false)">
     <span class="logo__edu">Edu</span><span class="logo__stay">Stay</span>
   </a>
 
-  <nav class="menu">
-    <a class="menu__link" href="#" aria-current="page">Explorar</a>
-    <a class="menu__link" href="#">Propiedades</a>
-    <a class="menu__link" href="#">Sobre Nosotros</a>
-    <a class="menu__link" href="#">Ayuda</a>
+  <nav class="menu" [class.menu--open]="menuOpen()" aria-label="Menú principal">
+    <a class="menu__link" routerLink="/" routerLinkActive="menu__link--active"
+       [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen.set(false)">Explorar</a>
+    <a class="menu__link" routerLink="/habitaciones" routerLinkActive="menu__link--active"
+       (click)="menuOpen.set(false)">Alojamientos</a>
+
+    @if (auth.isAuthenticated()) {
+      <a class="menu__link" routerLink="/favoritos" routerLinkActive="menu__link--active"
+         (click)="menuOpen.set(false)">Favoritos</a>
+
+      @if (auth.isEstudiante()) {
+        <a class="menu__link" routerLink="/mis-alquileres" routerLinkActive="menu__link--active"
+           (click)="menuOpen.set(false)">Mis alquileres</a>
+      }
+      @if (auth.isArrendador()) {
+        <a class="menu__link" routerLink="/mis-habitaciones" routerLinkActive="menu__link--active"
+           (click)="menuOpen.set(false)">Mis habitaciones</a>
+        <a class="menu__link" routerLink="/mis-arrendamientos" routerLinkActive="menu__link--active"
+           (click)="menuOpen.set(false)">Arrendamientos</a>
+      }
+
+      <a class="menu__link" routerLink="/mensajes" routerLinkActive="menu__link--active"
+         (click)="menuOpen.set(false)">Mensajes</a>
+    }
   </nav>
 
   <div class="actions">
-    <a class="btn btn--ghost" routerLink="/login">Iniciar sesión</a>
-    <a class="btn btn--primary" routerLink="/registro">Publicar alojamiento</a>
+    @if (!auth.isAuthenticated()) {
+      <a class="app-button app-button--ghost" routerLink="/login">Iniciar sesión</a>
+      <a class="app-button app-button--secondary" routerLink="/registro">Únete</a>
+      <a class="app-button app-button--primary" routerLink="/registro/arrendador">Publicar alojamiento</a>
+    } @else {
+      @if (auth.isArrendador()) {
+        <a class="app-button app-button--primary" routerLink="/habitaciones/nueva">+ Publicar</a>
+      }
+      <div class="user-menu">
+        <a class="user-avatar" routerLink="/perfil">
+          <span>{{ auth.user()?.nombre?.charAt(0) }}{{ auth.user()?.apellido?.charAt(0) }}</span>
+        </a>
+        <div class="user-dropdown">
+          <p class="user-dropdown__name">{{ auth.user()?.nombre }} {{ auth.user()?.apellido }}</p>
+          <p class="user-dropdown__role">{{ auth.user()?.rol | lowercase }}</p>
+          <hr />
+          <a routerLink="/perfil">Mi perfil</a>
+          <button (click)="logout()">Cerrar sesión</button>
+        </div>
+      </div>
+    }
   </div>
+
+  <button class="burger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </header>

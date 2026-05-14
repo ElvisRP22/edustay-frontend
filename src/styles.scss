@@ -1,11 +1,27 @@
 :root {
   --brand-800: #1e3a8a;
   --brand-700: #1d4ed8;
+  --brand-100: #dbeafe;
+  --brand-50: #eff6ff;
   --slate-900: #111827;
+  --slate-800: #1f2937;
   --slate-700: #334155;
   --slate-600: #475569;
   --slate-500: #6b7280;
+  --slate-300: #cbd5e1;
+  --slate-200: #e5e7eb;
+  --slate-100: #f1f5f9;
   --surface: #f5f5f5;
+  --surface-card: #ffffff;
+  --trust-200: #a7f3d0;
+  --trust-800: #065f46;
+  --danger-500: #ef4444;
+  --focus-ring: #93c5fd;
+  --shadow-card: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 10px 10px -5px rgba(15, 23, 42, 0.03);
+  --shadow-photo: 0 14px 30px rgba(15, 23, 42, 0.18);
+  --radius-control: 12px;
+  --radius-card: 18px;
+  --radius-panel: 24px;
 }
 
 * {
@@ -35,9 +51,215 @@ p {
   margin: 0;
 }
 
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
-  outline: 3px solid #93c5fd;
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--focus-ring);
   outline-offset: 2px;
+}
+
+.app-button {
+  min-height: 46px;
+  border: 0;
+  border-radius: var(--radius-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.app-button--primary {
+  background: var(--brand-700);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(29, 78, 216, 0.18);
+}
+
+.app-button--primary:hover,
+.app-button--primary:focus-visible {
+  background: var(--brand-800);
+  transform: translateY(-1px);
+}
+
+.app-button--secondary {
+  background: var(--surface-card);
+  color: var(--brand-700);
+  border: 1px solid rgba(29, 78, 216, 0.18);
+}
+
+.app-button--secondary:hover,
+.app-button--secondary:focus-visible {
+  background: var(--brand-50);
+}
+
+.app-button--ghost {
+  background: transparent;
+  color: var(--brand-700);
+}
+
+.app-button--ghost:hover,
+.app-button--ghost:focus-visible {
+  background: var(--brand-50);
+}
+
+.app-button:disabled {
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+.app-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.app-field label,
+.app-label {
+  color: var(--slate-700);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.app-input,
+.app-select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: var(--radius-control);
+  background: #fff;
+  color: var(--slate-900);
+  padding: 0.72rem 0.9rem;
+  outline: none;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.app-input::placeholder {
+  color: var(--slate-500);
+}
+
+.app-input:focus,
+.app-select:focus {
+  border-color: var(--brand-700);
+  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.1);
+}
+
+.app-input.is-error,
+.app-select.is-error {
+  border-color: var(--danger-500);
+  background: #fef2f2;
+}
+
+.app-error {
+  color: var(--danger-500);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.app-error-banner {
+  background: #fef2f2;
+  border: 1px solid var(--danger-500);
+  border-radius: var(--radius-control);
+  color: var(--danger-500);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.65rem 0.9rem;
+}
+
+.app-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: var(--slate-600);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.app-checkbox input {
+  width: 17px;
+  height: 17px;
+  margin-top: 0.1rem;
+  accent-color: var(--brand-700);
+}
+
+.app-link {
+  color: var(--brand-700);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.app-link:hover,
+.app-link:focus-visible {
+  text-decoration: underline;
+}
+
+.app-badge {
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  padding: 0.28rem 0.65rem;
+  background: var(--trust-200);
+  color: var(--trust-800);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.app-chip {
+  border: 1px solid rgba(29, 78, 216, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--slate-700);
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

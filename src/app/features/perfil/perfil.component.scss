@@ -1,0 +1,87 @@
+:host { display: block; }
+.page-shell { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+.state-center { display:flex;flex-direction:column;align-items:center;padding:4rem 2rem;gap:1rem;color:var(--slate-500);text-align:center;font-weight:600; }
+.spinner { width:36px;height:36px;border:3px solid var(--slate-200);border-top-color:var(--brand-700);border-radius:50%;animation:spin .75s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+// ── Hero ──────────────────────────────────────────────────────────────────────
+.profile-hero {
+  display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;
+  padding: 1.5rem; background: var(--surface-card); border-radius: 18px;
+  border: 1px solid rgba(15,23,42,.07); box-shadow: 0 4px 20px rgba(15,23,42,.06);
+
+  &__avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--brand-700); color: #fff;
+    font-size: 1.4rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  &__info {
+    h1 { font-size: 1.35rem; font-weight: 800; margin: 0 0 0.2rem; }
+    p { font-size: 0.875rem; color: var(--slate-500); margin: 0 0 0.5rem; }
+  }
+  &__badges { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+}
+
+.role-badge {
+  background: var(--slate-200); color: var(--slate-700);
+  border-radius: 999px; padding: 0.2rem 0.65rem;
+  font-size: 0.72rem; font-weight: 800; text-transform: capitalize;
+}
+.status-badge {
+  background: #fef9c3; color: #92400e;
+  border-radius: 999px; padding: 0.2rem 0.65rem;
+  font-size: 0.72rem; font-weight: 800;
+}
+
+// ── Layout ────────────────────────────────────────────────────────────────────
+.profile-layout { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.profile-card {
+  background: var(--surface-card); border: 1px solid rgba(15,23,42,.07);
+  border-radius: 18px; padding: 1.75rem;
+  box-shadow: 0 4px 16px rgba(15,23,42,.05);
+  h2 { font-size: 1.1rem; font-weight: 800; margin: 0 0 1.25rem; }
+}
+
+// ── Form ──────────────────────────────────────────────────────────────────────
+.profile-form { display: flex; flex-direction: column; gap: 1rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem 1rem; }
+.form-span-2 { grid-column: 1 / -1; }
+
+.success-msg {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: var(--trust-200); color: var(--trust-800);
+  border-radius: 10px; padding: 0.6rem 0.9rem;
+  font-size: 0.85rem; font-weight: 700;
+}
+
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.muted { color: var(--slate-500); font-size: 0.875rem; }
+
+// ── Documents ─────────────────────────────────────────────────────────────────
+.docs-list { display: flex; flex-direction: column; gap: 0.65rem; }
+.doc-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1rem; background: var(--surface); border-radius: 12px;
+  &__info { display: flex; flex-direction: column; gap: 0.15rem; }
+  strong { font-size: 0.9rem; font-weight: 700; text-transform: capitalize; }
+  time { font-size: 0.75rem; color: var(--slate-500); }
+}
+.doc-status {
+  border-radius: 999px; padding: 0.2rem 0.65rem; font-size: 0.72rem; font-weight: 800;
+  &--pendiente { background: #fef3c7; color: #92400e; }
+  &--en_proceso { background: #dbeafe; color: var(--brand-800); }
+  &--verificado { background: var(--trust-200); color: var(--trust-800); }
+  &--rechazado { background: #fee2e2; color: #991b1b; }
+}
+
+@media (max-width: 600px) {
+  .page-shell { padding: 1.5rem 1rem 3rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .profile-hero { flex-direction: column; text-align: center; }
+  .profile-hero__badges { justify-content: center; }
+}

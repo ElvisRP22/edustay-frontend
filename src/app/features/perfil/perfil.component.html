@@ -1,0 +1,102 @@
+<div class="page-shell">
+  @if (loading()) {
+    <div class="state-center"><div class="spinner"></div><p>Cargando perfil…</p></div>
+  } @else {
+    <!-- ── Profile header ── -->
+    <div class="profile-hero">
+      <div class="profile-hero__avatar">
+        {{ auth.user()?.nombre?.charAt(0) }}{{ auth.user()?.apellido?.charAt(0) }}
+      </div>
+      <div class="profile-hero__info">
+        <h1>{{ auth.user()?.nombre }} {{ auth.user()?.apellido }}</h1>
+        <p>{{ auth.user()?.email }}</p>
+        <div class="profile-hero__badges">
+          <span class="role-badge">{{ auth.user()?.rol | lowercase }}</span>
+          @if (perfil()?.identidadVerificada === 'VERIFICADO') {
+            <span class="app-badge verified-badge">
+              <ng-icon name="heroCheckCircleSolid" size="13"></ng-icon> Identidad verificada
+            </span>
+          } @else if (perfil()?.identidadVerificada) {
+            <span class="status-badge">Identidad: {{ estadoLabel(perfil()!.identidadVerificada) }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-layout">
+      <!-- ── Editar perfil extendido ── -->
+      @if (auth.isEstudiante()) {
+        <section class="profile-card">
+          <h2>Perfil estudiantil</h2>
+          <form [formGroup]="form" (ngSubmit)="guardar()" class="profile-form">
+            <div class="form-grid">
+              <div class="app-field form-span-2">
+                <label for="carrera">Carrera</label>
+                <input id="carrera" class="app-input" type="text" formControlName="carrera"
+                       placeholder="Ej. Ingeniería de Software"
+                       [class.is-error]="form.get('carrera')?.invalid && form.get('carrera')?.touched" />
+                <small class="app-error" *ngIf="form.get('carrera')?.invalid && form.get('carrera')?.touched">
+                  La carrera es obligatoria.
+                </small>
+              </div>
+
+              <div class="app-field">
+                <label for="ciclo">Ciclo académico</label>
+                <input id="ciclo" class="app-input" type="number" formControlName="ciclo"
+                       placeholder="1-10" min="1" max="10" />
+              </div>
+
+              <div class="app-field">
+                <label for="fotoCarnetUrl">URL foto de carnet</label>
+                <input id="fotoCarnetUrl" class="app-input" type="url" formControlName="fotoCarnetUrl"
+                       placeholder="https://..." />
+              </div>
+
+              <div class="app-field form-span-2">
+                <label for="preferencias">Preferencias de convivencia</label>
+                <textarea id="preferencias" class="app-input" formControlName="preferenciasConvivencia"
+                          rows="3" placeholder="Prefiero silencio en las noches…"></textarea>
+              </div>
+            </div>
+
+            @if (saveOk()) {
+              <p class="success-msg">
+                <ng-icon name="heroCheckCircleSolid" size="15"></ng-icon>
+                Perfil actualizado correctamente.
+              </p>
+            }
+            @if (saveError()) {
+              <p class="app-error">{{ saveError() }}</p>
+            }
+
+            <button type="submit" class="app-button app-button--primary" [disabled]="saving()">
+              {{ saving() ? 'Guardando…' : 'Guardar cambios' }}
+            </button>
+          </form>
+        </section>
+      }
+
+      <!-- ── Documentos de verificación ── -->
+      <section class="profile-card">
+        <h2>Documentos de verificación</h2>
+        @if (documentos().length === 0) {
+          <p class="muted">No has subido documentos de verificación aún.</p>
+        } @else {
+          <div class="docs-list">
+            @for (d of documentos(); track d.id) {
+              <div class="doc-item">
+                <div class="doc-item__info">
+                  <strong>{{ d.tipo | lowercase | titlecase }}</strong>
+                  <time>{{ d.fechaSubida | date:'mediumDate' }}</time>
+                </div>
+                <span class="doc-status" [class]="'doc-status--' + d.estado.toLowerCase()">
+                  {{ estadoLabel(d.estado) }}
+                </span>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    </div>
+  }
+</div>

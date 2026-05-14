@@ -1,64 +1,137 @@
-<section class="hero">
-  <div class="hero__image" aria-hidden="true"></div>
-  <div class="hero__overlay" aria-hidden="true"></div>
+<!-- ── Hero ── -->
+<section class="explore-hero">
+  <div class="explore-hero__copy">
+    <span class="app-badge">Alojamientos verificados</span>
+    <h1>Encuentra tu próximo cuarto<br>cerca de la universidad</h1>
+    <p>Explora espacios reales, compara precios y revisa señales de confianza antes de contactar.</p>
+    <div class="hero-actions">
+      <a routerLink="/habitaciones" class="app-button app-button--primary">Ver alojamientos</a>
+      <a routerLink="/registro" class="app-button app-button--secondary">Crear cuenta gratis</a>
+    </div>
+  </div>
 
-  <div class="hero__content">
-    <h1>¿Buscas un lugar para vivir y alojarte?</h1>
-    <p>Espacios curados para estudiar, descansar y disfrutar una vida universitaria equilibrada.</p>
-
-    <form class="search-panel" role="search" aria-label="Buscar alojamientos">
-      <label class="search-field">
-        <span class="sr-only">Buscar por universidad, ciudad o barrio</span>
-        <input type="text" placeholder="Busca cerca de UTP, ciudad o barrio..." />
-      </label>
-      <button class="btn btn--light" type="button">Filtros</button>
-      <button class="btn btn--primary" type="button">Buscar</button>
-    </form>
-
-    <div class="hero__chips" aria-label="Filtros aplicados">
-      <span>Precio: Menor a $300</span>
-      <span>Distancia: &lt; 2 km UTP</span>
-      <span>Tipo: Cuarto Privado</span>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <strong>120+</strong>
+      <span>Espacios revisados</span>
+    </div>
+    <div class="hero-stat">
+      <strong>3 universidades</strong>
+      <span>Zonas cubiertas</span>
+    </div>
+    <div class="hero-stat">
+      <strong>100%</strong>
+      <span>Datos visibles</span>
     </div>
   </div>
 </section>
 
-<section class="spaces">
-  <header class="spaces__header">
+<!-- ── Search dock ── -->
+<section class="search-dock-section">
+  <form class="search-dock" role="search" aria-label="Buscar alojamientos">
+    <label class="search-dock__field">
+      <span>¿Dónde?</span>
+      <input type="text" placeholder="Universidad, ciudad o barrio" />
+    </label>
+    <label class="search-dock__field">
+      <span>Presupuesto</span>
+      <select aria-label="Presupuesto">
+        <option>Cualquier precio</option>
+        <option>Hasta S/ 300</option>
+        <option>S/ 300 - S/ 450</option>
+        <option>Más de S/ 450</option>
+      </select>
+    </label>
+    <a routerLink="/habitaciones" class="search-dock__btn app-button app-button--primary">Buscar</a>
+  </form>
+
+  <div class="quick-chips">
+    <a routerLink="/habitaciones" class="app-chip"><ng-icon name="heroShieldCheck" size="14"></ng-icon> Verificados</a>
+    <a routerLink="/habitaciones" class="app-chip"><ng-icon name="heroMapPin" size="14"></ng-icon> Cerca de UTP</a>
+    <a routerLink="/habitaciones" class="app-chip"><ng-icon name="heroLightBulb" size="14"></ng-icon> Servicios incluidos</a>
+    <a routerLink="/habitaciones" class="app-chip"><ng-icon name="heroSpeakerXMark" size="14"></ng-icon> Zona tranquila</a>
+  </div>
+</section>
+
+<!-- ── Destacados ── -->
+<section id="alojamientos" class="listings">
+  <header class="listings__header">
     <div>
-      <h2>Espacios Curados</h2>
-      <p>Entornos verificados para que vivas con tranquilidad y enfoque.</p>
+      <span class="section-kicker">Disponibles ahora</span>
+      <h2>Alojamientos para revisar hoy</h2>
     </div>
-    <a href="#" class="spaces__link">Ver todos los espacios</a>
+    <a class="host-link" routerLink="/habitaciones">Ver todos <ng-icon name="heroArrowRight" size="14"></ng-icon></a>
   </header>
 
-  <div class="spaces-grid">
-    <article class="card card--main">
-      <span class="badge">Verificado por EduStay</span>
-      <span class="badge badge--ghost">1.2 km de UTP</span>
-      <div class="card__content">
-        <h3>The Scholar's Loft</h3>
-        <p>Estudio premium con zona de trabajo dedicada.</p>
-        <strong>$450<span>/mes</span></strong>
-      </div>
-    </article>
-
-    <div class="stacked">
-      <article class="card card--small card--a">
-        <span class="badge">Verificado</span>
-        <div class="card__content">
-          <h3>Quiet Corner Room</h3>
-          <strong>$280<span>/mes</span></strong>
+  @if (destacadas().length === 0) {
+    <!-- Skeleton / placeholder -->
+    <div class="listings-grid">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="stay-card stay-card--skeleton">
+          <div class="stay-card__image"></div>
+          <div class="stay-card__content">
+            <div class="skel-line skel-line--lg"></div>
+            <div class="skel-line"></div>
+          </div>
         </div>
-      </article>
-
-      <article class="card card--small card--b">
-        <span class="badge">Verificado</span>
-        <div class="card__content">
-          <h3>Sunny Shared Suite</h3>
-          <strong>$210<span>/mes</span></strong>
-        </div>
-      </article>
+      }
     </div>
+  } @else {
+    <div class="listings-grid">
+      @for (h of destacadas(); track h.id) {
+        <a class="stay-card" [routerLink]="['/habitaciones', h.id]">
+          <div class="stay-card__image">
+            <span class="stay-card__badge">Disponible</span>
+          </div>
+          <div class="stay-card__content">
+            <div>
+              <h3>{{ h.titulo }}</h3>
+              <p>{{ h.direccion }}</p>
+            </div>
+            <strong>S/ {{ h.precio | number:'1.0-0' }} <span>/ mes</span></strong>
+          </div>
+          @if (h.distanciaUtpMinutos) {
+            <p class="stay-card__note">{{ h.distanciaUtpMinutos }} min de UTP caminando</p>
+          } @else {
+            <p class="stay-card__note">{{ h.descripcion | slice:0:70 }}…</p>
+          }
+        </a>
+      }
+    </div>
+  }
+</section>
+
+<!-- ── Trust strip ── -->
+<section id="verificados" class="trust-strip">
+  <div class="trust-strip__copy">
+    <span class="section-kicker">Confianza</span>
+    <h2>Publicaciones más claras desde el primer contacto</h2>
+    <p>Comparamos distancias, verificamos identidades y te mostramos datos reales para que decidas con seguridad.</p>
+  </div>
+  <div class="trust-items">
+    <div class="trust-item">
+      <span class="trust-item__icon"><ng-icon name="heroBuildingOffice2" size="28"></ng-icon></span>
+      <strong>120+ espacios revisados</strong>
+      <p>Fotos reales y datos de distancia verificados por nuestro equipo.</p>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item__icon"><ng-icon name="heroMapPin" size="28"></ng-icon></span>
+      <strong>Distancia visible</strong>
+      <p>Minutos caminando hasta tu universidad, calculados con precisión.</p>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item__icon"><ng-icon name="heroLockClosed" size="28"></ng-icon></span>
+      <strong>Identidad verificada</strong>
+      <p>Arrendadores y estudiantes verificados antes de contactarse.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Arrendador ── -->
+<section class="host-cta">
+  <div class="host-cta__copy">
+    <h2>¿Tienes un cuarto disponible?</h2>
+    <p>Publica tu espacio en minutos y conéctate con estudiantes verificados cerca de tu propiedad.</p>
+    <a routerLink="/registro/arrendador" class="app-button app-button--primary">Publicar mi alojamiento</a>
   </div>
 </section>

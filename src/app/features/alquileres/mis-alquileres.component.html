@@ -1,0 +1,35 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h1>Mis Alquileres</h1>
+    <p>Habitaciones que tienes alquiladas actualmente.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="state-center"><div class="spinner"></div><p>Cargando…</p></div>
+  } @else if (alquileres().length === 0) {
+    <div class="state-center">
+      <p>No tienes alquileres activos.</p>
+      <a routerLink="/habitaciones" class="app-button app-button--primary">Buscar alojamiento</a>
+    </div>
+  } @else {
+    <div class="rentals-list">
+      @for (a of alquileres(); track a.id) {
+        <div class="rental-card">
+          <div class="rental-card__top">
+            <div>
+              <h3>{{ a.habitacionTitulo }}</h3>
+              <p class="rental-card__address">{{ a.habitacionDireccion }}</p>
+            </div>
+            <strong class="rental-card__price">S/ {{ a.montoPactado | number:'1.0-0' }}<span>/mes</span></strong>
+          </div>
+          <dl class="rental-dl">
+            <dt>Arrendador</dt><dd>{{ a.arrendadorNombre }}</dd>
+            <dt>Inicio</dt><dd>{{ a.fechaInicio | date:'mediumDate' }}</dd>
+            <dt>Registrado</dt><dd>{{ a.fechaRegistro | date:'mediumDate' }}</dd>
+          </dl>
+          <a [routerLink]="['/habitaciones', a.habitacionId]" class="app-button app-button--secondary">Ver habitación</a>
+        </div>
+      }
+    </div>
+  }
+</div>

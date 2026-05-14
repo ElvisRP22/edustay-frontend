@@ -1,0 +1,85 @@
+<div class="listings-page">
+  <!-- ── Header ── -->
+  <section class="listings-hero">
+    <div class="listings-hero__copy">
+      <span class="app-badge">Disponibles ahora</span>
+      <h1>Alojamientos cerca de tu universidad</h1>
+      <p>Compara precios, distancias y señales de confianza antes de contactar.</p>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-bar">
+      <div class="search-bar__field">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="search"
+          placeholder="Busca por título, dirección o zona..."
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+        />
+      </div>
+
+      <select class="search-bar__select" (change)="setMaxPrecio($any($event.target).value)">
+        <option value="">Cualquier precio</option>
+        <option value="300">Hasta S/ 300</option>
+        <option value="450">Hasta S/ 450</option>
+        <option value="600">Hasta S/ 600</option>
+      </select>
+
+      <label class="search-bar__toggle">
+        <input type="checkbox" [checked]="soloDisponibles()" (change)="soloDisponibles.update(v=>!v)" />
+        Solo disponibles
+      </label>
+    </div>
+  </section>
+
+  <!-- ── Resultados ── -->
+  <section class="results">
+    @if (loading()) {
+      <div class="state-center">
+        <div class="spinner"></div>
+        <p>Cargando alojamientos…</p>
+      </div>
+    } @else if (error()) {
+      <div class="state-center state-center--error">
+        <p>{{ error() }}</p>
+      </div>
+    } @else if (filtered().length === 0) {
+      <div class="state-center">
+        <p>No se encontraron alojamientos con esos filtros.</p>
+      </div>
+    } @else {
+      <p class="results__count">{{ filtered().length }} resultado{{ filtered().length !== 1 ? 's' : '' }}</p>
+      <div class="cards-grid">
+        @for (h of filtered(); track h.id) {
+          <a class="stay-card" [routerLink]="['/habitaciones', h.id]">
+            <div class="stay-card__image">
+              @if (h.estado === 'DISPONIBLE') {
+                <span class="stay-card__badge stay-card__badge--ok">Disponible</span>
+              } @else {
+                <span class="stay-card__badge stay-card__badge--off">{{ h.estado | lowercase }}</span>
+              }
+            </div>
+            <div class="stay-card__body">
+              <div class="stay-card__top">
+                <h3>{{ h.titulo }}</h3>
+                <strong class="stay-card__price">S/ {{ h.precio | number:'1.0-0' }} <span>/ mes</span></strong>
+              </div>
+              <p class="stay-card__address">{{ h.direccion }}</p>
+              @if (h.distanciaUtpMinutos) {
+                <span class="stay-card__meta">{{ h.distanciaUtpMinutos }} min de UTP</span>
+              }
+              <p class="stay-card__desc">{{ h.descripcion | slice:0:90 }}{{ h.descripcion.length > 90 ? '…' : '' }}</p>
+              <div class="stay-card__footer">
+                <span class="stay-card__owner">{{ h.arrendadorNombre }}</span>
+                <span class="stay-card__cta">Ver detalle →</span>
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </section>
+</div>

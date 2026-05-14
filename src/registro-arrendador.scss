@@ -1,0 +1,87 @@
+:host {
+  display: block;
+}
+
+.host-page {
+  padding: 1.2rem 0 3rem;
+}
+
+.host-card {
+  background: var(--surface-card);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+  display: grid;
+  grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+  overflow: hidden;
+}
+
+.host-intro {
+  background:
+    linear-gradient(180deg, rgba(9, 24, 57, 0.14), rgba(9, 24, 57, 0.78)),
+    url('https://images.unsplash.com/photo-1560448075-bb485b067938?auto=format&fit=crop&w=1000&q=80') center/cover;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 660px;
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+}
+
+.host-intro h1 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  margin: 1rem 0;
+}
+
+.host-intro p {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.host-form {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.form-span-2 {
+  grid-column: 1 / -1;
+}
+
+.host-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.host-form > .app-button {
+  width: 100%;
+}
+
+.host-footer {
+  color: var(--slate-600);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .host-card {
+    grid-template-columns: 1fr;
+  }
+
+  .host-intro {
+    min-height: 330px;
+  }
+}
+
+@media (max-width: 560px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

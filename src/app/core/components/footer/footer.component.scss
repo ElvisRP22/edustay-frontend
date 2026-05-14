@@ -1,70 +1,78 @@
-:host {
-  display: block;
-}
-
 .site-footer {
-  border-top: 1px solid rgba(15, 23, 42, 0.08);
-  background: #f3f4f6;
-  margin-top: 3rem;
+  background: var(--slate-900);
+  color: rgba(255,255,255,0.55);
+  margin-top: auto;
 }
 
 .site-footer__inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2.2rem 1.2rem 1rem;
+  padding: 3rem 2rem;
   display: flex;
-  gap: 1.2rem;
+  gap: 3rem;
+  flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
 }
 
-.brand__name {
-  font-size: 1.9rem;
-  font-weight: 800;
-  line-height: 1;
-  text-decoration: none;
-  margin-bottom: 0.65rem;
-  display: inline-block;
+.footer-brand {
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+
+  &__name {
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 800;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+  }
+  &__edu { color: #fff; }
+  &__stay { color: #93c5fd; }
+
+  p { font-size: 0.85rem; line-height: 1.6; margin: 0; }
 }
 
-.brand__edu {
-  color: var(--slate-900);
-}
-
-.brand__stay {
-  color: var(--brand-700);
-}
-
-.brand p {
-  max-width: 260px;
-  color: var(--slate-600);
-  font-size: 0.95rem;
-  line-height: 1.45;
-}
-
-.links {
+.footer-links {
   display: flex;
-  gap: 1rem;
+  gap: 2.5rem;
   flex-wrap: wrap;
+  flex: 2;
 }
 
-.links a {
-  color: var(--slate-600);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 120px;
+
+  h4 {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0 0 0.4rem;
+  }
+
+  a {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    transition: color 0.12s;
+    &:hover { color: rgba(255,255,255,0.9); }
+  }
 }
 
-.links a:hover,
-.links a:focus-visible {
-  color: var(--brand-700);
-}
-
-.copyright {
+.footer-bottom {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.2rem 1.25rem;
-  color: var(--slate-500);
-  font-size: 0.84rem;
+  padding: 1rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  p { font-size: 0.78rem; margin: 0; }
+}
+
+@media (max-width: 640px) {
+  .site-footer__inner { gap: 2rem; }
+  .footer-brand { max-width: 100%; }
+  .footer-links { gap: 1.5rem; }
 }

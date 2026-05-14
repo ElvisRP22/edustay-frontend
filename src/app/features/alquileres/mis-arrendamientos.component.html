@@ -1,0 +1,40 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h1>Mis Arrendamientos</h1>
+    <p>Inquilinos activos en tus habitaciones.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="state-center"><div class="spinner"></div><p>Cargando…</p></div>
+  } @else if (arrendamientos().length === 0) {
+    <div class="state-center">
+      <p>No tienes arrendamientos activos.</p>
+      <a routerLink="/mis-habitaciones" class="app-button app-button--primary">Gestionar habitaciones</a>
+    </div>
+  } @else {
+    <div class="rentals-list">
+      @for (a of arrendamientos(); track a.id) {
+        <div class="rental-card">
+          <div class="rental-card__top">
+            <div>
+              <h3>{{ a.habitacionTitulo }}</h3>
+              <p class="rental-card__address">{{ a.habitacionDireccion }}</p>
+            </div>
+            <strong class="rental-card__price">S/ {{ a.montoPactado | number:'1.0-0' }}<span>/mes</span></strong>
+          </div>
+          <dl class="rental-dl">
+            <dt>Estudiante</dt><dd>{{ a.estudianteNombre }}</dd>
+            <dt>Inicio</dt><dd>{{ a.fechaInicio | date:'mediumDate' }}</dd>
+          </dl>
+          <div class="rental-card__actions">
+            <a [routerLink]="['/habitaciones', a.habitacionId]" class="app-button app-button--secondary">Ver habitación</a>
+            <button class="app-button app-button--ghost" style="color:#dc2626"
+              (click)="finalizar(a.id)" [disabled]="finalizando() === a.id">
+              {{ finalizando() === a.id ? 'Finalizando…' : 'Finalizar alquiler' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

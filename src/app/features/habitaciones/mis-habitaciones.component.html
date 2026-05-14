@@ -1,0 +1,122 @@
+<div class="page-shell">
+  <div class="page-header">
+    <div>
+      <h1>Mis Habitaciones</h1>
+      <p>Gestiona los espacios que tienes publicados.</p>
+    </div>
+    <button class="app-button app-button--primary" (click)="abrirNueva()">+ Nueva habitación</button>
+  </div>
+
+  <!-- ── Modal / Form ── -->
+  @if (showForm()) {
+    <div class="modal-backdrop" (click)="showForm.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-card__header">
+          <h3>{{ editId() ? 'Editar habitación' : 'Nueva habitación' }}</h3>
+          <button class="modal-close" (click)="showForm.set(false)" aria-label="Cerrar">
+            <ng-icon name="heroXMark" size="18"></ng-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="guardar()" class="room-form">
+          <div class="form-grid">
+            <div class="app-field form-span-2">
+              <label for="titulo">Título</label>
+              <input id="titulo" class="app-input" type="text" formControlName="titulo"
+                     placeholder="Ej. Habitación soleada cerca de UTP"
+                     [class.is-error]="form.get('titulo')?.invalid && form.get('titulo')?.touched" />
+              <small class="app-error" *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">Requerido.</small>
+            </div>
+
+            <div class="app-field form-span-2">
+              <label for="descripcion">Descripción</label>
+              <textarea id="descripcion" class="app-input" rows="3" formControlName="descripcion"
+                        placeholder="Describe la habitación, servicios y condiciones…"
+                        [class.is-error]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"></textarea>
+            </div>
+
+            <div class="app-field">
+              <label for="precio">Precio mensual (S/)</label>
+              <input id="precio" class="app-input" type="number" formControlName="precio" placeholder="350"
+                     [class.is-error]="form.get('precio')?.invalid && form.get('precio')?.touched" />
+            </div>
+
+            <div class="app-field">
+              <label for="direccion">Dirección</label>
+              <input id="direccion" class="app-input" type="text" formControlName="direccion"
+                     placeholder="Av. Principal 123, Lima"
+                     [class.is-error]="form.get('direccion')?.invalid && form.get('direccion')?.touched" />
+            </div>
+
+            <div class="app-field">
+              <label for="latitud">Latitud</label>
+              <input id="latitud" class="app-input" type="number" step="any" formControlName="latitud"
+                     placeholder="-12.0464" />
+            </div>
+
+            <div class="app-field">
+              <label for="longitud">Longitud</label>
+              <input id="longitud" class="app-input" type="number" step="any" formControlName="longitud"
+                     placeholder="-77.0428" />
+            </div>
+          </div>
+
+          @if (saveError()) { <p class="app-error">{{ saveError() }}</p> }
+
+          <div class="modal-card__btns">
+            <button type="submit" class="app-button app-button--primary" [disabled]="saving()">
+              {{ saving() ? 'Guardando…' : (editId() ? 'Guardar cambios' : 'Publicar habitación') }}
+            </button>
+            <button type="button" class="app-button app-button--ghost" (click)="showForm.set(false)">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (saveOk()) {
+    <div class="success-banner">
+      <ng-icon name="heroCheckCircleSolid" size="16"></ng-icon>
+      Habitación guardada correctamente.
+    </div>
+  }
+
+  <!-- ── Lista ── -->
+  @if (loading()) {
+    <div class="state-center"><div class="spinner"></div><p>Cargando…</p></div>
+  } @else if (habitaciones().length === 0) {
+    <div class="state-center">
+      <p>Aún no tienes habitaciones publicadas.</p>
+      <button class="app-button app-button--primary" (click)="abrirNueva()">Publicar mi primer espacio</button>
+    </div>
+  } @else {
+    <div class="rooms-list">
+      @for (h of habitaciones(); track h.id) {
+        <div class="room-card">
+          <div class="room-card__image"></div>
+          <div class="room-card__body">
+            <div class="room-card__top">
+              <div>
+                <h3>{{ h.titulo }}</h3>
+                <p class="room-card__address">{{ h.direccion }}</p>
+              </div>
+              <div class="room-card__right">
+                <strong>S/ {{ h.precio | number:'1.0-0' }}</strong>
+                <span class="status-chip" [class]="'status-chip--' + h.estado.toLowerCase()">{{ h.estado | lowercase }}</span>
+              </div>
+            </div>
+            <p class="room-card__desc">{{ h.descripcion | slice:0:100 }}{{ h.descripcion.length > 100 ? '…' : '' }}</p>
+            <div class="room-card__actions">
+              <a [routerLink]="['/habitaciones', h.id]" class="app-button app-button--ghost">Ver público</a>
+              <button class="app-button app-button--secondary" (click)="abrirEditar(h)">Editar</button>
+              <button class="app-button app-button--ghost" style="color:#dc2626"
+                      (click)="eliminar(h.id)" [disabled]="eliminando() === h.id">
+                {{ eliminando() === h.id ? 'Eliminando…' : 'Eliminar' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

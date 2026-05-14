@@ -1,0 +1,68 @@
+/**
+ * Catálogo central de iconos Heroicons usados en EduStay.
+ */
+import {
+  heroBuildingOffice2,
+  heroMapPin,
+  heroLightBulb,
+  heroSpeakerXMark,
+  heroShieldCheck,
+  heroCheckCircle,
+  heroXMark,
+  heroArrowRight,
+  heroArrowLeft,
+  heroHeart,
+  heroStar,
+  heroFlag,
+  heroHome,
+  heroLockClosed,
+  heroChatBubbleLeftRight,
+  heroEnvelope,
+  heroKey,
+  heroPencilSquare,
+  heroTrash,
+  heroEye,
+  heroBars3,
+  heroUserCircle,
+  heroExclamationTriangle,
+  heroPlusCircle,
+} from '@ng-icons/heroicons/outline';
+
+import {
+  heroHeartSolid,
+  heroStarSolid,
+  heroCheckCircleSolid,
+  heroCheckSolid,
+} from '@ng-icons/heroicons/solid';
+
+export const EDUSTAY_ICONS = {
+  heroBuildingOffice2,
+  heroMapPin,
+  heroLightBulb,
+  heroSpeakerXMark,
+  heroShieldCheck,
+  heroCheckCircle,
+  heroXMark,
+  heroArrowRight,
+  heroArrowLeft,
+  heroHeart,
+  heroStar,
+  heroFlag,
+  heroHome,
+  heroLockClosed,
+  heroChatBubbleLeftRight,
+  heroEnvelope,
+  heroKey,
+  heroPencilSquare,
+  heroTrash,
+  heroEye,
+  heroBars3,
+  heroUserCircle,
+  heroExclamationTriangle,
+  heroPlusCircle,
+  // Solid
+  heroHeartSolid,
+  heroStarSolid,
+  heroCheckCircleSolid,
+  heroCheckSolid,
+};

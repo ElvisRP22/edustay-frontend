@@ -1,206 +1,160 @@
-.login-wrapper {
-  // Usamos min-height para centrar el contenido verticalmente en la pantalla
-  min-height: calc(100vh - 72px); 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-  // No ponemos background aquí para que se vea el radial-gradient del body
+:host {
+  display: block;
 }
 
-.login-card {
-  background: #ffffff;
-  width: 100%;
-  max-width: 420px;
-  padding: 2.5rem;
-  border-radius: 24px; // Bordes más suaves y modernos
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(17, 24, 39, 0.05);
+.auth-page {
+  min-height: calc(100vh - 160px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+  gap: 1rem;
+  align-items: stretch;
+  padding: 1.2rem 0 2rem;
 }
 
-.login-header {
-  text-align: center;
-  margin-bottom: 2rem;
-
-  h1 {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: var(--slate-900);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-
-    span {
-      color: var(--brand-700);
-    }
-  }
-
-  p {
-    color: var(--slate-600);
-    font-size: 0.95rem;
-  }
-}
-
-.login-form {
+.auth-panel {
+  min-height: 560px;
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(180deg, rgba(9, 24, 57, 0.18), rgba(9, 24, 57, 0.78)),
+    url('https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1400&q=80') center/cover;
+  color: #fff;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  overflow: hidden;
 }
 
-.form-group {
+.auth-panel h1 {
+  max-width: 620px;
+  font-size: clamp(2rem, 4vw, 3.65rem);
+  line-height: 1.02;
+  margin: 1rem 0;
+}
+
+.auth-panel p {
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.auth-proof {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--slate-700);
-  }
-
-  input {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-    border: 1px solid rgba(107, 114, 128, 0.3); // Usando slate-500 con opacidad
-    font-family: inherit;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    outline: none;
-
-    &:focus {
-      border-color: var(--brand-700);
-      box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.1); // Sombra suave del color brand
-    }
-
-    &.input-error {
-      border-color: #ef4444;
-      background-color: #fef2f2;
-    }
-  }
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1.25rem;
 }
 
-// Busca la sección .form-group y añade esto debajo:
-
-.password-container {
-  position: relative; // Importante para que el botón se posicione respecto a este div
-  display: flex;
-  align-items: center;
-
-  input {
-    width: 100%;
-    padding-right: 80px; // Añadimos espacio a la derecha para que el texto no quede debajo del botón
-  }
+.auth-proof span {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  padding: 0.45rem 0.72rem;
+  font-size: 0.8rem;
+  font-weight: 800;
 }
 
-.btn-toggle-password {
-  position: absolute;
-  right: 8px;
-  background: transparent;
-  border: none;
+.auth-card {
+  align-self: center;
+  background: var(--surface-card);
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+}
+
+.auth-header {
+  margin-bottom: 1.6rem;
+}
+
+.auth-kicker {
   color: var(--brand-700);
-  font-size: 0.75rem;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0.4rem 0.6rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  user-select: none;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-  &:hover {
-    background: rgba(29, 78, 216, 0.05);
-    color: var(--brand-800);
-  }
+.auth-header h2 {
+  color: var(--slate-900);
+  font-size: 1.9rem;
+  line-height: 1.15;
+  margin-top: 0.35rem;
+}
 
-  &:active {
-    transform: scale(0.95);
-  }
+.auth-header p:not(.auth-kicker) {
+  color: var(--slate-600);
+  line-height: 1.5;
+  margin-top: 0.45rem;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
 }
 
 .label-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
+  gap: 1rem;
 }
 
-.forgot-password {
-  font-size: 0.8rem;
+.label-row .app-link {
+  font-size: 0.78rem;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field .app-input {
+  padding-right: 5.8rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
   color: var(--brand-700);
-  text-decoration: none;
-  font-weight: 600;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.error-text {
-  color: #ef4444;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 800;
+  padding: 0.45rem 0.55rem;
 }
 
-.form-options {
-  margin: 0.5rem 0;
+.password-toggle:hover,
+.password-toggle:focus-visible {
+  background: var(--brand-50);
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  font-size: 0.875rem;
+.auth-submit {
+  width: 100%;
+  margin-top: 0.2rem;
+}
+
+.auth-footer {
   color: var(--slate-600);
-  user-select: none;
-
-  input {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--brand-700);
-    cursor: pointer;
-  }
-}
-
-.btn-submit {
-  background: var(--brand-700);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 0.8rem;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 0.5rem;
-
-  &:hover:not(:disabled) {
-    background: var(--brand-800);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.login-footer {
-  margin-top: 2rem;
-  text-align: center;
   font-size: 0.9rem;
-  color: var(--slate-600);
+  margin-top: 1.6rem;
+  text-align: center;
+}
 
-  a {
-    color: var(--brand-700);
-    text-decoration: none;
-    font-weight: 700;
+@media (max-width: 900px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
 
-    &:hover {
-      text-decoration: underline;
-    }
+  .auth-panel {
+    min-height: 340px;
+  }
+
+  .auth-card {
+    width: min(100%, 520px);
+    justify-self: center;
   }
 }

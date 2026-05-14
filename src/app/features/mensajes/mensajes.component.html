@@ -1,0 +1,73 @@
+<div class="msg-shell">
+  <!-- ── Sidebar de conversaciones ── -->
+  <aside class="conv-list">
+    <div class="conv-list__header">
+      <h2>Mensajes</h2>
+    </div>
+
+    @if (loading()) {
+      <div class="state-center"><div class="spinner"></div></div>
+    } @else if (conversaciones().length === 0) {
+      <p class="conv-empty">No tienes mensajes todavía.</p>
+    } @else {
+      @for (c of conversaciones(); track c.otroId + '-' + c.habitacionId) {
+        <button class="conv-item" [class.conv-item--active]="conversacionActiva()?.otroId === c.otroId && conversacionActiva()?.habitacionId === c.habitacionId" (click)="abrirConv(c)">
+          <div class="conv-item__avatar">{{ c.otroNombre.charAt(0) }}</div>
+          <div class="conv-item__info">
+            <div class="conv-item__top">
+              <strong>{{ c.otroNombre }}</strong>
+              @if (c.noLeidos > 0) { <span class="unread-dot">{{ c.noLeidos }}</span> }
+            </div>
+            <p class="conv-item__sub">{{ c.habitacionTitulo }}</p>
+            <p class="conv-item__preview">{{ c.ultimoMensaje.contenido | slice:0:45 }}…</p>
+          </div>
+        </button>
+      }
+    }
+  </aside>
+
+  <!-- ── Panel de conversación ── -->
+  <main class="conv-panel">
+    @if (!conversacionActiva()) {
+      <div class="conv-placeholder">
+        <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.97-4.03 9-9 9a9 9 0 0 1-4.87-1.44L3 21l1.44-4.13A9 9 0 1 1 21 12z"/>
+        </svg>
+        <p>Selecciona una conversación para leer los mensajes.</p>
+      </div>
+    } @else {
+      <div class="conv-header">
+        <div class="conv-header__avatar">{{ conversacionActiva()!.otroNombre.charAt(0) }}</div>
+        <div>
+          <strong>{{ conversacionActiva()!.otroNombre }}</strong>
+          <p>{{ conversacionActiva()!.habitacionTitulo }}</p>
+        </div>
+      </div>
+
+      <div class="conv-messages">
+        @if (loadingConv()) {
+          <div class="state-center"><div class="spinner"></div></div>
+        }
+        @for (m of mensajesConv(); track m.id) {
+          <div class="bubble" [class.bubble--mine]="m.emisorId === yo">
+            <p>{{ m.contenido }}</p>
+            <time>{{ m.fechaEnvio | date:'shortTime' }}</time>
+          </div>
+        }
+      </div>
+
+      <form class="conv-input" (submit)="$event.preventDefault(); enviar()">
+        <input
+          type="text"
+          class="app-input"
+          placeholder="Escribe un mensaje…"
+          [value]="nuevomsg()"
+          (input)="nuevomsg.set($any($event.target).value)"
+        />
+        <button type="submit" class="app-button app-button--primary" [disabled]="!nuevomsg().trim() || enviando()">
+          {{ enviando() ? '…' : 'Enviar' }}
+        </button>
+      </form>
+    }
+  </main>
+</div>

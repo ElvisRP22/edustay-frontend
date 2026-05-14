@@ -1,0 +1,239 @@
+@if (loading()) {
+  <div class="detail-state">
+    <div class="spinner"></div>
+    <p>Cargando habitación…</p>
+  </div>
+} @else if (!habitacion()) {
+  <div class="detail-state">
+    <p>Habitación no encontrada.</p>
+    <a routerLink="/habitaciones" class="app-button app-button--primary">Ver listado</a>
+  </div>
+} @else {
+  <div class="detail-page">
+    <!-- ── Back ── -->
+    <a routerLink="/habitaciones" class="detail-back"><ng-icon name="heroArrowLeft" size="15"></ng-icon> Volver al listado</a>
+
+    <!-- ── Hero image ── -->
+    <div class="detail-hero">
+      <div class="detail-hero__overlay">
+        <span class="app-badge">{{ habitacion()!.estado | lowercase }}</span>
+        @if (habitacion()!.distanciaUtpMinutos) {
+          <span class="dist-badge">{{ habitacion()!.distanciaUtpMinutos }} min de UTP</span>
+        }
+      </div>
+    </div>
+
+    <div class="detail-layout">
+      <!-- ── Main info ── -->
+      <main class="detail-main">
+        <div class="detail-header">
+          <div>
+            <h1>{{ habitacion()!.titulo }}</h1>
+            <p class="detail-address">{{ habitacion()!.direccion }}</p>
+          </div>
+          <div class="detail-price">
+            <strong>S/ {{ habitacion()!.precio | number:'1.0-0' }}</strong>
+            <span>/ mes</span>
+          </div>
+        </div>
+
+        <!-- Actions row -->
+        <div class="detail-actions">
+          <button
+            class="fav-btn"
+            [class.fav-btn--active]="esFavorito()"
+            (click)="toggleFav()"
+            [disabled]="loadingFav()"
+            aria-label="Guardar en favoritos"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            {{ esFavorito() ? 'En favoritos' : 'Guardar' }}
+          </button>
+
+          @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
+            <button class="app-button app-button--primary" (click)="showAlquiler.update(v=>!v)">
+              Alquilar esta habitación
+            </button>
+          }
+          @if (alquilerOk()) {
+            <span class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Alquiler registrado</span>
+          }
+
+          @if (!auth.isAuthenticated()) {
+            <a routerLink="/login" class="app-button app-button--secondary">Inicia sesión para contactar</a>
+          }
+        </div>
+
+        <!-- Alquiler form -->
+        @if (showAlquiler() && auth.isEstudiante()) {
+          <div class="inline-form">
+            <h4>Confirmar alquiler</h4>
+            <label class="app-field">
+              <span>Monto mensual pactado (S/)</span>
+              <input class="app-input" type="number" [value]="montoPactado()"
+                     (input)="montoPactado.set($any($event.target).valueAsNumber)" />
+            </label>
+            @if (alquilerError()) {
+              <p class="app-error">{{ alquilerError() }}</p>
+            }
+            <div class="inline-form__btns">
+              <button class="app-button app-button--primary" (click)="crearAlquiler()" [disabled]="loadingAlquiler()">
+                {{ loadingAlquiler() ? 'Registrando…' : 'Confirmar' }}
+              </button>
+              <button class="app-button app-button--ghost" (click)="showAlquiler.set(false)">Cancelar</button>
+            </div>
+          </div>
+        }
+
+        <!-- Description -->
+        <section class="detail-section">
+          <h2>Descripción</h2>
+          <p>{{ habitacion()!.descripcion }}</p>
+        </section>
+
+        <!-- Datos del arrendador -->
+        <section class="detail-section">
+          <h2>Arrendador</h2>
+          <p class="owner-name">{{ habitacion()!.arrendadorNombre }}</p>
+        </section>
+
+        <!-- Mensaje al arrendador -->
+        @if (auth.isEstudiante()) {
+          <section class="detail-section">
+            <h2>Contactar al arrendador</h2>
+            @if (mensajeOk()) {
+              <p class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Mensaje enviado correctamente</p>
+            } @else {
+              <textarea
+                class="app-input"
+                rows="3"
+                placeholder="Hola, ¿sigue disponible la habitación?"
+                [value]="mensajeTexto()"
+                (input)="mensajeTexto.set($any($event.target).value)"
+              ></textarea>
+              @if (mensajeError()) { <p class="app-error">{{ mensajeError() }}</p> }
+              <button class="app-button app-button--primary mt" (click)="enviarMensaje()" [disabled]="!mensajeTexto().trim()">
+                Enviar mensaje
+              </button>
+            }
+          </section>
+        }
+
+        <!-- Reseñas -->
+        <section class="detail-section">
+          <div class="section-head">
+            <h2>Reseñas</h2>
+            @if (avgCalif()) {
+              <span class="rating-pill"><ng-icon name="heroStarSolid" size="13"></ng-icon> {{ avgCalif() }} <small>({{ resenas().length }})</small></span>
+            }
+          </div>
+
+          @if (resenas().length === 0) {
+            <p class="muted">Aún no hay reseñas para esta habitación.</p>
+          }
+          @for (r of resenas(); track r.id) {
+            <div class="resena-card">
+              <div class="resena-card__head">
+                <strong>{{ r.estudianteNombre }}</strong>
+                <span class="stars">
+                  @for (s of stars(r.calificacion); track $index) {
+                    <ng-icon name="heroStarSolid" size="13" class="star-icon"></ng-icon>
+                  }
+                </span>
+                <time>{{ r.fecha | date:'mediumDate' }}</time>
+              </div>
+              @if (r.comentario) { <p>{{ r.comentario }}</p> }
+            </div>
+          }
+
+          @if (auth.isEstudiante() && !resenaOk()) {
+            <div class="inline-form mt">
+              <h4>Dejar una reseña</h4>
+              <label class="app-field">
+                <span>Calificación</span>
+                <select class="app-input" [value]="nuevaCalif()" (change)="nuevaCalif.set($any($event.target).valueAsNumber)">
+                  <option [value]="5">5 estrellas</option>
+                  <option [value]="4">4 estrellas</option>
+                  <option [value]="3">3 estrellas</option>
+                  <option [value]="2">2 estrellas</option>
+                  <option [value]="1">1 estrella</option>
+                </select>
+              </label>
+              <label class="app-field">
+                <span>Comentario (opcional)</span>
+                <textarea class="app-input" rows="2" [value]="nuevoComentario()"
+                          (input)="nuevoComentario.set($any($event.target).value)"></textarea>
+              </label>
+              <button class="app-button app-button--secondary mt" (click)="crearResena()">Publicar reseña</button>
+            </div>
+          }
+          @if (resenaOk()) {
+            <p class="success-pill mt"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Reseña publicada</p>
+          }
+        </section>
+
+        <!-- Reportar -->
+        @if (auth.isAuthenticated() && !reporteOk()) {
+          <section class="detail-section">
+            <button class="report-btn" (click)="showReporte.update(v=>!v)">
+              <ng-icon name="heroFlag" size="15"></ng-icon> Reportar esta habitación
+            </button>
+            @if (showReporte()) {
+              <div class="inline-form mt">
+                <label class="app-field">
+                  <span>Motivo</span>
+                  <input class="app-input" type="text" placeholder="Ej. Fotos engañosas"
+                         [value]="reporteMotivo()" (input)="reporteMotivo.set($any($event.target).value)" />
+                </label>
+                <label class="app-field">
+                  <span>Descripción</span>
+                  <textarea class="app-input" rows="3" [value]="reporteDesc()"
+                            (input)="reporteDesc.set($any($event.target).value)"></textarea>
+                </label>
+                <div class="inline-form__btns">
+                  <button class="app-button app-button--secondary" (click)="crearReporte()"
+                          [disabled]="!reporteMotivo() || !reporteDesc()">Enviar reporte</button>
+                  <button class="app-button app-button--ghost" (click)="showReporte.set(false)">Cancelar</button>
+                </div>
+              </div>
+            }
+          </section>
+        }
+        @if (reporteOk()) {
+          <p class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Reporte enviado, gracias</p>
+        }
+      </main>
+
+      <!-- ── Sidebar ── -->
+      <aside class="detail-sidebar">
+        <div class="sidebar-card">
+          <p class="sidebar-card__price"><strong>S/ {{ habitacion()!.precio | number:'1.0-0' }}</strong> / mes</p>
+          <dl class="sidebar-dl">
+            <dt>Estado</dt>
+            <dd>{{ habitacion()!.estado | lowercase }}</dd>
+            @if (habitacion()!.distanciaUtpMinutos) {
+              <dt>Distancia UTP</dt>
+              <dd>{{ habitacion()!.distanciaUtpMinutos }} min caminando</dd>
+            }
+            <dt>Publicado</dt>
+            <dd>{{ habitacion()!.fechaPublicacion | date:'mediumDate' }}</dd>
+            <dt>Arrendador</dt>
+            <dd>{{ habitacion()!.arrendadorNombre }}</dd>
+          </dl>
+          @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
+            <button class="app-button app-button--primary sidebar-card__cta" (click)="showAlquiler.update(v=>!v)">
+              Alquilar ahora
+            </button>
+          }
+          @if (!auth.isAuthenticated()) {
+            <a routerLink="/login" class="app-button app-button--primary sidebar-card__cta">
+              Inicia sesión para alquilar
+            </a>
+          }
+        </div>
+      </aside>
+    </div>
+  </div>
+}

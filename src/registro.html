@@ -1,30 +1,43 @@
-<div class="registro-container">
-  <h1>Únete a EduStay</h1>
-  <p>El santuario académico para tu próxima etapa.</p>
-
-  <div class="cards">
-    <!-- Estudiante -->
-    <div class="card">
-      <img src="assets/img/estudiante.jpg" alt="estudiante">
-      <h3>¿Buscas un lugar para vivir y alojarte?</h3>
-      <p>
-        Encuentra la habitación perfecta, cerca de tu universidad y con el ambiente ideal.
-      </p>
-      <button class="btn-azul" routerLink="/registro/estudiante">Registro Estudiante →</button>
-    </div>
-
-    <!-- Arrendador -->
-    <div class="card">
-      <img src="assets/img/habitacion.jpg" alt="habitacion">
-      <h3>¿Tienes una habitación disponible?</h3>
-      <p>
-        Conecta con estudiantes responsables y alquila tu espacio.
-      </p>
-      <button class="btn-verde" routerLink="/registro/arrendador">Registro Arrendador →</button>
-    </div>
+<section class="role-page">
+  <div class="role-hero">
+    <span class="app-badge">Únete a EduStay</span>
+    <h1>Crea tu cuenta según lo que necesitas hacer</h1>
+    <p>Los estudiantes buscan alojamiento. Los arrendadores publican espacios. Cada flujo pide solo lo necesario.</p>
   </div>
 
-  <p class="login">
-    ¿Ya tienes una cuenta? <a routerLink="/login">Inicia Sesión</a>
+  <div class="role-grid">
+    <article class="role-card role-card--student">
+      <div class="role-card__image" aria-hidden="true"></div>
+      <div class="role-card__content">
+        <span class="role-card__kicker">Estudiante</span>
+        <h2>Quiero buscar alojamiento</h2>
+        <p>Guarda opciones, compara precios y contacta alojamientos cerca de tu universidad.</p>
+        <ul>
+          <li>Filtros por distancia y presupuesto</li>
+          <li>Espacios con señales de verificación</li>
+          <li>Perfil listo para contactar arrendadores</li>
+        </ul>
+        <a class="app-button app-button--primary" routerLink="/registro/estudiante">Crear cuenta estudiante</a>
+      </div>
+    </article>
+
+    <article class="role-card role-card--host">
+      <div class="role-card__image" aria-hidden="true"></div>
+      <div class="role-card__content">
+        <span class="role-card__kicker">Arrendador</span>
+        <h2>Quiero publicar un alojamiento</h2>
+        <p>Crea una ficha clara para mostrar ubicación, precio, servicios y reglas básicas.</p>
+        <ul>
+          <li>Formulario preparado para alojamiento estudiantil</li>
+          <li>Datos clave desde el primer contacto</li>
+          <li>Proceso guiado y fácil de completar</li>
+        </ul>
+        <a class="app-button app-button--secondary" routerLink="/registro/arrendador">Publicar alojamiento</a>
+      </div>
+    </article>
+  </div>
+
+  <p class="role-footer">
+    ¿Ya tienes una cuenta? <a routerLink="/login" class="app-link">Inicia sesión</a>
   </p>
-</div>
+</section>
