@@ -61,6 +61,58 @@
             </div>
           </div>
 
+          <div class="selection-grid">
+            <div class="selection-panel">
+              <div class="selection-panel__head">
+                <h4>Servicios</h4>
+                <span class="selection-panel__hint">Opcional</span>
+              </div>
+
+              @if (loadingCatalogos()) {
+                <p class="muted">Cargando catálogos…</p>
+              } @else if (serviciosCatalogo().length === 0) {
+                <p class="muted">No hay servicios disponibles.</p>
+              } @else {
+                <div class="option-list">
+                  @for (servicio of serviciosCatalogo(); track servicio.id) {
+                    <label class="option-item">
+                      <input type="checkbox" [checked]="isServicioSelected(servicio.id)" (change)="toggleServicio(servicio.id)" />
+                      <span>
+                        <strong>{{ servicio.nombre }}</strong>
+                        @if (servicio.descripcion) { <small>{{ servicio.descripcion }}</small> }
+                      </span>
+                    </label>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="selection-panel">
+              <div class="selection-panel__head">
+                <h4>Reglas</h4>
+                <span class="selection-panel__hint">Opcional</span>
+              </div>
+
+              @if (loadingCatalogos()) {
+                <p class="muted">Cargando catálogos…</p>
+              } @else if (reglasCatalogo().length === 0) {
+                <p class="muted">No hay reglas disponibles.</p>
+              } @else {
+                <div class="option-list">
+                  @for (regla of reglasCatalogo(); track regla.id) {
+                    <label class="option-item">
+                      <input type="checkbox" [checked]="isReglaSelected(regla.id)" (change)="toggleRegla(regla.id)" />
+                      <span>
+                        <strong>{{ regla.nombre }}</strong>
+                        @if (regla.descripcion) { <small>{{ regla.descripcion }}</small> }
+                      </span>
+                    </label>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
           @if (saveError()) { <p class="app-error">{{ saveError() }}</p> }
 
           <div class="modal-card__btns">
@@ -106,6 +158,30 @@
               </div>
             </div>
             <p class="room-card__desc">{{ h.descripcion | slice:0:100 }}{{ h.descripcion.length > 100 ? '…' : '' }}</p>
+            @if (h.servicios?.length || h.reglas?.length) {
+              <div class="room-card__tags">
+                @if (h.servicios?.length) {
+                  <div class="tag-group">
+                    <span class="tag-group__label">Servicios</span>
+                    <div class="tag-list">
+                      @for (servicio of h.servicios; track servicio.id) {
+                        <span class="room-tag">{{ servicio.nombre }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+                @if (h.reglas?.length) {
+                  <div class="tag-group">
+                    <span class="tag-group__label">Reglas</span>
+                    <div class="tag-list">
+                      @for (regla of h.reglas; track regla.id) {
+                        <span class="room-tag room-tag--rule">{{ regla.nombre }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
             <div class="room-card__actions">
               <a [routerLink]="['/habitaciones', h.id]" class="app-button app-button--ghost">Ver público</a>
               <button class="app-button app-button--secondary" (click)="abrirEditar(h)">Editar</button>

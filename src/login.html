@@ -77,6 +77,25 @@
       </button>
     </form>
 
+    <div class="social-divider" aria-hidden="true">
+      <span>o continúa con</span>
+    </div>
+
+    <div class="social-login">
+      <asl-google-signin-button
+        class="google-signin"
+        type="standard"
+        shape="rectangular"
+        theme="outline"
+        text="signin_with"
+        logo_alignment="left"
+        [width]="360"
+      ></asl-google-signin-button>
+      @if (googleLoading()) {
+        <p class="social-status">Validando tu acceso con Google…</p>
+      }
+    </div>
+
     <p class="auth-footer">
       ¿No tienes cuenta? <a routerLink="/registro" class="app-link">Regístrate</a>
     </p>

@@ -12,13 +12,23 @@
         <h4>Explorar</h4>
         <a routerLink="/habitaciones">Todos los alojamientos</a>
         <a routerLink="/habitaciones">Disponibles ahora</a>
-        <a routerLink="/registro/arrendador">Publicar alojamiento</a>
+        @if (!auth.isAuthenticated()) {
+          <a routerLink="/registro/arrendador">Publicar alojamiento</a>
+        } @else if (auth.isArrendador()) {
+          <a routerLink="/mis-habitaciones">Mis habitaciones</a>
+        } @else {
+          <a routerLink="/perfil">Mi perfil</a>
+        }
       </div>
       <div class="footer-col">
         <h4>Cuenta</h4>
-        <a routerLink="/login">Iniciar sesión</a>
-        <a routerLink="/registro">Crear cuenta</a>
-        <a routerLink="/perfil">Mi perfil</a>
+        @if (!auth.isAuthenticated()) {
+          <a routerLink="/login">Iniciar sesión</a>
+          <a routerLink="/registro">Crear cuenta</a>
+        } @else {
+          <a routerLink="/perfil">Mi perfil</a>
+          <button type="button" class="footer-link-button app-link" (click)="logout()">Cerrar sesión</button>
+        }
       </div>
       <div class="footer-col">
         <h4>Legal</h4>

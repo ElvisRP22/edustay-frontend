@@ -18,5 +18,6 @@
   .app-content {
     width: min(100% - 1rem, 1240px);
     padding-top: 0.5rem;
+    padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
   }
 }

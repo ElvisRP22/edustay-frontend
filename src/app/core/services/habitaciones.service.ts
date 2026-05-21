@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { HabitacionRequest, HabitacionResponse } from '../models/api.models';
+import { HabitacionCatalogItem, HabitacionRequest, HabitacionResponse } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
 export class HabitacionesService {
   private readonly base = '/api/habitaciones';
+  private readonly catalogosBase = '/api/catalogos/habitaciones';
 
   constructor(private http: HttpClient) {}
 
@@ -17,6 +18,16 @@ export class HabitacionesService {
   /** GET /api/habitaciones/estado/disponibles */
   getDisponibles(): Observable<HabitacionResponse[]> {
     return this.http.get<HabitacionResponse[]>(`${this.base}/estado/disponibles`);
+  }
+
+  /** GET /api/catalogos/habitaciones/servicios */
+  getServiciosCatalogo(): Observable<HabitacionCatalogItem[]> {
+    return this.http.get<HabitacionCatalogItem[]>(`${this.catalogosBase}/servicios`);
+  }
+
+  /** GET /api/catalogos/habitaciones/reglas */
+  getReglasCatalogo(): Observable<HabitacionCatalogItem[]> {
+    return this.http.get<HabitacionCatalogItem[]>(`${this.catalogosBase}/reglas`);
   }
 
   /** GET /api/habitaciones/:id */

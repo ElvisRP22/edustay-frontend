@@ -3,14 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   DocumentoVerificacionRequest,
+  VerificacionAdminResponse,
   VerificacionRequest,
   VerificacionResponse
 } from '../models/api.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentosService {
-  private readonly baseDocumentos = '/api/documentos';
-  private readonly baseVerificaciones = '/api/verificaciones';
+  private readonly baseDocumentos = `${environment.apiBaseUrl}/documentos`;
+  private readonly baseVerificaciones = `${environment.apiBaseUrl}/verificaciones`;
 
   constructor(private http: HttpClient) {}
 
@@ -29,13 +31,13 @@ export class DocumentosService {
   // ── Verificaciones (Admin) ─────────────────────────────────────────────────
 
   /** GET /api/verificaciones */
-  getTodos(): Observable<VerificacionResponse> {
-    return this.http.get<VerificacionResponse>(this.baseVerificaciones);
+  getTodos(): Observable<VerificacionAdminResponse[]> {
+    return this.http.get<VerificacionAdminResponse[]>(this.baseVerificaciones);
   }
 
   /** GET /api/verificaciones/pendientes */
-  getPendientes(): Observable<VerificacionResponse> {
-    return this.http.get<VerificacionResponse>(`${this.baseVerificaciones}/pendientes`);
+  getPendientes(): Observable<VerificacionAdminResponse[]> {
+    return this.http.get<VerificacionAdminResponse[]>(`${this.baseVerificaciones}/pendientes`);
   }
 
   /** GET /api/verificaciones/usuario/:usuarioId */
@@ -44,7 +46,7 @@ export class DocumentosService {
   }
 
   /** PATCH /api/verificaciones/:id */
-  actualizarEstado(id: number, data: VerificacionRequest): Observable<VerificacionResponse> {
-    return this.http.patch<VerificacionResponse>(`${this.baseVerificaciones}/${id}`, data);
+  actualizarEstado(id: number, data: VerificacionRequest): Observable<VerificacionAdminResponse> {
+    return this.http.patch<VerificacionAdminResponse>(`${this.baseVerificaciones}/${id}`, data);
   }
 }

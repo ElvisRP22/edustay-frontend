@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HabitacionesService } from '../../core/services/habitaciones.service';
-import { HabitacionResponse } from '../../core/models/api.models';
+import { HabitacionCatalogItem, HabitacionResponse } from '../../core/models/api.models';
 
 @Component({
   selector: 'app-habitaciones',
@@ -38,7 +38,7 @@ export class HabitacionesComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.svc.getAll().subscribe({
+    this.svc.getDisponibles().subscribe({
       next: data => { this.habitaciones.set(data); this.loading.set(false); },
       error: () => { this.error.set('No se pudo cargar las habitaciones.'); this.loading.set(false); }
     });
@@ -46,5 +46,17 @@ export class HabitacionesComponent implements OnInit {
 
   setMaxPrecio(v: string) {
     this.maxPrecio.set(v ? Number(v) : null);
+  }
+
+  visibleCatalogos(items?: HabitacionCatalogItem[], limit = 2): HabitacionCatalogItem[] {
+    return (items ?? []).slice(0, limit);
+  }
+
+  hiddenCatalogosCount(items?: HabitacionCatalogItem[], limit = 2): number {
+    return Math.max((items ?? []).length - limit, 0);
+  }
+
+  catalogoLabel(item: HabitacionCatalogItem, fallbackPrefix: string, index: number): string {
+    return item.nombre?.trim() || item.descripcion?.trim() || `${fallbackPrefix} ${index + 1}`;
   }
 }

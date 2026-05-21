@@ -1,40 +1,101 @@
 <div class="page-shell">
   @if (loading()) {
-    <div class="state-center"><div class="spinner"></div><p>Cargando perfil…</p></div>
+    <div class="state-center">
+      <div class="spinner"></div>
+      <p>Cargando tu verificación…</p>
+    </div>
   } @else {
-    <!-- ── Profile header ── -->
     <div class="profile-hero">
       <div class="profile-hero__avatar">
         {{ auth.user()?.nombre?.charAt(0) }}{{ auth.user()?.apellido?.charAt(0) }}
       </div>
+
       <div class="profile-hero__info">
         <h1>{{ auth.user()?.nombre }} {{ auth.user()?.apellido }}</h1>
         <p>{{ auth.user()?.email }}</p>
+
         <div class="profile-hero__badges">
           <span class="role-badge">{{ auth.user()?.rol | lowercase }}</span>
-          @if (perfil()?.identidadVerificada === 'VERIFICADO') {
+
+          @if (showVerifiedState()) {
             <span class="app-badge verified-badge">
-              <ng-icon name="heroCheckCircleSolid" size="13"></ng-icon> Identidad verificada
+              <ng-icon name="heroCheckCircleSolid" size="13"></ng-icon>
+              Perfil verificado
             </span>
-          } @else if (perfil()?.identidadVerificada) {
-            <span class="status-badge">Identidad: {{ estadoLabel(perfil()!.identidadVerificada) }}</span>
+          } @else if (showReviewState()) {
+            <span class="status-badge status-badge--review">Perfil en revisión</span>
+          } @else if (showRejectedState()) {
+            <span class="status-badge status-badge--rejected">Documentos rechazados</span>
+          } @else {
+            <span class="status-badge">Perfil pendiente</span>
           }
         </div>
       </div>
     </div>
 
+    @if (errorMsg()) {
+      <div class="alert alert--error">{{ errorMsg() }}</div>
+    }
+    @if (saveOk()) {
+      <div class="alert alert--success">Perfil actualizado correctamente.</div>
+    }
+    @if (uploadOk()) {
+      <div class="alert alert--success">Documento enviado correctamente.</div>
+    }
+
     <div class="profile-layout">
-      <!-- ── Editar perfil extendido ── -->
-      @if (auth.isEstudiante()) {
+      @if (verification()) {
+        <section class="profile-card summary-card">
+          <div class="summary-card__top">
+            <div>
+              <h2>Estado de verificación</h2>
+              <p>{{ verification()!.siguientePaso ?? 'Tu cuenta se está evaluando con la información disponible.' }}</p>
+            </div>
+            <span class="summary-pill" [class.summary-pill--verified]="showVerifiedState()"
+                                [class.summary-pill--review]="showReviewState()"
+                                [class.summary-pill--rejected]="showRejectedState()">
+              {{ estadoLabel(verification()!.identidadVerificada) }}
+            </span>
+          </div>
+
+          <dl class="summary-grid">
+            <div>
+              <dt>Perfil completo</dt>
+              <dd>{{ verification()!.perfilCompleto ? 'Sí' : 'No' }}</dd>
+            </div>
+            <div>
+              <dt>Documentos</dt>
+              <dd>{{ verification()!.totalDocumentos }}</dd>
+            </div>
+            <div>
+              <dt>Pendientes</dt>
+              <dd>{{ verification()!.documentosPendientes }}</dd>
+            </div>
+            <div>
+              <dt>Rechazados</dt>
+              <dd>{{ verification()!.documentosRechazados }}</dd>
+            </div>
+          </dl>
+        </section>
+      }
+
+      @if (showProfileForm()) {
         <section class="profile-card">
-          <h2>Perfil estudiantil</h2>
+          <h2>Completa tu perfil académico</h2>
+          <p class="muted">Necesitamos estos datos para continuar con tu proceso de verificación.</p>
+
           <form [formGroup]="form" (ngSubmit)="guardar()" class="profile-form">
             <div class="form-grid">
               <div class="app-field form-span-2">
                 <label for="carrera">Carrera</label>
-                <input id="carrera" class="app-input" type="text" formControlName="carrera"
-                       placeholder="Ej. Ingeniería de Software"
-                       [class.is-error]="form.get('carrera')?.invalid && form.get('carrera')?.touched" />
+                <input
+                  id="carrera"
+                  class="app-input"
+                  type="text"
+                  formControlName="carrera"
+                  placeholder="Ej. Ingeniería de Software"
+                  [class.is-error]="form.get('carrera')?.invalid && form.get('carrera')?.touched"
+                />
                 <small class="app-error" *ngIf="form.get('carrera')?.invalid && form.get('carrera')?.touched">
                   La carrera es obligatoria.
                 </small>
@@ -42,61 +103,232 @@
 
               <div class="app-field">
                 <label for="ciclo">Ciclo académico</label>
-                <input id="ciclo" class="app-input" type="number" formControlName="ciclo"
-                       placeholder="1-10" min="1" max="10" />
+                <input
+                  id="ciclo"
+                  class="app-input"
+                  type="number"
+                  formControlName="ciclo"
+                  placeholder="1-10"
+                  min="1"
+                  max="10"
+                />
               </div>
 
-              <div class="app-field">
-                <label for="fotoCarnetUrl">URL foto de carnet</label>
-                <input id="fotoCarnetUrl" class="app-input" type="url" formControlName="fotoCarnetUrl"
-                       placeholder="https://..." />
+              <div class="app-field form-span-2">
+                <label for="fotoCarnetUrl">URL de foto de carnet</label>
+                <input
+                  id="fotoCarnetUrl"
+                  class="app-input"
+                  type="url"
+                  formControlName="fotoCarnetUrl"
+                  placeholder="https://..."
+                />
               </div>
 
               <div class="app-field form-span-2">
                 <label for="preferencias">Preferencias de convivencia</label>
-                <textarea id="preferencias" class="app-input" formControlName="preferenciasConvivencia"
-                          rows="3" placeholder="Prefiero silencio en las noches…"></textarea>
+                <textarea
+                  id="preferencias"
+                  class="app-input"
+                  formControlName="preferenciasConvivencia"
+                  rows="3"
+                  placeholder="Prefiero silencio en las noches…"
+                ></textarea>
               </div>
             </div>
 
-            @if (saveOk()) {
-              <p class="success-msg">
-                <ng-icon name="heroCheckCircleSolid" size="15"></ng-icon>
-                Perfil actualizado correctamente.
-              </p>
+            @if (saving()) {
+              <p class="muted">Guardando información…</p>
             }
+
             @if (saveError()) {
               <p class="app-error">{{ saveError() }}</p>
             }
 
             <button type="submit" class="app-button app-button--primary" [disabled]="saving()">
-              {{ saving() ? 'Guardando…' : 'Guardar cambios' }}
+              {{ saving() ? 'Guardando…' : 'Guardar perfil' }}
             </button>
           </form>
         </section>
+      } @else {
+        <section class="profile-card profile-readonly">
+          <h2>Perfil académico</h2>
+          <div class="readonly-grid">
+            <div>
+              <span>Carrera</span>
+              <strong>{{ verification()?.carrera || 'Pendiente' }}</strong>
+            </div>
+            <div>
+              <span>Ciclo</span>
+              <strong>{{ verification()?.ciclo || 'Pendiente' }}</strong>
+            </div>
+            <div>
+              <span>Universidad</span>
+              <strong>{{ verification()?.universidad || 'Pendiente' }}</strong>
+            </div>
+            <div>
+              <span>Foto carnet</span>
+              <strong>{{ verification()?.fotoCarnetUrl ? 'Registrada' : 'Pendiente' }}</strong>
+            </div>
+          </div>
+        </section>
       }
 
-      <!-- ── Documentos de verificación ── -->
-      <section class="profile-card">
-        <h2>Documentos de verificación</h2>
-        @if (documentos().length === 0) {
-          <p class="muted">No has subido documentos de verificación aún.</p>
-        } @else {
-          <div class="docs-list">
-            @for (d of documentos(); track d.id) {
-              <div class="doc-item">
-                <div class="doc-item__info">
-                  <strong>{{ d.tipo | lowercase | titlecase }}</strong>
-                  <time>{{ d.fechaSubida | date:'mediumDate' }}</time>
+      @if (canShowDocuments()) {
+        <section class="profile-card">
+          <h2>Documentos de verificación</h2>
+
+          @if (showUploadSection()) {
+            <div class="upload-panel">
+              <p class="upload-panel__title">Sube tu documento pendiente</p>
+              <p class="muted">
+                Primero súbelo a tu storage y pega aquí la URL pública que devuelve ese servicio.
+              </p>
+
+              <form [formGroup]="documentForm" (ngSubmit)="subirDocumento()" class="profile-form">
+                <div class="form-grid">
+                  <div class="app-field">
+                    <label for="tipo">Tipo de documento</label>
+                    <select id="tipo" class="app-input" formControlName="tipo">
+                      @for (tipo of tipoDocumentos; track tipo) {
+                        <option [value]="tipo">{{ tipo | lowercase | titlecase }}</option>
+                      }
+                    </select>
+                  </div>
+
+                  <div class="app-field form-span-2">
+                    <label for="archivoUrl">URL del archivo</label>
+                    <input
+                      id="archivoUrl"
+                      class="app-input"
+                      type="url"
+                      formControlName="archivoUrl"
+                      placeholder="https://storage..."
+                    />
+                    <small class="app-error" *ngIf="documentForm.get('archivoUrl')?.invalid && documentForm.get('archivoUrl')?.touched">
+                      Ingresa una URL válida que empiece con http:// o https://.
+                    </small>
+                  </div>
                 </div>
-                <span class="doc-status" [class]="'doc-status--' + d.estado.toLowerCase()">
-                  {{ estadoLabel(d.estado) }}
-                </span>
-              </div>
+
+                @if (uploadError()) {
+                  <p class="app-error">{{ uploadError() }}</p>
+                }
+
+                <button type="submit" class="app-button app-button--secondary" [disabled]="uploading()">
+                  {{ uploading() ? 'Enviando…' : 'Enviar documento' }}
+                </button>
+              </form>
+            </div>
+          }
+
+          @if (showReviewState()) {
+            <div class="status-box status-box--review">
+              <strong>Tu documentación está en revisión.</strong>
+              <p>Un administrador validará tus documentos y tu identidad.</p>
+            </div>
+          }
+
+          @if (showVerifiedState()) {
+            <div class="status-box status-box--verified">
+              <strong>Perfil verificado.</strong>
+              <p>Ya puedes usar las funciones protegidas de EduStay con normalidad.</p>
+            </div>
+          }
+
+          @if (showRejectedState()) {
+            <div class="status-box status-box--rejected">
+              <strong>Hay documentos rechazados.</strong>
+              <p>Corrige el archivo y vuelve a subirlo con la URL actualizada.</p>
+            </div>
+          }
+
+          <div class="docs-list">
+            @if (verifyingDocs()) {
+              <p class="muted">Cargando documentos subidos…</p>
+            } @else if (documentos().length === 0) {
+              <p class="muted">No has subido documentos de verificación aún.</p>
+            } @else {
+              @for (d of documentos(); track d.id) {
+                <div class="doc-item">
+                  <div class="doc-item__info">
+                    <strong>{{ d.tipo | lowercase | titlecase }}</strong>
+                    <time>{{ d.fechaSubida | date:'mediumDate' }}</time>
+                    <a [href]="d.archivoUrl" target="_blank" rel="noopener noreferrer">Ver archivo</a>
+                  </div>
+                  <span class="doc-status" [class]="'doc-status--' + d.estado.toLowerCase()">
+                    {{ estadoLabel(d.estado) }}
+                  </span>
+                </div>
+              }
             }
           </div>
-        }
-      </section>
+        </section>
+      }
+
+      @if (auth.isAdmin()) {
+        <section class="profile-card">
+          <div class="summary-card__top">
+            <div>
+              <h2>Revisión administrativa</h2>
+              <p>Aprueba o rechaza documentos pendientes de identidad.</p>
+            </div>
+            <span class="summary-pill summary-pill--review">ADMIN</span>
+          </div>
+
+          <label class="app-field admin-comment">
+            <span>Comentario administrativo opcional</span>
+            <textarea
+              class="app-input"
+              rows="3"
+              [value]="adminComment()"
+              (input)="adminComment.set($any($event.target).value)"
+              placeholder="Observación para el estudiante…"
+            ></textarea>
+          </label>
+
+          @if (adminError()) {
+            <p class="app-error">{{ adminError() }}</p>
+          }
+
+          @if (adminLoading()) {
+            <p class="muted">Cargando verificaciones pendientes…</p>
+          } @else if (documentosPendientesAdmin().length === 0) {
+            <p class="muted">No hay verificaciones pendientes.</p>
+          } @else {
+            <div class="docs-list">
+              @for (doc of documentosPendientesAdmin(); track doc.id) {
+                <div class="doc-item doc-item--admin">
+                  <div class="doc-item__info">
+                    <strong>{{ doc.usuarioNombre }} - {{ doc.tipo | lowercase | titlecase }}</strong>
+                    <time>{{ doc.fechaSubida | date:'mediumDate' }}</time>
+                    <a [href]="doc.archivoUrl" target="_blank" rel="noopener noreferrer">Ver archivo</a>
+                  </div>
+
+                  <div class="admin-actions">
+                    <button
+                      type="button"
+                      class="app-button app-button--secondary"
+                      [disabled]="adminSavingId() === doc.id"
+                      (click)="resolverDocumento(doc.id, 'VERIFICADO')"
+                    >
+                      Aprobar
+                    </button>
+                    <button
+                      type="button"
+                      class="app-button app-button--ghost"
+                      [disabled]="adminSavingId() === doc.id"
+                      (click)="resolverDocumento(doc.id, 'RECHAZADO')"
+                    >
+                      Rechazar
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      }
     </div>
   }
 </div>

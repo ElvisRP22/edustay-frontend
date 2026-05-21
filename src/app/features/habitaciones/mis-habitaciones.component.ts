@@ -1,13 +1,15 @@
 import {
-  ChangeDetectionStrategy, Component, inject, OnInit, signal
+  ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { HabitacionesService } from '../../core/services/habitaciones.service';
 import { AuthService } from '../../core/services/auth.service';
-import { HabitacionResponse } from '../../core/models/api.models';
+import { HabitacionCatalogItem, HabitacionRequest, HabitacionResponse } from '../../core/models/api.models';
 import { EDUSTAY_ICONS } from '../../core/icons';
 
 @Component({
@@ -20,12 +22,16 @@ import { EDUSTAY_ICONS } from '../../core/icons';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MisHabitacionesComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private svc = inject(HabitacionesService);
   private auth = inject(AuthService);
   private fb = inject(FormBuilder);
 
   habitaciones = signal<HabitacionResponse[]>([]);
+  serviciosCatalogo = signal<HabitacionCatalogItem[]>([]);
+  reglasCatalogo = signal<HabitacionCatalogItem[]>([]);
   loading = signal(true);
+  loadingCatalogos = signal(true);
   showForm = signal(false);
   editId = signal<number | null>(null);
   saving = signal(false);
@@ -34,6 +40,8 @@ export class MisHabitacionesComponent implements OnInit {
   eliminando = signal<number | null>(null);
 
   form!: FormGroup;
+  selectedServiceIds = signal<number[]>([]);
+  selectedReglaIds = signal<number[]>([]);
 
   ngOnInit() {
     const uid = this.auth.user()?.id;
@@ -43,6 +51,8 @@ export class MisHabitacionesComponent implements OnInit {
         error: () => this.loading.set(false)
       });
     }
+
+    this.loadCatalogos();
     this.resetForm();
   }
 
@@ -55,6 +65,9 @@ export class MisHabitacionesComponent implements OnInit {
       latitud: [h?.latitud ?? '', [Validators.required]],
       longitud: [h?.longitud ?? '', [Validators.required]]
     });
+
+    this.selectedServiceIds.set(h?.servicios?.map(s => s.id) ?? []);
+    this.selectedReglaIds.set(h?.reglas?.map(r => r.id) ?? []);
   }
 
   abrirNueva() {
@@ -78,9 +91,15 @@ export class MisHabitacionesComponent implements OnInit {
     this.saving.set(true);
     this.saveError.set(null);
 
+    const payload: HabitacionRequest = {
+      ...(this.form.getRawValue() as Omit<HabitacionRequest, 'servicioIds' | 'reglaIds'>),
+      servicioIds: this.selectedServiceIds(),
+      reglaIds: this.selectedReglaIds()
+    };
+
     const obs = this.editId()
-      ? this.svc.actualizar(this.editId()!, this.form.value)
-      : this.svc.crear(this.form.value);
+      ? this.svc.actualizar(this.editId()!, payload)
+      : this.svc.crear(payload);
 
     obs.subscribe({
       next: h => {
@@ -107,5 +126,39 @@ export class MisHabitacionesComponent implements OnInit {
       next: () => { this.habitaciones.update(arr => arr.filter(h => h.id !== id)); this.eliminando.set(null); },
       error: () => this.eliminando.set(null)
     });
+  }
+
+  toggleServicio(id: number): void {
+    this.selectedServiceIds.update(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id]);
+  }
+
+  toggleRegla(id: number): void {
+    this.selectedReglaIds.update(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id]);
+  }
+
+  isServicioSelected(id: number): boolean {
+    return this.selectedServiceIds().includes(id);
+  }
+
+  isReglaSelected(id: number): boolean {
+    return this.selectedReglaIds().includes(id);
+  }
+
+  private loadCatalogos(): void {
+    this.loadingCatalogos.set(true);
+
+    forkJoin({
+      servicios: this.svc.getServiciosCatalogo(),
+      reglas: this.svc.getReglasCatalogo()
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: result => {
+          this.serviciosCatalogo.set(result.servicios);
+          this.reglasCatalogo.set(result.reglas);
+          this.loadingCatalogos.set(false);
+        },
+        error: () => this.loadingCatalogos.set(false)
+      });
   }
 }

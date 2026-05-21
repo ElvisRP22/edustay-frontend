@@ -72,6 +72,30 @@
                 <span class="stay-card__meta">{{ h.distanciaUtpMinutos }} min de UTP</span>
               }
               <p class="stay-card__desc">{{ h.descripcion | slice:0:90 }}{{ h.descripcion.length > 90 ? '…' : '' }}</p>
+              @if (h.servicios?.length || h.reglas?.length) {
+                <div class="stay-card__tags">
+                  @if (h.servicios?.length) {
+                    <div class="stay-card__tag-row">
+                      @for (servicio of visibleCatalogos(h.servicios, 2); track servicio.id) {
+                        <span class="stay-chip">{{ catalogoLabel(servicio, 'Servicio', $index) }}</span>
+                      }
+                      @if (hiddenCatalogosCount(h.servicios, 2) > 0) {
+                        <span class="stay-chip stay-chip--more">+{{ hiddenCatalogosCount(h.servicios, 2) }}</span>
+                      }
+                    </div>
+                  }
+                  @if (h.reglas?.length) {
+                    <div class="stay-card__tag-row">
+                      @for (regla of visibleCatalogos(h.reglas, 1); track regla.id) {
+                        <span class="stay-chip stay-chip--rule">{{ catalogoLabel(regla, 'Regla', $index) }}</span>
+                      }
+                      @if (hiddenCatalogosCount(h.reglas, 1) > 0) {
+                        <span class="stay-chip stay-chip--rule stay-chip--more">+{{ hiddenCatalogosCount(h.reglas, 1) }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
               <div class="stay-card__footer">
                 <span class="stay-card__owner">{{ h.arrendadorNombre }}</span>
                 <span class="stay-card__cta">Ver detalle →</span>

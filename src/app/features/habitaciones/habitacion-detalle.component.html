@@ -93,6 +93,38 @@
           <p>{{ habitacion()!.descripcion }}</p>
         </section>
 
+        @if (habitacion()!.servicios?.length || habitacion()!.reglas?.length) {
+          <section class="detail-section detail-section--catalogos">
+            @if (habitacion()!.servicios?.length) {
+              <div>
+                <h2>Servicios incluidos</h2>
+                <div class="catalog-list">
+                  @for (servicio of visibleCatalogos(habitacion()!.servicios, 3); track servicio.id) {
+                    <span class="catalog-chip">{{ catalogoLabel(servicio, 'Servicio', $index) }}</span>
+                  }
+                  @if (hiddenCatalogosCount(habitacion()!.servicios, 3) > 0) {
+                    <span class="catalog-chip catalog-chip--more">+{{ hiddenCatalogosCount(habitacion()!.servicios, 3) }}</span>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (habitacion()!.reglas?.length) {
+              <div>
+                <h2>Reglas de la habitación</h2>
+                <div class="catalog-list">
+                  @for (regla of visibleCatalogos(habitacion()!.reglas, 3); track regla.id) {
+                    <span class="catalog-chip catalog-chip--rule">{{ catalogoLabel(regla, 'Regla', $index) }}</span>
+                  }
+                  @if (hiddenCatalogosCount(habitacion()!.reglas, 3) > 0) {
+                    <span class="catalog-chip catalog-chip--rule catalog-chip--more">+{{ hiddenCatalogosCount(habitacion()!.reglas, 3) }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </section>
+        }
+
         <!-- Datos del arrendador -->
         <section class="detail-section">
           <h2>Arrendador</h2>
@@ -216,6 +248,14 @@
             @if (habitacion()!.distanciaUtpMinutos) {
               <dt>Distancia UTP</dt>
               <dd>{{ habitacion()!.distanciaUtpMinutos }} min caminando</dd>
+            }
+            @if (habitacion()!.servicios?.length) {
+              <dt>Servicios</dt>
+              <dd>{{ habitacion()!.servicios!.length }} incluidos</dd>
+            }
+            @if (habitacion()!.reglas?.length) {
+              <dt>Reglas</dt>
+              <dd>{{ habitacion()!.reglas!.length }} activas</dd>
             }
             <dt>Publicado</dt>
             <dd>{{ habitacion()!.fechaPublicacion | date:'mediumDate' }}</dd>

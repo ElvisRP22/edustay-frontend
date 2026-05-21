@@ -4,13 +4,15 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AuthResponse, LoginRequest, RegisterRequest } from '../models/api.models';
+import { environment } from '../../../environments/environment';
 
 const TOKEN_KEY = 'edustay_token';
 const USER_KEY = 'edustay_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly baseUrl = '/api/auth';
+  private readonly baseUrl = `${environment.apiBaseUrl}/auth`;
+  private readonly googleBaseUrl = `${environment.apiBaseUrl}/v1/auth/google`;
 
   // ── Reactive state ────────────────────────────────────────────────────────
   private _user = signal<AuthResponse | null>(this.loadUser());
@@ -37,6 +39,12 @@ export class AuthService {
   register(data: RegisterRequest): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.baseUrl}/register`, data)
+      .pipe(tap(res => this.saveSession(res)));
+  }
+
+  loginWithGoogle(googleToken: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(this.googleBaseUrl, { tokenId: googleToken })
       .pipe(tap(res => this.saveSession(res)));
   }
 

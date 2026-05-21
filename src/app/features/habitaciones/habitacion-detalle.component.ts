@@ -12,7 +12,7 @@ import { ReportesService } from '../../core/services/reportes.service';
 import { AlquileresService } from '../../core/services/alquileres.service';
 import { MensajesService } from '../../core/services/mensajes.service';
 import { AuthService } from '../../core/services/auth.service';
-import { HabitacionResponse, ResenaResponse } from '../../core/models/api.models';
+import { HabitacionCatalogItem, HabitacionResponse, ResenaResponse } from '../../core/models/api.models';
 import { EDUSTAY_ICONS } from '../../core/icons';
 
 @Component({
@@ -156,6 +156,18 @@ export class HabitacionDetalleComponent implements OnInit {
     const arr = this.resenas();
     if (!arr.length) return null;
     return (arr.reduce((s, r) => s + r.calificacion, 0) / arr.length).toFixed(1);
+  }
+
+  visibleCatalogos(items?: HabitacionCatalogItem[], limit = 3): HabitacionCatalogItem[] {
+    return (items ?? []).slice(0, limit);
+  }
+
+  hiddenCatalogosCount(items?: HabitacionCatalogItem[], limit = 3): number {
+    return Math.max((items ?? []).length - limit, 0);
+  }
+
+  catalogoLabel(item: HabitacionCatalogItem, fallbackPrefix: string, index: number): string {
+    return item.nombre?.trim() || item.descripcion?.trim() || `${fallbackPrefix} ${index + 1}`;
   }
 
   stars(n: number) { return Array.from({ length: n }); }

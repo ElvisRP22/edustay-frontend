@@ -1,6 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter, Routes } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { CanActivateFn, provideRouter, Router, Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { appConfig } from './app.config';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './app/features/home/home.component';
 import { RegistroComponent } from './registro.component';
@@ -16,29 +17,42 @@ import { MisArrendamientosComponent } from './app/features/alquileres/mis-arrend
 import { MensajesComponent } from './app/features/mensajes/mensajes.component';
 import { PerfilComponent } from './app/features/perfil/perfil.component';
 import { MisHabitacionesComponent } from './app/features/habitaciones/mis-habitaciones.component';
+import { AuthService } from './app/core/services/auth.service';
+
+const guestOnlyGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  return auth.isAuthenticated() ? inject(Router).createUrlTree(['/']) : true;
+};
+
+const authOnlyGuard: CanActivateFn = (_route, state) => {
+  const auth = inject(AuthService);
+  return auth.isAuthenticated()
+    ? true
+    : inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+};
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'registro', component: RegistroComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'registro/estudiante', component: RegistroEstudianteComponent },
-  { path: 'registro/arrendador', component: RegistroArrendadorComponent },
+  { path: 'registro', component: RegistroComponent, canActivate: [guestOnlyGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [guestOnlyGuard] },
+  { path: 'registro/estudiante', component: RegistroEstudianteComponent, canActivate: [guestOnlyGuard] },
+  { path: 'registro/arrendador', component: RegistroArrendadorComponent, canActivate: [guestOnlyGuard] },
   // Habitaciones
   { path: 'habitaciones', component: HabitacionesComponent },
   { path: 'habitaciones/:id', component: HabitacionDetalleComponent },
   // Autenticadas
-  { path: 'favoritos', component: FavoritosComponent },
-  { path: 'mis-alquileres', component: MisAlquileresComponent },
-  { path: 'mis-arrendamientos', component: MisArrendamientosComponent },
-  { path: 'mis-habitaciones', component: MisHabitacionesComponent },
-  { path: 'mensajes', component: MensajesComponent },
-  { path: 'perfil', component: PerfilComponent },
+  { path: 'favoritos', component: FavoritosComponent, canActivate: [authOnlyGuard] },
+  { path: 'mis-alquileres', component: MisAlquileresComponent, canActivate: [authOnlyGuard] },
+  { path: 'mis-arrendamientos', component: MisArrendamientosComponent, canActivate: [authOnlyGuard] },
+  { path: 'mis-habitaciones', component: MisHabitacionesComponent, canActivate: [authOnlyGuard] },
+  { path: 'mensajes', component: MensajesComponent, canActivate: [authOnlyGuard] },
+  { path: 'perfil', component: PerfilComponent, canActivate: [authOnlyGuard] },
   { path: '**', redirectTo: '' }
 ];
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor]))
+    ...appConfig.providers
   ]
 });

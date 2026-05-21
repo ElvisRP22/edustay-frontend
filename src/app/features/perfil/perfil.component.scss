@@ -45,6 +45,162 @@
   h2 { font-size: 1.1rem; font-weight: 800; margin: 0 0 1.25rem; }
 }
 
+.alert {
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+
+  &--error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  &--success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+}
+
+.summary-card {
+  &__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    h2 { margin: 0 0 0.35rem; }
+    p { margin: 0; color: var(--slate-500); }
+  }
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+
+  div {
+    border-radius: 14px;
+    background: var(--surface);
+    padding: 0.9rem 1rem;
+  }
+
+  dt {
+    color: var(--slate-500);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  dd {
+    margin: 0.35rem 0 0;
+    color: var(--slate-900);
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+}
+
+.summary-pill {
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 800;
+  white-space: nowrap;
+
+  &--verified {
+    background: var(--trust-200);
+    color: var(--trust-800);
+  }
+
+  &--review {
+    background: #dbeafe;
+    color: var(--brand-800);
+  }
+
+  &--rejected {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.profile-readonly {
+  .readonly-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+
+    div {
+      border-radius: 14px;
+      background: var(--surface);
+      padding: 0.9rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    span {
+      color: var(--slate-500);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    strong {
+      color: var(--slate-900);
+      font-size: 0.95rem;
+    }
+  }
+}
+
+.upload-panel,
+.status-box {
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.upload-panel {
+  background: rgba(29, 78, 216, 0.05);
+  border: 1px solid rgba(29, 78, 216, 0.15);
+
+  &__title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+  }
+}
+
+.status-box {
+  margin-top: 0.5rem;
+
+  strong { display: block; margin-bottom: 0.25rem; }
+  p { margin: 0; color: var(--slate-600); }
+
+  &--review {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+  }
+
+  &--verified {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+  }
+
+  &--rejected {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+}
+
 // ── Form ──────────────────────────────────────────────────────────────────────
 .profile-form { display: flex; flex-direction: column; gap: 1rem; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem 1rem; }
@@ -70,6 +226,23 @@
   &__info { display: flex; flex-direction: column; gap: 0.15rem; }
   strong { font-size: 0.9rem; font-weight: 700; text-transform: capitalize; }
   time { font-size: 0.75rem; color: var(--slate-500); }
+  a {
+    font-size: 0.78rem;
+    color: var(--brand-700);
+    font-weight: 800;
+    text-decoration: none;
+    margin-top: 0.2rem;
+    width: fit-content;
+  }
+  a:hover,
+  a:focus-visible {
+    text-decoration: underline;
+  }
+
+  &--admin {
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
 .doc-status {
   border-radius: 999px; padding: 0.2rem 0.65rem; font-size: 0.72rem; font-weight: 800;
@@ -79,9 +252,29 @@
   &--rechazado { background: #fee2e2; color: #991b1b; }
 }
 
+.admin-comment {
+  margin-bottom: 1rem;
+
+  span {
+    color: var(--slate-700);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 600px) {
   .page-shell { padding: 1.5rem 1rem 3rem; }
   .form-grid { grid-template-columns: 1fr; }
   .profile-hero { flex-direction: column; text-align: center; }
   .profile-hero__badges { justify-content: center; }
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+  .profile-readonly .readonly-grid { grid-template-columns: 1fr; }
+  .summary-card__top { flex-direction: column; }
+  .doc-item { flex-direction: column; align-items: flex-start; }
 }

@@ -36,7 +36,7 @@
       <a class="app-button app-button--primary" routerLink="/registro/arrendador">Publicar alojamiento</a>
     } @else {
       @if (auth.isArrendador()) {
-        <a class="app-button app-button--primary" routerLink="/habitaciones/nueva">+ Publicar</a>
+        <a class="app-button app-button--primary" routerLink="/mis-habitaciones">Mis habitaciones</a>
       }
       <div class="user-menu">
         <a class="user-avatar" routerLink="/perfil">
@@ -57,3 +57,19 @@
     <span></span><span></span><span></span>
   </button>
 </header>
+
+<nav class="mobile-nav" aria-label="Navegación móvil">
+  @for (item of mobileNavItems(); track item.route) {
+    <a
+      class="mobile-nav__item"
+      [class.mobile-nav__item--primary]="item.primary"
+      [routerLink]="item.route"
+      routerLinkActive="mobile-nav__item--active"
+      [routerLinkActiveOptions]="item.exact ? { exact: true } : { exact: false }"
+      (click)="menuOpen.set(false)"
+    >
+      <ng-icon class="mobile-nav__icon" [name]="item.icon" size="18"></ng-icon>
+      <span class="mobile-nav__label">{{ item.label }}</span>
+    </a>
+  }
+</nav>

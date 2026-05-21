@@ -32,6 +32,12 @@ export interface AuthResponse {
 
 export type HabitacionEstado = 'DISPONIBLE' | 'OCUPADO' | 'MANTENIMIENTO' | 'SUSPENDIDO';
 
+export interface HabitacionCatalogItem {
+  id: number;
+  nombre: string;
+  descripcion?: string;
+}
+
 export interface HabitacionRequest {
   titulo: string;
   descripcion: string;
@@ -39,6 +45,8 @@ export interface HabitacionRequest {
   direccion: string;
   latitud: number;
   longitud: number;
+  servicioIds: number[];
+  reglaIds: number[];
 }
 
 export interface HabitacionResponse {
@@ -54,6 +62,8 @@ export interface HabitacionResponse {
   fechaPublicacion: string;
   arrendadorId: number;
   arrendadorNombre: string;
+  servicios?: HabitacionCatalogItem[];
+  reglas?: HabitacionCatalogItem[];
 }
 
 // ─── Alquileres ───────────────────────────────────────────────────────────────
@@ -168,6 +178,26 @@ export interface PerfilEstudianteResponse {
   fotoCarnetUrl?: string;
 }
 
+export interface PerfilVerificacionResponse {
+  usuarioId: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  emailVerificado: boolean;
+  identidadVerificada: IdentidadVerificadaEstado;
+  perfilCompleto: boolean;
+  perfilRegistrado: boolean;
+  carrera?: string;
+  ciclo?: number;
+  universidad?: string;
+  fotoCarnetUrl?: string;
+  totalDocumentos: number;
+  documentosPendientes: number;
+  documentosVerificados: number;
+  documentosRechazados: number;
+  siguientePaso?: string;
+}
+
 // ─── Documentos de Verificación ───────────────────────────────────────────────
 
 export type TipoDocumento =
@@ -200,4 +230,17 @@ export interface VerificacionResponse {
 export interface VerificacionRequest {
   estado: 'VERIFICADO' | 'RECHAZADO';
   comentarioAdmin?: string;
+}
+
+export interface VerificacionAdminResponse {
+  id: number;
+  usuarioId: number;
+  usuarioNombre: string;
+  usuarioEmail: string;
+  tipo: TipoDocumento;
+  archivoUrl: string;
+  fechaSubida: string;
+  estado: IdentidadVerificadaEstado;
+  comentarioAdmin?: string;
+  identidadVerificadaUsuario: IdentidadVerificadaEstado;
 }

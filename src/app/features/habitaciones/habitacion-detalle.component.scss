@@ -41,6 +41,7 @@
 // ── Header ────────────────────────────────────────────────────────────────────
 .detail-header {
   display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  min-width: 0;
   h1 { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; margin: 0 0 0.25rem; }
 }
 .detail-address { color: var(--slate-500); font-size: 0.9rem; margin: 0; }
@@ -78,6 +79,35 @@
   display: flex; flex-direction: column; gap: 0.75rem;
   h2 { font-size: 1.1rem; font-weight: 800; margin: 0; }
   p { color: var(--slate-600); line-height: 1.65; margin: 0; }
+}
+.detail-section--catalogos {
+  gap: 1.25rem;
+}
+.catalog-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.catalog-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.32rem 0.7rem;
+  background: var(--trust-100);
+  color: var(--trust-800);
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  &--rule {
+    background: var(--slate-200);
+    color: var(--slate-700);
+  }
+
+  &--more {
+    background: transparent;
+    border: 1px dashed var(--slate-300);
+    color: var(--slate-500);
+  }
 }
 .owner-name { font-weight: 700; color: var(--slate-800); font-size: 1rem; }
 .section-head { display: flex; align-items: center; gap: 0.75rem; }
@@ -144,14 +174,34 @@
 .sidebar-dl {
   display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1rem;
   margin: 0;
+  min-width: 0;
   dt { font-size: 0.78rem; font-weight: 700; color: var(--slate-500); }
   dd { font-size: 0.85rem; font-weight: 600; color: var(--slate-800); margin: 0; text-transform: capitalize; }
 }
 
 // ── Responsive ────────────────────────────────────────────────────────────────
 @media (max-width: 860px) {
-  .detail-layout { grid-template-columns: 1fr; }
+  .detail-layout { grid-template-columns: 1fr; gap: 1.5rem; }
   .detail-sidebar { position: static; }
   .detail-page { padding: 1rem 1rem 3rem; }
   .detail-hero { height: 220px; }
+}
+
+@media (max-width: 640px) {
+  .detail-page { padding: 0.85rem 0.75rem 2.5rem; }
+  .detail-hero { height: 180px; margin-bottom: 1.25rem; }
+  .detail-hero__overlay { padding: 0.75rem; flex-wrap: wrap; }
+  .detail-header { flex-direction: column; }
+  .detail-price { text-align: left; }
+  .detail-actions { flex-direction: column; align-items: stretch; }
+  .fav-btn,
+  .detail-actions .app-button,
+  .inline-form__btns .app-button,
+  .sidebar-card__cta { width: 100%; }
+  .sidebar-card { padding: 1rem; }
+  .sidebar-dl { grid-template-columns: 1fr; gap: 0.25rem; }
+  .sidebar-dl dt { margin-top: 0.35rem; }
+  .detail-section--catalogos,
+  .inline-form { gap: 0.75rem; }
+  .catalog-chip { width: fit-content; max-width: 100%; }
 }
