@@ -2,6 +2,7 @@
 
 export interface LoginRequest {
   email: string;
+  username?: string;
   password: string;
 }
 
@@ -14,7 +15,7 @@ export interface RegisterRequest {
   telefono?: string;
 }
 
-export type UserRole = 'ADMIN' | 'ESTUDIANTE' | 'ARRENDADOR';
+export type UserRole = 'ADMIN' | 'ARRENDADOR' | 'ESTUDIANTE';
 
 export interface AuthResponse {
   id: number;

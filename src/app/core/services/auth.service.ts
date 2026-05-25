@@ -11,8 +11,8 @@ const USER_KEY = 'edustay_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly baseUrl = `${environment.apiBaseUrl}/auth`;
-  private readonly googleBaseUrl = `${environment.apiBaseUrl}/v1/auth/google`;
+  private readonly baseUrl = `${environment.apiBaseUrl}/v1/auth`;
+  private readonly googleBaseUrl = `${this.baseUrl}/google`;
 
   // ── Reactive state ────────────────────────────────────────────────────────
   private _user = signal<AuthResponse | null>(this.loadUser());
@@ -31,8 +31,15 @@ export class AuthService {
   // ── Auth endpoints ────────────────────────────────────────────────────────
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
+    const email = credentials.email?.trim();
+    const username = credentials.username?.trim() || email;
+
     return this.http
-      .post<AuthResponse>(`${this.baseUrl}/login`, credentials)
+      .post<AuthResponse>(`${this.baseUrl}/login`, {
+        email,
+        username,
+        password: credentials.password
+      })
       .pipe(tap(res => this.saveSession(res)));
   }
 

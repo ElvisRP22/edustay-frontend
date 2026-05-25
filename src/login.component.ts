@@ -63,7 +63,7 @@ export class LoginComponent {
 
     const { email, password } = this.loginForm.value;
 
-    this.auth.login({ email, password }).subscribe({
+    this.auth.login({ email, username: email, password }).subscribe({
       next: () => {
         this.loading.set(false);
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
