@@ -53,9 +53,16 @@
           </button>
 
           @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
-            <button class="app-button app-button--primary" (click)="showAlquiler.update(v=>!v)">
-              Alquilar esta habitación
-            </button>
+            @if (auth.user()?.identidadVerificada === 'VERIFICADO') {
+              <button class="app-button app-button--primary" (click)="showAlquiler.update(v=>!v)">
+                Alquilar esta habitación
+              </button>
+            } @else {
+              <div class="verification-warning-box">
+                <ng-icon name="heroExclamationTriangle" size="16"></ng-icon>
+                <span>Debes <a routerLink="/perfil" class="verification-link">verificar tu identidad</a> antes de poder alquilar esta habitación.</span>
+              </div>
+            }
           }
           @if (alquilerOk()) {
             <span class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Alquiler registrado</span>
@@ -67,20 +74,36 @@
         </div>
 
         <!-- Alquiler form -->
-        @if (showAlquiler() && auth.isEstudiante()) {
+        @if (showAlquiler() && auth.isEstudiante() && auth.user()?.identidadVerificada === 'VERIFICADO') {
           <div class="inline-form">
             <h4>Confirmar alquiler</h4>
+
+            <!-- Disclaimer legal -->
+            <div class="disclaimer-box">
+              <strong>Deslinde de Responsabilidad de EduStay</strong>
+              <p>EduStay es únicamente una plataforma facilitadora que conecta estudiantes con arrendadores. No formamos parte de ninguna relación contractual ni nos hacemos responsables de las condiciones del arrendamiento, pagos, daños, disputas o cumplimiento de los contratos. Ambas partes son responsables de establecer y firmar el acuerdo formalmente.</p>
+            </div>
+
             <label class="app-field">
               <span>Monto mensual pactado (S/)</span>
               <input class="app-input" type="number" [value]="montoPactado()"
                      (input)="montoPactado.set($any($event.target).valueAsNumber)" />
             </label>
+
+            <label class="app-field mt">
+              <span>URL del contrato de alquiler firmado (PDF público)</span>
+              <input class="app-input" type="url" placeholder="https://storage.edustay.com/contratos/mi-contrato.pdf"
+                     [value]="contratoUrlInput()" (input)="contratoUrlInput.set($any($event.target).value)" />
+              <small class="muted-info">Para tu seguridad y la del arrendador, debes subir y pegar aquí el contrato de arrendamiento firmado.</small>
+            </label>
+
             @if (alquilerError()) {
               <p class="app-error">{{ alquilerError() }}</p>
             }
-            <div class="inline-form__btns">
-              <button class="app-button app-button--primary" (click)="crearAlquiler()" [disabled]="loadingAlquiler()">
-                {{ loadingAlquiler() ? 'Registrando…' : 'Confirmar' }}
+
+            <div class="inline-form__btns mt">
+              <button class="app-button app-button--primary" (click)="crearAlquiler()" [disabled]="loadingAlquiler() || !contratoUrlInput()">
+                {{ loadingAlquiler() ? 'Registrando…' : 'Confirmar y Alquilar' }}
               </button>
               <button class="app-button app-button--ghost" (click)="showAlquiler.set(false)">Cancelar</button>
             </div>
@@ -168,19 +191,30 @@
           @for (r of resenas(); track r.id) {
             <div class="resena-card">
               <div class="resena-card__head">
-                <strong>{{ r.estudianteNombre }}</strong>
-                <span class="stars">
-                  @for (s of stars(r.calificacion); track $index) {
-                    <ng-icon name="heroStarSolid" size="13" class="star-icon"></ng-icon>
-                  }
-                </span>
-                <time>{{ r.fecha | date:'mediumDate' }}</time>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <div>
+                    <strong>{{ r.estudianteNombre }}</strong>
+                    <span class="stars" style="margin-left: 8px;">
+                      @for (s of stars(r.calificacion); track $index) {
+                        <ng-icon name="heroStarSolid" size="13" class="star-icon"></ng-icon>
+                      }
+                    </span>
+                  </div>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <time>{{ r.fecha | date:'mediumDate' }}</time>
+                    @if (auth.user()?.id === r.estudianteId) {
+                      <button class="app-button app-button--ghost" style="color: #dc2626; padding: 2px 6px;" (click)="eliminarResena(r.id)">
+                        <ng-icon name="heroTrash" size="14"></ng-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
               </div>
               @if (r.comentario) { <p>{{ r.comentario }}</p> }
             </div>
           }
 
-          @if (auth.isEstudiante() && !resenaOk()) {
+          @if (auth.isEstudiante() && !resenaOk() && !yaCalificada()) {
             <div class="inline-form mt">
               <h4>Dejar una reseña</h4>
               <label class="app-field">
@@ -263,15 +297,84 @@
             <dd>{{ habitacion()!.arrendadorNombre }}</dd>
           </dl>
           @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
-            <button class="app-button app-button--primary sidebar-card__cta" (click)="showAlquiler.update(v=>!v)">
-              Alquilar ahora
-            </button>
+            @if (auth.user()?.identidadVerificada === 'VERIFICADO') {
+              <button class="app-button app-button--primary sidebar-card__cta" (click)="showAlquiler.update(v=>!v)">
+                Alquilar ahora
+              </button>
+            } @else {
+              <div class="verification-warning-box mt" style="font-size: 0.8rem; padding: 0.6rem 0.8rem;">
+                <span>Requiere <a routerLink="/perfil" class="verification-link">identidad verificada</a>.</span>
+              </div>
+            }
           }
           @if (!auth.isAuthenticated()) {
             <a routerLink="/login" class="app-button app-button--primary sidebar-card__cta">
               Inicia sesión para alquilar
             </a>
           }
+        </div>
+
+        <!-- Tarjeta de Compartir en Redes Sociales -->
+        <div class="sidebar-card share-card" style="margin-top: 1.25rem;">
+          <h3 style="font-size: 0.95rem; font-weight: 800; margin: 0 0 0.75rem; display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2" style="color: var(--brand-700);"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            Compartir Alojamiento
+          </h3>
+          <p class="muted" style="font-size: 0.78rem; margin: 0 0 1rem 0; line-height: 1.4;">Recomienda esta habitación a tus compañeros o amigos.</p>
+          <div class="share-buttons-grid">
+            <div class="share-social-grid">
+              <button class="share-btn share-btn--whatsapp" (click)="compartir('whatsapp')" title="Compartir en WhatsApp">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.504-5.713-1.465L0 24zm6.757-4.218c1.58.94 3.12 1.4 4.887 1.402 5.518 0 10.007-4.482 10.01-9.993.002-2.67-1.036-5.18-2.92-7.068C16.89 2.234 14.39 1.196 11.72 1.196 6.202 1.196 1.713 5.679 1.711 11.192c0 1.884.51 3.393 1.488 4.96L2.208 21.8l5.606-1.47z"/></svg>
+                WhatsApp
+              </button>
+              <button class="share-btn share-btn--telegram" (click)="compartir('telegram')" title="Compartir en Telegram">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.18l-1.89 8.9c-.14.63-.51.79-1.04.49l-2.88-2.12-1.39 1.34c-.15.15-.28.28-.58.28l.2-2.94 5.35-4.83c.23-.21-.05-.32-.35-.12L9.21 13.5l-2.85-.89c-.62-.19-.63-.62.13-.92L17.5 4.54c.51-.19.96.12.06 3.64z"/></svg>
+                Telegram
+              </button>
+              <button class="share-btn share-btn--facebook" (click)="compartir('facebook')" title="Compartir en Facebook">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M9 8H7v3h2v9h3v-9h3l.5-3H12V6c0-.9.2-1.2 1-1.2h2V1h-3c-3 0-5 1.5-5 4v3z"/></svg>
+                Facebook
+              </button>
+              <button class="share-btn share-btn--twitter" (click)="compartir('twitter')" title="Compartir en X (Twitter)">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                Twitter
+              </button>
+            </div>
+
+            <button class="share-btn share-btn--email" (click)="compartir('email')" title="Compartir por Correo Electrónico">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              Enviar por correo
+            </button>
+
+            @if (isShareSupported) {
+              <button class="share-btn share-btn--native" (click)="compartir('native')" title="Compartir usando el sistema">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                Compartir en otras apps
+              </button>
+            }
+
+            <button class="share-btn share-btn--copy" (click)="compartir('copiar')" [class.share-btn--copied]="compartirCopied()" title="Copiar enlace">
+              @if (compartirCopied()) {
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ¡Enlace copiado!
+              } @else {
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copiar enlace
+              }
+            </button>
+
+            <button class="share-btn share-btn--qr" (click)="showQr.update(v => !v)" [class.share-btn--qr-active]="showQr()" title="Mostrar código QR para escanear">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="7" y1="7" x2="7.01" y2="7"></line><line x1="17" y1="7" x2="17.01" y2="7"></line><line x1="17" y1="17" x2="17.01" y2="17"></line><line x1="7" y1="17" x2="7.01" y2="17"></line></svg>
+              {{ showQr() ? 'Ocultar código QR' : 'Mostrar código QR' }}
+            </button>
+
+            @if (showQr()) {
+              <div class="qr-container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 1rem; border-radius: 12px; background: #f8fafc; border: 1px dashed #cbd5e1; animation: qr-fade-in 0.25s ease-out;">
+                <img [src]="getQrCodeUrl()" alt="Código QR del alojamiento" style="width: 140px; height: 140px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" />
+                <span class="muted" style="font-size: 0.72rem; font-weight: 700; text-align: center; color: var(--slate-500);">¡Escanea con tu celular para compartir o ver rápido!</span>
+              </div>
+            }
+          </div>
         </div>
       </aside>
     </div>

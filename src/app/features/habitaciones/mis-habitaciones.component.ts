@@ -24,7 +24,7 @@ import { EDUSTAY_ICONS } from '../../core/icons';
 export class MisHabitacionesComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private svc = inject(HabitacionesService);
-  private auth = inject(AuthService);
+  auth = inject(AuthService);
   private fb = inject(FormBuilder);
 
   habitaciones = signal<HabitacionResponse[]>([]);

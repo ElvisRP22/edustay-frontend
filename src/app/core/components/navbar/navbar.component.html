@@ -25,7 +25,10 @@
       }
 
       <a class="menu__link" routerLink="/mensajes" routerLinkActive="menu__link--active"
-         (click)="menuOpen.set(false)">Mensajes</a>
+         (click)="menuOpen.set(false)" style="display: flex; align-items: center; gap: 6px;">
+         Mensajes
+         @if (noLeidos() > 0) { <span class="nav-badge">{{ noLeidos() }}</span> }
+      </a>
     }
   </nav>
 
@@ -39,14 +42,15 @@
         <a class="app-button app-button--primary" routerLink="/mis-habitaciones">Mis habitaciones</a>
       }
       <div class="user-menu">
-        <a class="user-avatar" routerLink="/perfil">
+        <a class="user-avatar" [routerLink]="auth.isAdmin() ? '/admin' : '/perfil'">
           <span>{{ auth.user()?.nombre?.charAt(0) }}{{ auth.user()?.apellido?.charAt(0) }}</span>
         </a>
         <div class="user-dropdown">
           <p class="user-dropdown__name">{{ auth.user()?.nombre }} {{ auth.user()?.apellido }}</p>
           <p class="user-dropdown__role">{{ auth.user()?.rol | lowercase }}</p>
           <hr />
-          <a routerLink="/perfil">Mi perfil</a>
+          <a *ngIf="auth.isAdmin()" routerLink="/admin">Panel de control</a>
+          <a *ngIf="!auth.isAdmin()" routerLink="/perfil">Mi perfil</a>
           <button (click)="logout()">Cerrar sesión</button>
         </div>
       </div>
@@ -70,6 +74,7 @@
     >
       <ng-icon class="mobile-nav__icon" [name]="item.icon" size="18"></ng-icon>
       <span class="mobile-nav__label">{{ item.label }}</span>
+      @if (item.badge) { <span class="nav-badge mobile-nav__badge">{{ item.badge }}</span> }
     </a>
   }
 </nav>

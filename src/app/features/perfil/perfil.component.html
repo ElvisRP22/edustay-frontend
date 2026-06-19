@@ -79,99 +79,101 @@
         </section>
       }
 
-      @if (showProfileForm()) {
-        <section class="profile-card">
-          <h2>Completa tu perfil académico</h2>
-          <p class="muted">Necesitamos estos datos para continuar con tu proceso de verificación.</p>
+      @if (auth.isEstudiante()) {
+        @if (showProfileForm()) {
+          <section class="profile-card">
+            <h2>Completa tu perfil académico</h2>
+            <p class="muted">Necesitamos estos datos para continuar con tu proceso de verificación.</p>
 
-          <form [formGroup]="form" (ngSubmit)="guardar()" class="profile-form">
-            <div class="form-grid">
-              <div class="app-field form-span-2">
-                <label for="carrera">Carrera</label>
-                <input
-                  id="carrera"
-                  class="app-input"
-                  type="text"
-                  formControlName="carrera"
-                  placeholder="Ej. Ingeniería de Software"
-                  [class.is-error]="form.get('carrera')?.invalid && form.get('carrera')?.touched"
-                />
-                <small class="app-error" *ngIf="form.get('carrera')?.invalid && form.get('carrera')?.touched">
-                  La carrera es obligatoria.
-                </small>
+            <form [formGroup]="form" (ngSubmit)="guardar()" class="profile-form">
+              <div class="form-grid">
+                <div class="app-field form-span-2">
+                  <label for="carrera">Carrera</label>
+                  <input
+                    id="carrera"
+                    class="app-input"
+                    type="text"
+                    formControlName="carrera"
+                    placeholder="Ej. Ingeniería de Software"
+                    [class.is-error]="form.get('carrera')?.invalid && form.get('carrera')?.touched"
+                  />
+                  <small class="app-error" *ngIf="form.get('carrera')?.invalid && form.get('carrera')?.touched">
+                    La carrera es obligatoria.
+                  </small>
+                </div>
+
+                <div class="app-field">
+                  <label for="ciclo">Ciclo académico</label>
+                  <input
+                    id="ciclo"
+                    class="app-input"
+                    type="number"
+                    formControlName="ciclo"
+                    placeholder="1-10"
+                    min="1"
+                    max="10"
+                  />
+                </div>
+
+                <div class="app-field form-span-2">
+                  <label for="fotoCarnetUrl">URL de foto de carnet</label>
+                  <input
+                    id="fotoCarnetUrl"
+                    class="app-input"
+                    type="url"
+                    formControlName="fotoCarnetUrl"
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div class="app-field form-span-2">
+                  <label for="preferencias">Preferencias de convivencia</label>
+                  <textarea
+                    id="preferencias"
+                    class="app-input"
+                    formControlName="preferenciasConvivencia"
+                    rows="3"
+                    placeholder="Prefiero silencio en las noches…"
+                  ></textarea>
+                </div>
               </div>
 
-              <div class="app-field">
-                <label for="ciclo">Ciclo académico</label>
-                <input
-                  id="ciclo"
-                  class="app-input"
-                  type="number"
-                  formControlName="ciclo"
-                  placeholder="1-10"
-                  min="1"
-                  max="10"
-                />
+              @if (saving()) {
+                <p class="muted">Guardando información…</p>
+              }
+
+              @if (saveError()) {
+                <p class="app-error">{{ saveError() }}</p>
+              }
+
+              <button type="submit" class="app-button app-button--primary" [disabled]="saving()">
+                {{ saving() ? 'Guardando…' : 'Guardar perfil' }}
+              </button>
+            </form>
+          </section>
+        } @else {
+          <section class="profile-card profile-readonly">
+            <h2>Perfil académico</h2>
+            <div class="readonly-grid">
+              <div>
+                <span>Carrera</span>
+                <strong>{{ verification()?.carrera || 'Pendiente' }}</strong>
               </div>
-
-              <div class="app-field form-span-2">
-                <label for="fotoCarnetUrl">URL de foto de carnet</label>
-                <input
-                  id="fotoCarnetUrl"
-                  class="app-input"
-                  type="url"
-                  formControlName="fotoCarnetUrl"
-                  placeholder="https://..."
-                />
+              <div>
+                <span>Ciclo</span>
+                <strong>{{ verification()?.ciclo || 'Pendiente' }}</strong>
               </div>
-
-              <div class="app-field form-span-2">
-                <label for="preferencias">Preferencias de convivencia</label>
-                <textarea
-                  id="preferencias"
-                  class="app-input"
-                  formControlName="preferenciasConvivencia"
-                  rows="3"
-                  placeholder="Prefiero silencio en las noches…"
-                ></textarea>
+              <div>
+                <span>Universidad</span>
+                <strong>{{ verification()?.universidad || 'Pendiente' }}</strong>
+              </div>
+              <div>
+                <span>Foto carnet</span>
+                <strong>{{ verification()?.fotoCarnetUrl ? 'Registrada' : 'Pendiente' }}</strong>
               </div>
             </div>
-
-            @if (saving()) {
-              <p class="muted">Guardando información…</p>
-            }
-
-            @if (saveError()) {
-              <p class="app-error">{{ saveError() }}</p>
-            }
-
-            <button type="submit" class="app-button app-button--primary" [disabled]="saving()">
-              {{ saving() ? 'Guardando…' : 'Guardar perfil' }}
-            </button>
-          </form>
-        </section>
-      } @else {
-        <section class="profile-card profile-readonly">
-          <h2>Perfil académico</h2>
-          <div class="readonly-grid">
-            <div>
-              <span>Carrera</span>
-              <strong>{{ verification()?.carrera || 'Pendiente' }}</strong>
-            </div>
-            <div>
-              <span>Ciclo</span>
-              <strong>{{ verification()?.ciclo || 'Pendiente' }}</strong>
-            </div>
-            <div>
-              <span>Universidad</span>
-              <strong>{{ verification()?.universidad || 'Pendiente' }}</strong>
-            </div>
-            <div>
-              <span>Foto carnet</span>
-              <strong>{{ verification()?.fotoCarnetUrl ? 'Registrada' : 'Pendiente' }}</strong>
-            </div>
-          </div>
-        </section>
+          </section>
+        }
       }
 
       @if (canShowDocuments()) {
@@ -196,18 +198,58 @@
                     </select>
                   </div>
 
-                  <div class="app-field form-span-2">
-                    <label for="archivoUrl">URL del archivo</label>
-                    <input
-                      id="archivoUrl"
-                      class="app-input"
-                      type="url"
-                      formControlName="archivoUrl"
-                      placeholder="https://storage..."
-                    />
-                    <small class="app-error" *ngIf="documentForm.get('archivoUrl')?.invalid && documentForm.get('archivoUrl')?.touched">
-                      Ingresa una URL válida que empiece con http:// o https://.
-                    </small>
+                  <div class="app-field form-span-2 file-upload-field">
+                    <label>Archivo del documento</label>
+                    <div class="file-dropzone" [class.file-dropzone--uploading]="uploading()">
+                      <input
+                        type="file"
+                        id="fileInput"
+                        (change)="onFileSelected($event)"
+                        accept=".pdf,.png,.jpg,.jpeg"
+                        class="file-dropzone__input"
+                      />
+                      <label for="fileInput" class="file-dropzone__label">
+                        <ng-icon name="heroArrowUpTray" size="32" class="file-dropzone__icon"></ng-icon>
+                        <span class="file-dropzone__text">
+                          @if (uploading()) {
+                            Subiendo archivo...
+                          } @else if (documentForm.get('archivoUrl')?.value) {
+                            ¡Archivo cargado con éxito!
+                          } @else {
+                            Arrastra aquí tu documento o haz clic para buscar
+                          }
+                        </span>
+                        <span class="file-dropzone__subtext">Formatos permitidos: PDF, PNG, JPG (máx. 5MB)</span>
+                      </label>
+                    </div>
+
+                    @if (documentForm.get('archivoUrl')?.value) {
+                      <div class="file-preview-card">
+                        <ng-icon name="heroDocumentText" size="20" class="file-preview-card__icon"></ng-icon>
+                        <div class="file-preview-card__details">
+                          <span class="file-preview-card__name">Archivo listo para enviar</span>
+                          <a [href]="documentForm.get('archivoUrl')?.value" target="_blank" class="file-preview-card__link">Ver archivo subido</a>
+                        </div>
+                      </div>
+                    }
+
+                    <div style="margin-top: 15px;">
+                      <details class="manual-url-details">
+                        <summary class="muted" style="cursor: pointer; font-size: 13px;">O ingresar una URL externa manualmente</summary>
+                        <div class="app-field" style="margin-top: 10px;">
+                          <input
+                            id="archivoUrl"
+                            class="app-input"
+                            type="url"
+                            formControlName="archivoUrl"
+                            placeholder="https://storage..."
+                          />
+                          <small class="app-error" *ngIf="documentForm.get('archivoUrl')?.invalid && documentForm.get('archivoUrl')?.touched">
+                            Ingresa una URL válida que empiece con http:// o https://.
+                          </small>
+                        </div>
+                      </details>
+                    </div>
                   </div>
                 </div>
 

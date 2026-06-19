@@ -13,6 +13,7 @@ export interface RegisterRequest {
   password: string;
   confirmPassword: string;
   telefono?: string;
+  rol?: UserRole;
 }
 
 export type UserRole = 'ADMIN' | 'ARRENDADOR' | 'ESTUDIANTE';
@@ -26,6 +27,8 @@ export interface AuthResponse {
   fotoUrl?: string;
   rol: UserRole;
   token: string;
+  emailVerificado?: boolean;
+  identidadVerificada?: IdentidadVerificadaEstado;
   message?: string;
 }
 
@@ -59,6 +62,7 @@ export interface HabitacionResponse {
   latitud: number;
   longitud: number;
   distanciaUtpMinutos?: number;
+  distanciaKm?: number;
   estado: HabitacionEstado;
   fechaPublicacion: string;
   arrendadorId: number;
@@ -73,6 +77,7 @@ export interface AlquilerRequest {
   habitacionId: number;
   montoPactado: number;
   fechaInicio?: string;
+  contratoUrl?: string;
 }
 
 export interface AlquilerResponse {
@@ -87,6 +92,7 @@ export interface AlquilerResponse {
   montoPactado: number;
   fechaInicio: string;
   fechaRegistro: string;
+  contratoUrl?: string;
 }
 
 // ─── Reseñas ──────────────────────────────────────────────────────────────────
@@ -244,4 +250,17 @@ export interface VerificacionAdminResponse {
   estado: IdentidadVerificadaEstado;
   comentarioAdmin?: string;
   identidadVerificadaUsuario: IdentidadVerificadaEstado;
+}
+
+export interface UsuarioAdminResponse {
+  id: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono?: string;
+  dni?: string;
+  rol: UserRole;
+  emailVerificado: boolean;
+  identidadVerificada: IdentidadVerificadaEstado;
+  fechaRegistro: string;
 }

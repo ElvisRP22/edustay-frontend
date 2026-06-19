@@ -9,22 +9,23 @@ import {
   Validators
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from './app/core/services/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
-  selector: 'app-registro-arrendador',
+  selector: 'app-registro-estudiante',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './registro-arrendador.html',
-  styleUrl: './registro-arrendador.scss',
+  templateUrl: './registro-estudiante.html',
+  styleUrl: './registro-estudiante.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegistroArrendadorComponent {
+export class RegistroEstudianteComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
 
   registroForm: FormGroup;
+  showPassword = false;
   loading = signal(false);
   errorMsg = signal<string | null>(null);
 
@@ -34,9 +35,9 @@ export class RegistroArrendadorComponent {
         nombre: ['', [Validators.required, Validators.minLength(3)]],
         apellido: ['', [Validators.required, Validators.minLength(2)]],
         email: ['', [Validators.required, Validators.email]],
-        telefono: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
+        telefono: ['', [Validators.pattern('^[0-9]+$')]],
         terminos: [false, Validators.requiredTrue]
       },
       { validators: this.passwordMatchValidator }
@@ -49,6 +50,10 @@ export class RegistroArrendadorComponent {
     return password && confirmPassword && password.value !== confirmPassword.value
       ? { passwordMismatch: true }
       : null;
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {
@@ -64,11 +69,11 @@ export class RegistroArrendadorComponent {
       this.registroForm.value;
 
     this.auth
-      .register({ nombre, apellido, email, password, confirmPassword, telefono })
+      .register({ nombre, apellido, email, password, confirmPassword, telefono, rol: 'ESTUDIANTE' })
       .subscribe({
         next: () => {
           this.loading.set(false);
-          this.router.navigate(['/']);
+          this.router.navigate(['/verify-email'], { queryParams: { email } });
         },
         error: (err) => {
           this.loading.set(false);

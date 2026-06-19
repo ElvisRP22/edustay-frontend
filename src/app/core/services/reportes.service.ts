@@ -28,4 +28,9 @@ export class ReportesService {
   crear(data: ReporteRequest): Observable<ReporteResponse> {
     return this.http.post<ReporteResponse>(this.base, data);
   }
+
+  /** PATCH /api/reportes/:id/estado */
+  actualizarEstado(id: number, estado: string): Observable<ReporteResponse> {
+    return this.http.patch<ReporteResponse>(`${this.base}/${id}/estado`, { estado });
+  }
 }

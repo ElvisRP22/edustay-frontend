@@ -4,8 +4,22 @@
       <h1>Mis Habitaciones</h1>
       <p>Gestiona los espacios que tienes publicados.</p>
     </div>
-    <button class="app-button app-button--primary" (click)="abrirNueva()">+ Nueva habitación</button>
+    <button class="app-button app-button--primary" 
+            [disabled]="auth.user()?.identidadVerificada !== 'VERIFICADO'" 
+            (click)="abrirNueva()">
+      + Nueva habitación
+    </button>
   </div>
+
+  @if (auth.user()?.identidadVerificada !== 'VERIFICADO') {
+    <div class="verification-warning-box mb">
+      <ng-icon name="heroExclamationTriangle" size="18"></ng-icon>
+      <span>
+        <strong>Identidad pendiente de verificación.</strong>
+        Debes <a routerLink="/perfil" class="verification-link">verificar tu identidad</a> subiendo tus documentos probatorios en tu perfil antes de poder publicar o modificar tus habitaciones.
+      </span>
+    </div>
+  }
 
   <!-- ── Modal / Form ── -->
   @if (showForm()) {
@@ -139,7 +153,11 @@
   } @else if (habitaciones().length === 0) {
     <div class="state-center">
       <p>Aún no tienes habitaciones publicadas.</p>
-      <button class="app-button app-button--primary" (click)="abrirNueva()">Publicar mi primer espacio</button>
+      <button class="app-button app-button--primary" 
+              [disabled]="auth.user()?.identidadVerificada !== 'VERIFICADO'" 
+              (click)="abrirNueva()">
+        Publicar mi primer espacio
+      </button>
     </div>
   } @else {
     <div class="rooms-list">
@@ -184,9 +202,14 @@
             }
             <div class="room-card__actions">
               <a [routerLink]="['/habitaciones', h.id]" class="app-button app-button--ghost">Ver público</a>
-              <button class="app-button app-button--secondary" (click)="abrirEditar(h)">Editar</button>
+              <button class="app-button app-button--secondary" 
+                      [disabled]="auth.user()?.identidadVerificada !== 'VERIFICADO'" 
+                      (click)="abrirEditar(h)">
+                Editar
+              </button>
               <button class="app-button app-button--ghost" style="color:#dc2626"
-                      (click)="eliminar(h.id)" [disabled]="eliminando() === h.id">
+                      [disabled]="auth.user()?.identidadVerificada !== 'VERIFICADO' || eliminando() === h.id"
+                      (click)="eliminar(h.id)">
                 {{ eliminando() === h.id ? 'Eliminando…' : 'Eliminar' }}
               </button>
             </div>

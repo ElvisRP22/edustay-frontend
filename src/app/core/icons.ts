@@ -26,6 +26,8 @@ import {
   heroUserCircle,
   heroExclamationTriangle,
   heroPlusCircle,
+  heroArrowUpTray,
+  heroDocumentText,
 } from '@ng-icons/heroicons/outline';
 
 import {
@@ -60,6 +62,8 @@ export const EDUSTAY_ICONS = {
   heroUserCircle,
   heroExclamationTriangle,
   heroPlusCircle,
+  heroArrowUpTray,
+  heroDocumentText,
   // Solid
   heroHeartSolid,
   heroStarSolid,

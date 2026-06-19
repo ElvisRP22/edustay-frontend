@@ -8,8 +8,8 @@ import {
   SocialAuthService,
   SocialUser
 } from '@abacritt/angularx-social-login';
-import { AuthService } from './app/core/services/auth.service';
-import { environment } from './environments/environment';
+import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -67,7 +67,11 @@ export class LoginComponent {
       next: () => {
         this.loading.set(false);
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        this.router.navigateByUrl(returnUrl?.startsWith('/') ? returnUrl : '/');
+        if (this.auth.isAdmin()) {
+          this.router.navigateByUrl('/admin');
+        } else {
+          this.router.navigateByUrl(returnUrl?.startsWith('/') ? returnUrl : '/');
+        }
       },
       error: (err) => {
         this.loading.set(false);
@@ -93,7 +97,11 @@ export class LoginComponent {
       next: () => {
         this.googleLoading.set(false);
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        this.router.navigateByUrl(returnUrl?.startsWith('/') ? returnUrl : '/');
+        if (this.auth.isAdmin()) {
+          this.router.navigateByUrl('/admin');
+        } else {
+          this.router.navigateByUrl(returnUrl?.startsWith('/') ? returnUrl : '/');
+        }
       },
       error: (err) => {
         this.googleLoading.set(false);

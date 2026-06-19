@@ -171,6 +171,40 @@
     }
   }
 
+  &__share-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-700);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    opacity: 0.85;
+
+    &:hover {
+      opacity: 1;
+      transform: scale(1.1);
+      background: #ffffff;
+      color: var(--brand-700);
+      box-shadow: 0 6px 16px rgba(29, 78, 216, 0.15);
+      border-color: rgba(29, 78, 216, 0.2);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
   &__body {
     padding: 1rem 1.25rem 1.25rem;
     display: flex;
@@ -597,4 +631,35 @@
   .listings-hero { padding: 2rem 1rem 1.5rem; }
   .results { padding: 1.5rem 1rem; }
   .cards-grid { grid-template-columns: 1fr; }
+}
+
+.geo-btn {
+  min-height: 46px;
+  padding: 0 1.1rem;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--slate-700);
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(107, 114, 128, 0.1);
+  }
+
+  &--active {
+    background: var(--brand-700);
+    color: #fff;
+    border-color: var(--brand-700);
+
+    &:hover {
+      background: var(--brand-800);
+    }
+  }
 }

@@ -284,3 +284,23 @@
     transform: none;
   }
 }
+
+.nav-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 12px;
+  line-height: 1;
+}
+
+.mobile-nav__item {
+  position: relative;
+}
+
+.mobile-nav__badge {
+  position: absolute;
+  top: 4px;
+  right: 12px;
+}

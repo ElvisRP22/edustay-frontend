@@ -89,6 +89,7 @@ export class PerfilComponent implements OnInit {
         next: verification => {
           this.verification.set(verification);
           this.applyVerificationToForm(verification);
+          this.auth.updateUserVerificationStatus(verification.identidadVerificada);
           this.loading.set(false);
           this.loadDocumentos();
 
@@ -169,6 +170,37 @@ export class PerfilComponent implements OnInit {
       });
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      
+      // Validar tamaño máximo (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        this.uploadError.set('El archivo supera el tamaño máximo de 5MB.');
+        return;
+      }
+
+      this.uploading.set(true);
+      this.uploadError.set(null);
+      this.uploadOk.set(false);
+
+      this.docSvc.uploadArchivoFisico(file)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res) => {
+            this.uploading.set(false);
+            this.documentForm.patchValue({ archivoUrl: res.archivoUrl });
+          },
+          error: (err) => {
+            this.uploading.set(false);
+            this.uploadError.set('No se pudo subir el archivo físico al servidor. Asegúrate de que tenga un formato permitido (PDF, PNG, JPG).');
+            console.error('Error al subir archivo:', err);
+          }
+        });
+    }
+  }
+
   resolverDocumento(documentoId: number, estado: 'VERIFICADO' | 'RECHAZADO'): void {
     this.adminSavingId.set(documentoId);
     this.adminError.set(null);
@@ -215,7 +247,12 @@ export class PerfilComponent implements OnInit {
 
   showUploadSection(): boolean {
     const verification = this.verification();
-    if (!verification || !this.auth.isEstudiante()) {
+    if (!verification) {
+      return false;
+    }
+
+    const isAllowedRole = this.auth.isEstudiante() || this.auth.isArrendador();
+    if (!isAllowedRole) {
       return false;
     }
 
@@ -240,7 +277,7 @@ export class PerfilComponent implements OnInit {
   }
 
   canShowDocuments(): boolean {
-    return this.auth.isEstudiante();
+    return this.auth.isEstudiante() || this.auth.isArrendador();
   }
 
   private loadDocumentos(): void {

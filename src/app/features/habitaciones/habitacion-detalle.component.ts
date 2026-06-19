@@ -12,6 +12,7 @@ import { ReportesService } from '../../core/services/reportes.service';
 import { AlquileresService } from '../../core/services/alquileres.service';
 import { MensajesService } from '../../core/services/mensajes.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 import { HabitacionCatalogItem, HabitacionResponse, ResenaResponse } from '../../core/models/api.models';
 import { EDUSTAY_ICONS } from '../../core/icons';
 
@@ -34,6 +35,7 @@ export class HabitacionDetalleComponent implements OnInit {
   private alquilerSvc = inject(AlquileresService);
   private mensajeSvc = inject(MensajesService);
   auth = inject(AuthService);
+  toastSvc = inject(ToastService);
 
   habitacion = signal<HabitacionResponse | null>(null);
   resenas = signal<ResenaResponse[]>([]);
@@ -51,6 +53,7 @@ export class HabitacionDetalleComponent implements OnInit {
   nuevaCalif = signal(5);
   nuevoComentario = signal('');
   resenaOk = signal(false);
+  yaCalificada = signal(false);
 
   // Reporte
   showReporte = signal(false);
@@ -60,6 +63,7 @@ export class HabitacionDetalleComponent implements OnInit {
 
   // Alquiler
   montoPactado = signal<number>(0);
+  contratoUrlInput = signal('');
   alquilerOk = signal(false);
   alquilerError = signal<string | null>(null);
   showAlquiler = signal(false);
@@ -84,6 +88,15 @@ export class HabitacionDetalleComponent implements OnInit {
       this.favSvc.esFavorito(this.id).subscribe({
         next: r => this.esFavorito.set(Object.values(r)[0] ?? false)
       });
+      if (this.auth.isEstudiante()) {
+        this.resenaSvc.yaCalificada(this.auth.user()!.id, this.id).subscribe({
+          next: val => {
+            // Depending on response format, could be boolean or object
+            const isQual = typeof val === 'object' ? Object.values(val)[0] : val;
+            this.yaCalificada.set(!!isQual);
+          }
+        });
+      }
     }
   }
 
@@ -121,9 +134,22 @@ export class HabitacionDetalleComponent implements OnInit {
       next: r => {
         this.resenas.update(arr => [r, ...arr]);
         this.resenaOk.set(true);
+        this.yaCalificada.set(true);
         this.nuevoComentario.set('');
       }
     });
+  }
+
+  eliminarResena(idResena: number) {
+    if (confirm('¿Estás seguro de eliminar tu reseña?')) {
+      this.resenaSvc.eliminar(idResena).subscribe({
+        next: () => {
+          this.resenas.update(arr => arr.filter(r => r.id !== idResena));
+          this.yaCalificada.set(false);
+          this.resenaOk.set(false);
+        }
+      });
+    }
   }
 
   crearReporte() {
@@ -142,7 +168,8 @@ export class HabitacionDetalleComponent implements OnInit {
     this.loadingAlquiler.set(true);
     this.alquilerSvc.crear({
       habitacionId: this.id,
-      montoPactado: this.montoPactado()
+      montoPactado: this.montoPactado(),
+      contratoUrl: this.contratoUrlInput()
     }).subscribe({
       next: () => { this.alquilerOk.set(true); this.loadingAlquiler.set(false); this.showAlquiler.set(false); },
       error: err => {
@@ -171,4 +198,51 @@ export class HabitacionDetalleComponent implements OnInit {
   }
 
   stars(n: number) { return Array.from({ length: n }); }
+
+  compartirCopied = signal(false);
+  showQr = signal(false);
+  isShareSupported = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+
+  compartir(plataforma: 'whatsapp' | 'facebook' | 'twitter' | 'telegram' | 'email' | 'copiar' | 'native') {
+    const h = this.habitacion();
+    if (!h) return;
+
+    const url = window.location.href;
+    const text = `¡Mira este alojamiento en EduStay! "${h.titulo}" por S/ ${h.precio} al mes en ${h.direccion}. Más info: `;
+
+    if (plataforma === 'whatsapp') {
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + url)}`, '_blank');
+    } else if (plataforma === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    } else if (plataforma === 'twitter') {
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    } else if (plataforma === 'telegram') {
+      window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+    } else if (plataforma === 'email') {
+      window.open(`mailto:?subject=${encodeURIComponent('Alojamiento recomendado en EduStay')}&body=${encodeURIComponent(text + '\n' + url)}`, '_blank');
+    } else if (plataforma === 'copiar') {
+      navigator.clipboard.writeText(url).then(() => {
+        this.compartirCopied.set(true);
+        setTimeout(() => this.compartirCopied.set(false), 2000);
+        this.toastSvc.success('¡Enlace de la habitación copiado al portapapeles!');
+      });
+    } else if (plataforma === 'native') {
+      if (navigator.share) {
+        navigator.share({
+          title: h.titulo,
+          text: text,
+          url: url
+        }).catch(err => console.log('Error al compartir:', err));
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          this.toastSvc.success('¡Enlace copiado al portapapeles!');
+        });
+      }
+    }
+  }
+
+  getQrCodeUrl(): string {
+    const url = window.location.href;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+  }
 }

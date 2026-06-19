@@ -21,7 +21,7 @@
         />
       </div>
 
-      <select class="search-bar__select" (change)="setMaxPrecio($any($event.target).value)">
+      <select class="search-bar__select" (change)="setMaxPrecio($any($event.target).value)" aria-label="Presupuesto máximo">
         <option value="">Cualquier precio</option>
         <option value="300">Hasta S/ 300</option>
         <option value="450">Hasta S/ 450</option>
@@ -32,6 +32,25 @@
         <input type="checkbox" [checked]="soloDisponibles()" (change)="soloDisponibles.update(v=>!v)" />
         Solo disponibles
       </label>
+
+      <button 
+        type="button" 
+        class="geo-btn" 
+        [class.geo-btn--active]="cercaDeMi()"
+        (click)="toggleCercaDeMi()"
+      >
+        <ng-icon name="heroMapPin" size="16"></ng-icon>
+        {{ cercaDeMi() ? 'Cerca de mí activo' : 'Buscar cerca de mí' }}
+      </button>
+
+      @if (cercaDeMi()) {
+        <select class="search-bar__select" (change)="setRadio($any($event.target).value)" aria-label="Radio de búsqueda en kilómetros">
+          <option value="1">1 km de radio</option>
+          <option value="3">3 km de radio</option>
+          <option value="5" selected>5 km de radio</option>
+          <option value="10">10 km de radio</option>
+        </select>
+      }
     </div>
   </section>
 
@@ -61,6 +80,18 @@
               } @else {
                 <span class="stay-card__badge stay-card__badge--off">{{ h.estado | lowercase }}</span>
               }
+              <button 
+                class="stay-card__share-btn" 
+                (click)="quickShare($event, h)" 
+                title="Compartir este alojamiento"
+                aria-label="Compartir alojamiento"
+              >
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+              </button>
             </div>
             <div class="stay-card__body">
               <div class="stay-card__top">
@@ -68,9 +99,21 @@
                 <strong class="stay-card__price">S/ {{ h.precio | number:'1.0-0' }} <span>/ mes</span></strong>
               </div>
               <p class="stay-card__address">{{ h.direccion }}</p>
-              @if (h.distanciaUtpMinutos) {
-                <span class="stay-card__meta">{{ h.distanciaUtpMinutos }} min de UTP</span>
+              
+              @if (h.distanciaUtpMinutos || h.distanciaKm) {
+                <span class="stay-card__meta">
+                  @if (h.distanciaUtpMinutos) {
+                    {{ h.distanciaUtpMinutos }} min de UTP
+                  }
+                  @if (h.distanciaUtpMinutos && h.distanciaKm) {
+                    &nbsp;|&nbsp;
+                  }
+                  @if (h.distanciaKm !== undefined && h.distanciaKm !== null) {
+                    A {{ h.distanciaKm }} km de ti
+                  }
+                </span>
               }
+
               <p class="stay-card__desc">{{ h.descripcion | slice:0:90 }}{{ h.descripcion.length > 90 ? '…' : '' }}</p>
               @if (h.servicios?.length || h.reglas?.length) {
                 <div class="stay-card__tags">

@@ -1,0 +1,87 @@
+<div class="auth-card-wrapper">
+  <div class="auth-card">
+    <header class="auth-card__header">
+      <a routerLink="/" class="logo logo--center">
+        <span class="logo__edu">Edu</span><span class="logo__stay">Stay</span>
+      </a>
+      <h1>Verifica tu cuenta</h1>
+      <p class="muted">
+        Ingresa el código de 6 dígitos que hemos enviado al correo electrónico: <br>
+        <span class="email-highlight">{{ email() }}</span>
+      </p>
+    </header>
+
+    @if (successMsg()) {
+      <div class="alert alert--success">
+        <ng-icon name="heroCheckCircle" size="20"></ng-icon>
+        <span>{{ successMsg() }}</span>
+      </div>
+    }
+
+    @if (errorMsg()) {
+      <div class="alert alert--error">
+        <ng-icon name="heroExclamationTriangle" size="20"></ng-icon>
+        <span>{{ errorMsg() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="app-field">
+        <label class="otp-label">Código de verificación (OTP)</label>
+        
+        <div class="otp-container">
+          <!-- Hidden input on top to handle user interactions -->
+          <input
+            #codigoInput
+            id="codigo"
+            class="hidden-otp-input"
+            type="text"
+            formControlName="codigo"
+            maxlength="6"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            (input)="onOtpInput($event)"
+            (focus)="isFocused.set(true)"
+            (blur)="isFocused.set(false)"
+          />
+          
+          <!-- 6 Beautifully styled boxes rendered underneath -->
+          <div class="otp-boxes" (click)="focusInput()">
+            @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+              <div 
+                class="otp-box" 
+                [class.otp-box--active]="isFocused() && codigoValue().length === i" 
+                [class.otp-box--filled]="codigoValue().length > i"
+              >
+                {{ codigoValue().charAt(i) || '' }}
+                @if (isFocused() && codigoValue().length === i) {
+                  <span class="otp-caret"></span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <small class="app-error" *ngIf="verifyForm.get('codigo')?.invalid && verifyForm.get('codigo')?.touched">
+          El código debe consistir exactamente de 6 dígitos numéricos.
+        </small>
+      </div>
+
+      <button type="submit" class="app-button app-button--primary submit-btn" [disabled]="loading() || successMsg()">
+        @if (loading()) {
+          <span class="spinner-small"></span> Verificando…
+        } @else {
+          Confirmar cuenta
+        }
+      </button>
+
+      <div class="auth-card__footer">
+        <span class="muted">¿No recibiste el código?</span>
+        <button type="button" class="resend-btn" (click)="onResendOtp()" [disabled]="resending()">
+          {{ resending() ? 'Reenviando…' : 'Reenviar código' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

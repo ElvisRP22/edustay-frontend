@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { AuthResponse, LoginRequest, RegisterRequest } from '../models/api.models';
+import { AuthResponse, LoginRequest, RegisterRequest, IdentidadVerificadaEstado } from '../models/api.models';
 import { environment } from '../../../environments/environment';
 
 const TOKEN_KEY = 'edustay_token';
@@ -21,10 +21,10 @@ export class AuthService {
   readonly user = this._user.asReadonly();
   readonly token = this._token.asReadonly();
   readonly isAuthenticated = computed(() => !!this._token());
-  readonly rol = computed(() => this._user()?.rol ?? null);
-  readonly isAdmin = computed(() => this._user()?.rol === 'ADMIN');
-  readonly isEstudiante = computed(() => this._user()?.rol === 'ESTUDIANTE');
-  readonly isArrendador = computed(() => this._user()?.rol === 'ARRENDADOR');
+  readonly rol = computed(() => this._user()?.rol?.toUpperCase() ?? null);
+  readonly isAdmin = computed(() => this.rol() === 'ADMIN');
+  readonly isEstudiante = computed(() => this.rol() === 'ESTUDIANTE');
+  readonly isArrendador = computed(() => this.rol() === 'ARRENDADOR');
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -56,15 +56,56 @@ export class AuthService {
   }
 
   validateToken(): Observable<string> {
-    return this.http.get<string>(`${this.baseUrl}/validate`);
+    return this.http.get(`${this.baseUrl}/validate`, { responseType: 'text' }) as Observable<string>;
+  }
+
+  verifyEmail(email: string, codigo: string): Observable<{ message: string }> {
+    return this.http
+      .post<{ message: string }>(`${this.baseUrl}/verify-email`, { email, codigo })
+      .pipe(
+        tap(() => {
+          const currentUser = this._user();
+          if (currentUser && currentUser.email === email) {
+            const updated = { ...currentUser, emailVerificado: true };
+            this._user.set(updated);
+            localStorage.setItem(USER_KEY, JSON.stringify(updated));
+          }
+        })
+      );
+  }
+
+  resendOtp(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/resend-otp`, { email });
+  }
+
+  updateUserVerificationStatus(status: IdentidadVerificadaEstado): void {
+    const currentUser = this._user();
+    if (currentUser) {
+      const updated = { ...currentUser, identidadVerificada: status };
+      this._user.set(updated);
+      localStorage.setItem(USER_KEY, JSON.stringify(updated));
+    }
+  }
+
+  updateUserEmailVerificationStatus(status: boolean): void {
+    const currentUser = this._user();
+    if (currentUser) {
+      const updated = { ...currentUser, emailVerificado: status };
+      this._user.set(updated);
+      localStorage.setItem(USER_KEY, JSON.stringify(updated));
+    }
   }
 
   logout(): void {
+    this.clearSession();
+    this.router.navigate(['/login']);
+  }
+
+  clearSession(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     this._token.set(null);
     this._user.set(null);
-    this.router.navigate(['/login']);
   }
 
   // ── Session helpers ───────────────────────────────────────────────────────

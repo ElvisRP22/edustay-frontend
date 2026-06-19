@@ -23,6 +23,13 @@ export class DocumentosService {
     return this.http.post<VerificacionResponse>(this.baseDocumentos, data);
   }
 
+  /** POST /api/documentos/upload */
+  uploadArchivoFisico(file: File): Observable<{ archivoUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ archivoUrl: string }>(`${this.baseDocumentos}/upload`, formData);
+  }
+
   /** GET /api/documentos/mis-documentos */
   getMisDocumentos(): Observable<VerificacionResponse[]> {
     return this.http.get<VerificacionResponse[]>(`${this.baseDocumentos}/mis-documentos`);

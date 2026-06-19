@@ -187,3 +187,35 @@
   .form-grid { grid-template-columns: 1fr; }
   .selection-grid { grid-template-columns: 1fr; }
 }
+
+// ── Verification Alerts ────────────────────────────────────────────────────────
+.verification-warning-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+  color: #b45309;
+
+  span {
+    line-height: 1.5;
+  }
+
+  .verification-link {
+    color: #d97706;
+    font-weight: 700;
+    text-decoration: underline;
+    &:hover {
+      color: #b45309;
+    }
+  }
+
+  &.mb {
+    margin-bottom: 1.5rem;
+  }
+}
+

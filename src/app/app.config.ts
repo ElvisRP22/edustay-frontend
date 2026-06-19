@@ -1,8 +1,8 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { GoogleLoginProvider, SOCIAL_AUTH_CONFIG, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
-import { authInterceptor } from './app/core/interceptors/auth.interceptor';
-import { environment } from './environments/environment';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { environment } from '../environments/environment';
 
 const googleClientId = environment.googleClientId;
 
