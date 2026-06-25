@@ -1,0 +1,72 @@
+<a class="stay-card" [routerLink]="['/habitaciones', habitacion.id]">
+  <div class="stay-card__image">
+    @if (habitacion.estado === 'DISPONIBLE') {
+      <span class="stay-card__badge stay-card__badge--ok">Disponible</span>
+    } @else {
+      <span class="stay-card__badge stay-card__badge--off">{{ habitacion.estado | lowercase }}</span>
+    }
+    <button 
+      class="stay-card__share-btn" 
+      (click)="onShareClick($event)" 
+      title="Compartir este alojamiento"
+      aria-label="Compartir alojamiento"
+    >
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+        <polyline points="16 6 12 2 8 6"></polyline>
+        <line x1="12" y1="2" x2="12" y2="15"></line>
+      </svg>
+    </button>
+  </div>
+  <div class="stay-card__body">
+    <div class="stay-card__top">
+      <h3>{{ habitacion.titulo }}</h3>
+      <strong class="stay-card__price">S/ {{ habitacion.precio | number:'1.0-0' }} <span>/ mes</span></strong>
+    </div>
+    <p class="stay-card__address">{{ habitacion.direccion }}</p>
+    
+    @if (habitacion.distanciaUtpMinutos || habitacion.distanciaKm) {
+      <span class="stay-card__meta">
+        @if (habitacion.distanciaUtpMinutos) {
+          {{ habitacion.distanciaUtpMinutos }} min de UTP
+        }
+        @if (habitacion.distanciaUtpMinutos && habitacion.distanciaKm) {
+          &nbsp;|&nbsp;
+        }
+        @if (habitacion.distanciaKm !== undefined && habitacion.distanciaKm !== null) {
+          A {{ habitacion.distanciaKm }} km de ti
+        }
+      </span>
+    }
+
+    <p class="stay-card__desc">{{ habitacion.descripcion | slice:0:90 }}{{ habitacion.descripcion.length > 90 ? '…' : '' }}</p>
+    @if (habitacion.servicios?.length || habitacion.reglas?.length) {
+      <div class="stay-card__tags">
+        @if (habitacion.servicios?.length) {
+          <div class="stay-card__tag-row">
+            @for (servicio of visibleCatalogos(habitacion.servicios, 2); track servicio.id) {
+              <span class="stay-chip">{{ catalogoLabel(servicio, 'Servicio', $index) }}</span>
+            }
+            @if (hiddenCatalogosCount(habitacion.servicios, 2) > 0) {
+              <span class="stay-chip stay-chip--more">+{{ hiddenCatalogosCount(habitacion.servicios, 2) }}</span>
+            }
+          </div>
+        }
+        @if (habitacion.reglas?.length) {
+          <div class="stay-card__tag-row">
+            @for (regla of visibleCatalogos(habitacion.reglas, 1); track regla.id) {
+              <span class="stay-chip stay-chip--rule">{{ catalogoLabel(regla, 'Regla', $index) }}</span>
+            }
+            @if (hiddenCatalogosCount(habitacion.reglas, 1) > 0) {
+              <span class="stay-chip stay-chip--rule stay-chip--more">+{{ hiddenCatalogosCount(habitacion.reglas, 1) }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
+    <div class="stay-card__footer">
+      <span class="stay-card__owner">{{ habitacion.arrendadorNombre }}</span>
+      <span class="stay-card__cta">Ver detalle →</span>
+    </div>
+  </div>
+</a>

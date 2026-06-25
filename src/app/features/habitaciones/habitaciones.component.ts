@@ -9,11 +9,12 @@ import { HabitacionesService } from '../../core/services/habitaciones.service';
 import { ToastService } from '../../core/services/toast.service';
 import { HabitacionCatalogItem, HabitacionResponse } from '../../core/models/api.models';
 import { EDUSTAY_ICONS } from '../../core/icons';
+import { HabitacionCardComponent } from './components/habitacion-card/habitacion-card.component';
 
 @Component({
   selector: 'app-habitaciones',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NgIcon],
+  imports: [CommonModule, FormsModule, NgIcon, HabitacionCardComponent],
   providers: [provideIcons(EDUSTAY_ICONS)],
   templateUrl: './habitaciones.component.html',
   styleUrl: './habitaciones.component.scss',
