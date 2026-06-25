@@ -20,6 +20,12 @@
         <line x1="12" y1="2" x2="12" y2="15"></line>
       </svg>
     </button>
+    @if (habitacion.fotos && habitacion.fotos.length > 1) {
+      <span class="stay-card__photos-badge">
+        <ng-icon name="heroCamera" size="13"></ng-icon>
+        {{ habitacion.fotos.length }}
+      </span>
+    }
   </div>
   <div class="stay-card__body">
     <div class="stay-card__top">

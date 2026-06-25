@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -57,18 +57,39 @@ export class MisHabitacionesComponent implements OnInit {
   }
 
   resetForm(h?: HabitacionResponse) {
+    const fotosControls = h?.fotos ? h.fotos.map(url => this.fb.control(url, [Validators.required])) : [];
+
     this.form = this.fb.group({
       titulo: [h?.titulo ?? '', [Validators.required, Validators.minLength(1)]],
       descripcion: [h?.descripcion ?? '', [Validators.required, Validators.minLength(1)]],
-      fotoUrl: [h?.fotos && h.fotos.length > 0 ? h.fotos[0] : ''],
       precio: [h?.precio ?? '', [Validators.required, Validators.min(1)]],
       direccion: [h?.direccion ?? '', [Validators.required]],
       latitud: [h?.latitud ?? '', [Validators.required]],
-      longitud: [h?.longitud ?? '', [Validators.required]]
+      longitud: [h?.longitud ?? '', [Validators.required]],
+      fotos: this.fb.array(fotosControls)
     });
 
     this.selectedServiceIds.set(h?.servicios?.map(s => s.id) ?? []);
     this.selectedReglaIds.set(h?.reglas?.map(r => r.id) ?? []);
+
+    if (this.fotosFormArray.length === 0) {
+      this.addFotoUrl();
+    }
+  }
+
+  get fotosFormArray() {
+    return this.form.get('fotos') as FormArray;
+  }
+
+  addFotoUrl(url = '') {
+    this.fotosFormArray.push(this.fb.control(url, [Validators.required]));
+  }
+
+  removeFotoUrl(index: number) {
+    this.fotosFormArray.removeAt(index);
+    if (this.fotosFormArray.length === 0) {
+      this.addFotoUrl();
+    }
   }
 
   abrirNueva() {
@@ -92,12 +113,17 @@ export class MisHabitacionesComponent implements OnInit {
     this.saving.set(true);
     this.saveError.set(null);
 
-    const { fotoUrl, ...rest } = this.form.getRawValue();
+    const raw = this.form.getRawValue();
     const payload: HabitacionRequest = {
-      ...rest,
+      titulo: raw.titulo,
+      descripcion: raw.descripcion,
+      precio: raw.precio,
+      direccion: raw.direccion,
+      latitud: raw.latitud,
+      longitud: raw.longitud,
       servicioIds: this.selectedServiceIds(),
       reglaIds: this.selectedReglaIds(),
-      fotos: fotoUrl ? [fotoUrl] : []
+      fotos: raw.fotos ? raw.fotos.filter((url: string) => url && url.trim() !== '') : []
     };
 
     const obs = this.editId()

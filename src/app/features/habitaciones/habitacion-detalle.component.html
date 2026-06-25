@@ -16,7 +16,7 @@
     <!-- ── Hero image ── -->
     <div 
       class="detail-hero"
-      [style.backgroundImage]="habitacion()!.fotos && habitacion()!.fotos!.length > 0 ? 'url(' + habitacion()!.fotos![0] + ')' : 'linear-gradient(135deg, #bfdbfe 0%, #dbeafe 60%, #eff6ff 100%)'"
+      [style.backgroundImage]="getActiveImageStyle()"
     >
       <div class="detail-hero__overlay">
         <span class="app-badge">{{ habitacion()!.estado | lowercase }}</span>
@@ -25,6 +25,23 @@
         }
       </div>
     </div>
+
+    <!-- Thumbnails for multiple photos -->
+    @if (habitacion()!.fotos && habitacion()!.fotos!.length > 1) {
+      <div class="detail-thumbnails">
+        @for (foto of habitacion()!.fotos; track $index) {
+          <button 
+            class="thumbnail-btn" 
+            [class.thumbnail-btn--active]="$index === activeImageIndex()"
+            (click)="activeImageIndex.set($index)"
+            [style.backgroundImage]="'url(' + foto + ')'"
+            type="button"
+            title="Ver imagen {{ $index + 1 }}"
+            aria-label="Ver imagen {{ $index + 1 }}"
+          ></button>
+        }
+      </div>
+    }
 
     <div class="detail-layout">
       <!-- ── Main info ── -->

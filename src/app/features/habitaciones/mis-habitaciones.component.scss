@@ -219,3 +219,46 @@
   }
 }
 
+.fotos-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.fotos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.foto-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  input {
+    flex: 1;
+  }
+}
+.remove-btn {
+  background: var(--slate-100);
+  border: 1px solid var(--slate-200);
+  color: var(--slate-500);
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: #fee2e2;
+    border-color: #fecaca;
+    color: #ef4444;
+  }
+}
+.mt-sm {
+  margin-top: 0.35rem;
+}
+
+

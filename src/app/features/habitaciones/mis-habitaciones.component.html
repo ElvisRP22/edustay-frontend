@@ -49,11 +49,37 @@
                         [class.is-error]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"></textarea>
             </div>
 
-            <div class="app-field form-span-2">
-              <label for="fotoUrl">URL de la imagen de portada</label>
-              <input id="fotoUrl" class="app-input" type="url" formControlName="fotoUrl"
-                     placeholder="Ej. https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af"
-                     [class.is-error]="form.get('fotoUrl')?.invalid && form.get('fotoUrl')?.touched" />
+            <div class="app-field form-span-2 fotos-section">
+              <label>Imágenes de la habitación (URLs de fotos)</label>
+              <div formArrayName="fotos" class="fotos-list">
+                @for (control of fotosFormArray.controls; track $index) {
+                  <div class="foto-input-row">
+                    <input 
+                      class="app-input" 
+                      type="url" 
+                      [formControlName]="$index"
+                      placeholder="Ej. https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af"
+                      [class.is-error]="control.invalid && control.touched"
+                    />
+                    <button 
+                      type="button" 
+                      class="remove-btn" 
+                      (click)="removeFotoUrl($index)" 
+                      title="Eliminar esta imagen"
+                    >
+                      <ng-icon name="heroTrash" size="16"></ng-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+              <button 
+                type="button" 
+                class="app-button app-button--secondary mt-sm" 
+                (click)="addFotoUrl()"
+              >
+                <ng-icon name="heroPlusCircle" size="15"></ng-icon>
+                Agregar otra imagen
+              </button>
             </div>
 
             <div class="app-field">

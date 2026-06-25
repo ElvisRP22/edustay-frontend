@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { EDUSTAY_ICONS } from '../../../../core/icons';
 import { HabitacionCatalogItem, HabitacionResponse } from '../../../../core/models/api.models';
 
 @Component({
   selector: 'app-habitacion-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgIcon],
+  providers: [provideIcons(EDUSTAY_ICONS)],
   templateUrl: './habitacion-card.component.html',
   styleUrl: './habitacion-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

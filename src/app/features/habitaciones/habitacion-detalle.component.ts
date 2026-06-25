@@ -68,6 +68,18 @@ export class HabitacionDetalleComponent implements OnInit {
   alquilerError = signal<string | null>(null);
   showAlquiler = signal(false);
 
+  activeImageIndex = signal(0);
+
+  getActiveImageStyle(): string {
+    const h = this.habitacion();
+    if (h && h.fotos && h.fotos.length > 0) {
+      const idx = this.activeImageIndex();
+      const url = (idx < h.fotos.length) ? h.fotos[idx] : h.fotos[0];
+      return `url('${url}')`;
+    }
+    return 'linear-gradient(135deg, #bfdbfe 0%, #dbeafe 60%, #eff6ff 100%)';
+  }
+
   get id() { return Number(this.route.snapshot.paramMap.get('id')); }
 
   ngOnInit() {
