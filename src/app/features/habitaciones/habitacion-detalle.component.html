@@ -14,7 +14,10 @@
     <a routerLink="/habitaciones" class="detail-back"><ng-icon name="heroArrowLeft" size="15"></ng-icon> Volver al listado</a>
 
     <!-- ── Hero image ── -->
-    <div class="detail-hero">
+    <div 
+      class="detail-hero"
+      [style.backgroundImage]="habitacion()!.fotos && habitacion()!.fotos!.length > 0 ? 'url(' + habitacion()!.fotos![0] + ')' : 'linear-gradient(135deg, #bfdbfe 0%, #dbeafe 60%, #eff6ff 100%)'"
+    >
       <div class="detail-hero__overlay">
         <span class="app-badge">{{ habitacion()!.estado | lowercase }}</span>
         @if (habitacion()!.distanciaUtpMinutos) {

@@ -49,6 +49,13 @@
                         [class.is-error]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"></textarea>
             </div>
 
+            <div class="app-field form-span-2">
+              <label for="fotoUrl">URL de la imagen de portada</label>
+              <input id="fotoUrl" class="app-input" type="url" formControlName="fotoUrl"
+                     placeholder="Ej. https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af"
+                     [class.is-error]="form.get('fotoUrl')?.invalid && form.get('fotoUrl')?.touched" />
+            </div>
+
             <div class="app-field">
               <label for="precio">Precio mensual (S/)</label>
               <input id="precio" class="app-input" type="number" formControlName="precio" placeholder="350"

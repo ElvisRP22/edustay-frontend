@@ -20,6 +20,8 @@
 .detail-hero {
   width: 100%; height: 320px; border-radius: 18px; overflow: hidden;
   background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 60%, #eff6ff 100%);
+  background-size: cover;
+  background-position: center;
   position: relative; margin-bottom: 2rem;
 
   &__overlay {

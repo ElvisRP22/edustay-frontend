@@ -1,5 +1,8 @@
 <a class="stay-card" [routerLink]="['/habitaciones', habitacion.id]">
-  <div class="stay-card__image">
+  <div 
+    class="stay-card__image"
+    [style.backgroundImage]="habitacion.fotos && habitacion.fotos.length > 0 ? 'url(' + habitacion.fotos[0] + ')' : 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)'"
+  >
     @if (habitacion.estado === 'DISPONIBLE') {
       <span class="stay-card__badge stay-card__badge--ok">Disponible</span>
     } @else {

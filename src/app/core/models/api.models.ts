@@ -51,6 +51,7 @@ export interface HabitacionRequest {
   longitud: number;
   servicioIds: number[];
   reglaIds: number[];
+  fotos?: string[];
 }
 
 export interface HabitacionResponse {
@@ -69,6 +70,7 @@ export interface HabitacionResponse {
   arrendadorNombre: string;
   servicios?: HabitacionCatalogItem[];
   reglas?: HabitacionCatalogItem[];
+  fotos?: string[];
 }
 
 // ─── Alquileres ───────────────────────────────────────────────────────────────

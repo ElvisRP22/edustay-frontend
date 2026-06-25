@@ -23,6 +23,8 @@
   &__image {
     height: 180px;
     background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+    background-size: cover;
+    background-position: center;
     position: relative;
     display: flex;
     align-items: flex-start;

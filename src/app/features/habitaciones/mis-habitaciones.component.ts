@@ -60,6 +60,7 @@ export class MisHabitacionesComponent implements OnInit {
     this.form = this.fb.group({
       titulo: [h?.titulo ?? '', [Validators.required, Validators.minLength(1)]],
       descripcion: [h?.descripcion ?? '', [Validators.required, Validators.minLength(1)]],
+      fotoUrl: [h?.fotos && h.fotos.length > 0 ? h.fotos[0] : ''],
       precio: [h?.precio ?? '', [Validators.required, Validators.min(1)]],
       direccion: [h?.direccion ?? '', [Validators.required]],
       latitud: [h?.latitud ?? '', [Validators.required]],
@@ -91,10 +92,12 @@ export class MisHabitacionesComponent implements OnInit {
     this.saving.set(true);
     this.saveError.set(null);
 
+    const { fotoUrl, ...rest } = this.form.getRawValue();
     const payload: HabitacionRequest = {
-      ...(this.form.getRawValue() as Omit<HabitacionRequest, 'servicioIds' | 'reglaIds'>),
+      ...rest,
       servicioIds: this.selectedServiceIds(),
-      reglaIds: this.selectedReglaIds()
+      reglaIds: this.selectedReglaIds(),
+      fotos: fotoUrl ? [fotoUrl] : []
     };
 
     const obs = this.editId()
