@@ -6,6 +6,14 @@
   "outputDirectory": "dist/edustay-frontend/browser",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://edustay-backend.fly.dev/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://edustay-backend.fly.dev/uploads/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
