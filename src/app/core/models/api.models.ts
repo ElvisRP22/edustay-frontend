@@ -135,6 +135,10 @@ export interface MensajeResponse {
   contenido: string;
   leido: boolean;
   fechaEnvio: string;
+  moderado?: boolean;
+  bloqueado?: boolean;
+  categoriaModeracion?: string;
+  estadoModeracion?: string;
 }
 
 // ─── Reportes ─────────────────────────────────────────────────────────────────

@@ -34,21 +34,32 @@
 
 <!-- ── Search dock ── -->
 <section class="search-dock-section">
-  <form class="search-dock" role="search" aria-label="Buscar alojamientos">
+  <form class="search-dock" role="search" aria-label="Buscar alojamientos" (ngSubmit)="buscar()">
     <label class="search-dock__field">
       <span>¿Dónde?</span>
-      <input type="text" placeholder="Universidad, ciudad o barrio" />
+      <input
+        type="text"
+        placeholder="Universidad, ciudad o barrio"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        name="searchQuery"
+      />
     </label>
     <label class="search-dock__field">
       <span>Presupuesto</span>
-      <select aria-label="Presupuesto">
-        <option>Cualquier precio</option>
-        <option>Hasta S/ 300</option>
-        <option>S/ 300 - S/ 450</option>
-        <option>Más de S/ 450</option>
+      <select
+        aria-label="Presupuesto"
+        [ngModel]="searchBudget()"
+        (ngModelChange)="searchBudget.set($event)"
+        name="searchBudget"
+      >
+        <option value="">Cualquier precio</option>
+        <option value="300">Hasta S/ 300</option>
+        <option value="450">Hasta S/ 450</option>
+        <option value="600">Hasta S/ 600</option>
       </select>
     </label>
-    <a routerLink="/habitaciones" class="search-dock__btn app-button app-button--primary">Buscar</a>
+    <button type="submit" class="search-dock__btn app-button app-button--primary">Buscar</button>
   </form>
 
   <div class="quick-chips">

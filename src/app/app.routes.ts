@@ -10,6 +10,8 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { RegistroEstudianteComponent } from './features/auth/registro-estudiante/registro-estudiante.component';
 import { RegistroArrendadorComponent } from './features/auth/registro-arrendador/registro-arrendador.component';
 import { VerifyEmailComponent } from './features/auth/verify-email/verify-email.component';
+import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
 import { HabitacionesComponent } from './features/habitaciones/habitaciones.component';
 import { HabitacionDetalleComponent } from './features/habitaciones/habitacion-detalle.component';
 import { FavoritosComponent } from './features/favoritos/favoritos.component';
@@ -56,6 +58,8 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'registro', component: RegistroComponent, canActivate: [guestOnlyGuard] },
   { path: 'login', component: LoginComponent, canActivate: [guestOnlyGuard] },
+  { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestOnlyGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent, canActivate: [guestOnlyGuard] },
   { path: 'registro/estudiante', component: RegistroEstudianteComponent, canActivate: [guestOnlyGuard] },
   { path: 'registro/arrendador', component: RegistroArrendadorComponent, canActivate: [guestOnlyGuard] },
   { path: 'verify-email', component: VerifyEmailComponent },

@@ -6,7 +6,7 @@ import { ReportesService } from '../../../core/services/reportes.service';
 import { AlquileresService } from '../../../core/services/alquileres.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AdminService } from '../../../core/services/admin.service';
-import { VerificacionAdminResponse, VerificacionRequest, ReporteResponse, AlquilerResponse, UsuarioAdminResponse } from '../../../core/models/api.models';
+import { VerificacionAdminResponse, VerificacionRequest, ReporteResponse, AlquilerResponse, UsuarioAdminResponse, MensajeResponse } from '../../../core/models/api.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -37,13 +37,16 @@ export class AdminComponent implements OnInit {
     alquileres: '0'
   };
 
-  activeTab = signal<'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios'>('dashboard');
+  activeTab = signal<'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios' | 'moderacion'>('dashboard');
   showProfileMenu = signal(false);
+  moderacionSubTab = signal<'activas' | 'historial'>('activas');
 
   pendientes = signal<VerificacionAdminResponse[]>([]);
   reportes = signal<ReporteResponse[]>([]);
   alquileres = signal<AlquilerResponse[]>([]);
   usuarios = signal<UsuarioAdminResponse[]>([]);
+  mensajesReportados = signal<MensajeResponse[]>([]);
+  mensajesHistorial = signal<MensajeResponse[]>([]);
 
   // Comentarios inline para verificaciones de documentos
   comentarios = signal<Record<number, string>>({});
@@ -55,9 +58,11 @@ export class AdminComponent implements OnInit {
     this.loadReportes();
     this.loadAlquileres();
     this.loadUsuarios();
+    this.loadMensajesReportados();
+    this.loadMensajesHistorial();
   }
 
-  setTab(tab: 'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios') {
+  setTab(tab: 'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios' | 'moderacion') {
     this.activeTab.set(tab);
   }
 
@@ -220,5 +225,49 @@ export class AdminComponent implements OnInit {
   formatType(typeStr: string): string {
     if (!typeStr) return '-';
     return typeStr.replace(/_/g, ' ').toLowerCase();
+  }
+
+  loadMensajesReportados() {
+    this.adminSvc.getMensajesReportados()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: data => this.mensajesReportados.set(data),
+        error: err => console.error('Error cargando mensajes reportados', err)
+      });
+  }
+
+  loadMensajesHistorial() {
+    this.adminSvc.getHistorialModeracion()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: data => this.mensajesHistorial.set(data),
+        error: err => console.error('Error cargando historial de moderación', err)
+      });
+  }
+
+  desestimarMensaje(mensajeId: number) {
+    this.adminSvc.desestimarMensaje(mensajeId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadMensajesReportados();
+          this.loadMensajesHistorial();
+        },
+        error: err => console.error('Error al desestimar mensaje', err)
+      });
+  }
+
+  eliminarMensaje(mensajeId: number) {
+    if (confirm('¿Estás seguro de que deseas eliminar este mensaje de forma permanente del historial de chat?')) {
+      this.adminSvc.eliminarMensaje(mensajeId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.loadMensajesReportados();
+            this.loadMensajesHistorial();
+          },
+          error: err => console.error('Error al eliminar mensaje', err)
+        });
+    }
   }
 }

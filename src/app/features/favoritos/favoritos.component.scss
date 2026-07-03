@@ -45,7 +45,10 @@
   &__link { text-decoration: none; color: inherit; display: flex; flex-direction: column; flex: 1; }
   &__image {
     height: 150px;
-    background: linear-gradient(135deg, #bfdbfe, #eff6ff);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #eff6ff;
   }
   &__body {
     padding: 1rem 1.25rem;

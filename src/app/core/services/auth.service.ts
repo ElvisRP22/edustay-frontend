@@ -78,6 +78,20 @@ export class AuthService {
     return this.http.post<{ message: string }>(`${this.baseUrl}/resend-otp`, { email });
   }
 
+  forgotPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  verifyResetToken(token: string): Observable<{ valid: boolean }> {
+    return this.http.get<{ valid: boolean }>(`${this.baseUrl}/reset-password/verify`, {
+      params: { token }
+    });
+  }
+
+  resetPassword(token: string, password: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/reset-password`, { token, password });
+  }
+
   updateUserVerificationStatus(status: IdentidadVerificadaEstado): void {
     const currentUser = this._user();
     if (currentUser) {

@@ -3,13 +3,15 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { HabitacionesService } from '../../core/services/habitaciones.service';
 import { ToastService } from '../../core/services/toast.service';
 import { HabitacionCatalogItem, HabitacionResponse } from '../../core/models/api.models';
 import { EDUSTAY_ICONS } from '../../core/icons';
 import { HabitacionCardComponent } from './components/habitacion-card/habitacion-card.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
 
 @Component({
   selector: 'app-habitaciones',
@@ -23,6 +25,8 @@ import { HabitacionCardComponent } from './components/habitacion-card/habitacion
 export class HabitacionesComponent implements OnInit {
   private svc = inject(HabitacionesService);
   private toastSvc = inject(ToastService);
+  private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   habitaciones = signal<HabitacionResponse[]>([]);
   loading = signal(true);
@@ -38,6 +42,7 @@ export class HabitacionesComponent implements OnInit {
   latitud = signal<number | null>(null);
   longitud = signal<number | null>(null);
   radioKm = signal<number>(5);
+  filtrosListos = signal(false);
 
   filtered = computed(() => this.habitaciones());
 
@@ -52,6 +57,11 @@ export class HabitacionesComponent implements OnInit {
       const lat = this.latitud();
       const lon = this.longitud();
       const rad = this.radioKm();
+      const ready = this.filtrosListos();
+
+      if (!ready) {
+        return;
+      }
 
       // Disparamos la recarga
       this.loadHabitaciones();
@@ -59,7 +69,36 @@ export class HabitacionesComponent implements OnInit {
   }
 
   ngOnInit() {
-    // La carga inicial se maneja automáticamente por el effect
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        this.query.set(params.get('query') ?? '');
+
+        const maxPrecioParam = params.get('maxPrecio');
+        this.maxPrecio.set(maxPrecioParam ? Number(maxPrecioParam) : null);
+
+        const soloDisponiblesParam = params.get('soloDisponibles');
+        this.soloDisponibles.set(soloDisponiblesParam !== 'false');
+
+        const latParam = params.get('lat');
+        const lonParam = params.get('lon');
+        const radioParam = params.get('radioKm');
+        const lat = latParam ? Number(latParam) : null;
+        const lon = lonParam ? Number(lonParam) : null;
+
+        this.latitud.set(lat !== null && Number.isFinite(lat) ? lat : null);
+        this.longitud.set(lon !== null && Number.isFinite(lon) ? lon : null);
+        this.cercaDeMi.set(this.latitud() !== null && this.longitud() !== null);
+
+        if (radioParam) {
+          const radio = Number(radioParam);
+          if (Number.isFinite(radio)) {
+            this.radioKm.set(radio);
+          }
+        }
+
+        this.filtrosListos.set(true);
+      });
   }
 
   loadHabitaciones() {
@@ -72,7 +111,7 @@ export class HabitacionesComponent implements OnInit {
       soloDisponibles: this.soloDisponibles()
     };
 
-    if (this.cercaDeMi() && this.latitud() && this.longitud()) {
+    if (this.cercaDeMi() && this.latitud() !== null && this.longitud() !== null) {
       params.lat = this.latitud();
       params.lon = this.longitud();
       params.radioKm = this.radioKm();

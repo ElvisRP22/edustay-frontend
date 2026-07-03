@@ -51,6 +51,7 @@ export class HabitacionDetalleComponent implements OnInit {
 
   // Reseña nueva
   nuevaCalif = signal(5);
+  hoverCalif = signal(0);
   nuevoComentario = signal('');
   resenaOk = signal(false);
   yaCalificada = signal(false);
@@ -98,7 +99,7 @@ export class HabitacionDetalleComponent implements OnInit {
 
     if (this.auth.isAuthenticated()) {
       this.favSvc.esFavorito(this.id).subscribe({
-        next: r => this.esFavorito.set(Object.values(r)[0] ?? false)
+        next: r => this.esFavorito.set(r['esFavorito'] ?? false)
       });
       if (this.auth.isEstudiante()) {
         this.resenaSvc.yaCalificada(this.auth.user()!.id, this.id).subscribe({
@@ -115,12 +116,20 @@ export class HabitacionDetalleComponent implements OnInit {
   toggleFav() {
     if (!this.auth.isAuthenticated()) { this.router.navigate(['/login']); return; }
     this.loadingFav.set(true);
-    const obs = this.esFavorito()
+    const isFav = this.esFavorito();
+    const obs = isFav
       ? this.favSvc.eliminar(this.id)
       : this.favSvc.agregar(this.id);
     obs.subscribe({
-      next: () => { this.esFavorito.update(v => !v); this.loadingFav.set(false); },
-      error: () => this.loadingFav.set(false)
+      next: () => {
+        this.esFavorito.set(!isFav);
+        this.loadingFav.set(false);
+        this.toastSvc.success(!isFav ? 'Añadido a favoritos' : 'Eliminado de favoritos');
+      },
+      error: () => {
+        this.loadingFav.set(false);
+        this.toastSvc.error('Error al actualizar favoritos');
+      }
     });
   }
 
@@ -148,6 +157,11 @@ export class HabitacionDetalleComponent implements OnInit {
         this.resenaOk.set(true);
         this.yaCalificada.set(true);
         this.nuevoComentario.set('');
+        this.toastSvc.success('Reseña publicada exitosamente');
+      },
+      error: err => {
+        console.error(err);
+        this.toastSvc.error(err?.error?.message ?? 'Error al publicar reseña');
       }
     });
   }

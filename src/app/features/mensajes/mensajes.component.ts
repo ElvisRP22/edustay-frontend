@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MensajesService } from '../../core/services/mensajes.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 import { MensajeResponse } from '../../core/models/api.models';
 
 interface Conversacion {
@@ -27,6 +28,7 @@ interface Conversacion {
 export class MensajesComponent implements OnInit {
   private svc = inject(MensajesService);
   auth = inject(AuthService);
+  private toastSvc = inject(ToastService);
 
   bandeja = signal<MensajeResponse[]>([]);
   loading = signal(true);
@@ -98,7 +100,10 @@ export class MensajesComponent implements OnInit {
         this.nuevomsg.set('');
         this.enviando.set(false);
       },
-      error: () => this.enviando.set(false)
+      error: err => {
+        this.enviando.set(false);
+        this.toastSvc.error(err?.error?.message || 'Error al enviar el mensaje');
+      }
     });
   }
 

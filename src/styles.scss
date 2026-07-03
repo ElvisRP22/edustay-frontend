@@ -166,6 +166,11 @@ textarea:focus-visible {
     background-color 0.18s ease;
 }
 
+textarea.app-input {
+  min-height: 80px;
+  resize: vertical;
+}
+
 .app-input::placeholder {
   color: var(--slate-500);
 }

@@ -1,402 +1,461 @@
 @if (loading()) {
-  <div class="detail-state">
-    <div class="spinner"></div>
-    <p>Cargando habitación…</p>
-  </div>
+<div class="detail-state">
+  <div class="spinner"></div>
+  <p>Cargando habitación…</p>
+</div>
 } @else if (!habitacion()) {
-  <div class="detail-state">
-    <p>Habitación no encontrada.</p>
-    <a routerLink="/habitaciones" class="app-button app-button--primary">Ver listado</a>
-  </div>
+<div class="detail-state">
+  <p>Habitación no encontrada.</p>
+  <a routerLink="/habitaciones" class="app-button app-button--primary">Ver listado</a>
+</div>
 } @else {
-  <div class="detail-page">
-    <!-- ── Back ── -->
-    <a routerLink="/habitaciones" class="detail-back"><ng-icon name="heroArrowLeft" size="15"></ng-icon> Volver al listado</a>
+<div class="detail-page">
+  <!-- ── Back ── -->
+  <a routerLink="/habitaciones" class="detail-back"><ng-icon name="heroArrowLeft" size="15"></ng-icon> Volver al
+    listado</a>
 
-    <!-- ── Hero image ── -->
-    <div 
-      class="detail-hero"
-      [style.backgroundImage]="getActiveImageStyle()"
-    >
-      <div class="detail-hero__overlay">
-        <span class="app-badge">{{ habitacion()!.estado | lowercase }}</span>
-        @if (habitacion()!.distanciaUtpMinutos) {
-          <span class="dist-badge">{{ habitacion()!.distanciaUtpMinutos }} min de UTP</span>
-        }
-      </div>
+  <!-- ── Hero image ── -->
+  <div class="detail-hero" [style.backgroundImage]="getActiveImageStyle()">
+    <div class="detail-hero__overlay">
+      <span class="app-badge">{{ habitacion()!.estado | lowercase }}</span>
+      @if (habitacion()!.distanciaUtpMinutos) {
+      <span class="dist-badge">{{ habitacion()!.distanciaUtpMinutos }} min de UTP</span>
+      }
     </div>
+  </div>
 
-    <!-- Thumbnails for multiple photos -->
-    @if (habitacion()!.fotos && habitacion()!.fotos!.length > 1) {
-      <div class="detail-thumbnails">
-        @for (foto of habitacion()!.fotos; track $index) {
-          <button 
-            class="thumbnail-btn" 
-            [class.thumbnail-btn--active]="$index === activeImageIndex()"
-            (click)="activeImageIndex.set($index)"
-            [style.backgroundImage]="'url(' + foto + ')'"
-            type="button"
-            title="Ver imagen {{ $index + 1 }}"
-            aria-label="Ver imagen {{ $index + 1 }}"
-          ></button>
+  <!-- Thumbnails for multiple photos -->
+  @if (habitacion()!.fotos && habitacion()!.fotos!.length > 1) {
+  <div class="detail-thumbnails">
+    @for (foto of habitacion()!.fotos; track $index) {
+    <button class="thumbnail-btn" [class.thumbnail-btn--active]="$index === activeImageIndex()"
+      (click)="activeImageIndex.set($index)" [style.backgroundImage]="'url(' + foto + ')'" type="button"
+      title="Ver imagen {{ $index + 1 }}" aria-label="Ver imagen {{ $index + 1 }}"></button>
+    }
+  </div>
+  }
+
+  <div class="detail-layout">
+    <!-- ── Main info ── -->
+    <main class="detail-main">
+      <div class="detail-header">
+        <div>
+          <h1>{{ habitacion()!.titulo }}</h1>
+          <p class="detail-address">{{ habitacion()!.direccion }}</p>
+        </div>
+        <div class="detail-price">
+          <strong>S/ {{ habitacion()!.precio | number:'1.0-0' }}</strong>
+          <span>/ mes</span>
+        </div>
+      </div>
+
+      <!-- Actions row -->
+      <div class="detail-actions">
+        <button class="fav-btn" [class.fav-btn--active]="esFavorito()" (click)="toggleFav()" [disabled]="loadingFav()"
+          aria-label="Guardar en favoritos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+          {{ esFavorito() ? 'En favoritos' : 'Guardar' }}
+        </button>
+
+        @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
+        @if (auth.user()?.identidadVerificada === 'VERIFICADO') {
+        <button class="app-button app-button--primary" (click)="showAlquiler.update(v=>!v)">
+          Alquilar esta habitación
+        </button>
+        } @else {
+        <div class="verification-warning-box">
+          <ng-icon name="heroExclamationTriangle" size="16"></ng-icon>
+          <span>Debes <a routerLink="/perfil" class="verification-link">verificar tu identidad</a> antes de poder
+            alquilar esta habitación.</span>
+        </div>
+        }
+        }
+        @if (alquilerOk()) {
+        <span class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Alquiler registrado</span>
+        }
+
+        @if (!auth.isAuthenticated()) {
+        <a routerLink="/login" class="app-button app-button--secondary">Inicia sesión para contactar</a>
         }
       </div>
-    }
 
-    <div class="detail-layout">
-      <!-- ── Main info ── -->
-      <main class="detail-main">
-        <div class="detail-header">
-          <div>
-            <h1>{{ habitacion()!.titulo }}</h1>
-            <p class="detail-address">{{ habitacion()!.direccion }}</p>
-          </div>
-          <div class="detail-price">
-            <strong>S/ {{ habitacion()!.precio | number:'1.0-0' }}</strong>
-            <span>/ mes</span>
-          </div>
+      <!-- Alquiler form -->
+      @if (showAlquiler() && auth.isEstudiante() && auth.user()?.identidadVerificada === 'VERIFICADO') {
+      <div class="inline-form">
+        <h4>Confirmar alquiler</h4>
+
+        <!-- Disclaimer legal -->
+        <div class="disclaimer-box">
+          <strong>Deslinde de Responsabilidad de EduStay</strong>
+          <p>EduStay es únicamente una plataforma facilitadora que conecta estudiantes con arrendadores. No formamos
+            parte de ninguna relación contractual ni nos hacemos responsables de las condiciones del arrendamiento,
+            pagos, daños, disputas o cumplimiento de los contratos. Ambas partes son responsables de establecer y firmar
+            el acuerdo formalmente.</p>
         </div>
 
-        <!-- Actions row -->
-        <div class="detail-actions">
-          <button
-            class="fav-btn"
-            [class.fav-btn--active]="esFavorito()"
-            (click)="toggleFav()"
-            [disabled]="loadingFav()"
-            aria-label="Guardar en favoritos"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+        <label class="app-field">
+          <span>Monto mensual pactado (S/)</span>
+          <input class="app-input" type="number" [value]="montoPactado()"
+            (input)="montoPactado.set($any($event.target).valueAsNumber)" />
+        </label>
+
+        <label class="app-field mt">
+          <span>URL del contrato de alquiler firmado (PDF público)</span>
+          <input class="app-input" type="url" placeholder="https://storage.edustay.com/contratos/mi-contrato.pdf"
+            [value]="contratoUrlInput()" (input)="contratoUrlInput.set($any($event.target).value)" />
+          <small class="muted-info">Para tu seguridad y la del arrendador, debes subir y pegar aquí el contrato de
+            arrendamiento firmado.</small>
+        </label>
+
+        @if (alquilerError()) {
+        <p class="app-error">{{ alquilerError() }}</p>
+        }
+
+        <div class="inline-form__btns mt">
+          <button class="app-button app-button--primary" (click)="crearAlquiler()"
+            [disabled]="loadingAlquiler() || !contratoUrlInput()">
+            {{ loadingAlquiler() ? 'Registrando…' : 'Confirmar y Alquilar' }}
+          </button>
+          <button class="app-button app-button--ghost" (click)="showAlquiler.set(false)">Cancelar</button>
+        </div>
+      </div>
+      }
+
+      <!-- Description -->
+      <section class="detail-section">
+        <h2>Descripción</h2>
+        <p>{{ habitacion()!.descripcion }}</p>
+      </section>
+
+      @if (habitacion()!.servicios?.length || habitacion()!.reglas?.length) {
+      <section class="detail-section detail-section--catalogos">
+        @if (habitacion()!.servicios?.length) {
+        <div>
+          <h2>Servicios incluidos</h2>
+          <div class="catalog-list">
+            @for (servicio of visibleCatalogos(habitacion()!.servicios, 3); track servicio.id) {
+            <span class="catalog-chip">{{ catalogoLabel(servicio, 'Servicio', $index) }}</span>
+            }
+            @if (hiddenCatalogosCount(habitacion()!.servicios, 3) > 0) {
+            <span class="catalog-chip catalog-chip--more">+{{ hiddenCatalogosCount(habitacion()!.servicios, 3) }}</span>
+            }
+          </div>
+        </div>
+        }
+
+        @if (habitacion()!.reglas?.length) {
+        <div>
+          <h2>Reglas de la habitación</h2>
+          <div class="catalog-list">
+            @for (regla of visibleCatalogos(habitacion()!.reglas, 3); track regla.id) {
+            <span class="catalog-chip catalog-chip--rule">{{ catalogoLabel(regla, 'Regla', $index) }}</span>
+            }
+            @if (hiddenCatalogosCount(habitacion()!.reglas, 3) > 0) {
+            <span class="catalog-chip catalog-chip--rule catalog-chip--more">+{{
+              hiddenCatalogosCount(habitacion()!.reglas, 3) }}</span>
+            }
+          </div>
+        </div>
+        }
+      </section>
+      }
+
+      <!-- Datos del arrendador -->
+      <section class="detail-section">
+        <h2>Arrendador</h2>
+        <p class="owner-name">{{ habitacion()!.arrendadorNombre }}</p>
+      </section>
+
+      <!-- Mensaje al arrendador -->
+      @if (auth.isEstudiante()) {
+      <section class="detail-section">
+        <h2>Contactar al arrendador</h2>
+        @if (mensajeOk()) {
+        <p class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Mensaje enviado correctamente
+        </p>
+        } @else {
+        <textarea class="app-input" rows="3" placeholder="Hola, ¿sigue disponible la habitación?"
+          [value]="mensajeTexto()" (input)="mensajeTexto.set($any($event.target).value)"></textarea>
+        @if (mensajeError()) { <p class="app-error">{{ mensajeError() }}</p> }
+        <button class="app-button app-button--primary mt" (click)="enviarMensaje()" [disabled]="!mensajeTexto().trim()">
+          Enviar mensaje
+        </button>
+        }
+      </section>
+      }
+
+      <!-- Reseñas -->
+      <section class="detail-section">
+        <div class="section-head">
+          <h2>Reseñas</h2>
+          @if (avgCalif()) {
+          <span class="rating-pill"><ng-icon name="heroStarSolid" size="13"></ng-icon> {{ avgCalif() }} <small>({{
+              resenas().length }})</small></span>
+          }
+        </div>
+
+        @if (resenas().length === 0) {
+        <p class="muted">Aún no hay reseñas para esta habitación.</p>
+        }
+        @for (r of resenas(); track r.id) {
+        <div class="resena-card">
+          <div class="resena-card__head">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <div>
+                <strong>{{ r.estudianteNombre }}</strong>
+                <span class="stars" style="margin-left: 8px;">
+                  @for (s of stars(r.calificacion); track $index) {
+                  <ng-icon name="heroStarSolid" size="13" class="star-icon"></ng-icon>
+                  }
+                </span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <time>{{ r.fecha | date:'mediumDate' }}</time>
+                @if (auth.user()?.id === r.estudianteId) {
+                <button class="app-button app-button--ghost" style="color: #dc2626; padding: 2px 6px;"
+                  (click)="eliminarResena(r.id)">
+                  <ng-icon name="heroTrash" size="14"></ng-icon>
+                </button>
+                }
+              </div>
+            </div>
+          </div>
+          @if (r.comentario) { <p>{{ r.comentario }}</p> }
+        </div>
+        }
+
+        @if (auth.isEstudiante() && !resenaOk() && !yaCalificada()) {
+        <div class="inline-form mt">
+          <h4>Dejar una reseña</h4>
+          <div class="app-field">
+            <span>Calificación</span>
+            <div class="star-rating-selector" (mouseleave)="hoverCalif.set(0)">
+              @for (star of [1, 2, 3, 4, 5]; track star) {
+                <button
+                  type="button"
+                  class="star-rating-btn"
+                  [class.star-rating-btn--active]="star <= (hoverCalif() || nuevaCalif())"
+                  (mouseenter)="hoverCalif.set(star)"
+                  (click)="nuevaCalif.set(star)"
+                  [title]="star + ' estrellas'"
+                  aria-label="Calificar con ' + star + ' estrellas"
+                >
+                  <ng-icon name="heroStarSolid" size="24"></ng-icon>
+                </button>
+              }
+            </div>
+          </div>
+          <label class="app-field">
+            <span>Comentario (opcional)</span>
+            <textarea class="app-input" rows="2" [value]="nuevoComentario()"
+              (input)="nuevoComentario.set($any($event.target).value)"></textarea>
+          </label>
+          <button class="app-button app-button--secondary mt" (click)="crearResena()">Publicar reseña</button>
+        </div>
+        }
+        @if (resenaOk()) {
+        <p class="success-pill mt"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Reseña publicada</p>
+        }
+      </section>
+
+      <!-- Reportar -->
+      @if (auth.isAuthenticated() && !reporteOk()) {
+      <section class="detail-section">
+        <button class="report-btn" (click)="showReporte.update(v=>!v)">
+          <ng-icon name="heroFlag" size="15"></ng-icon> Reportar esta habitación
+        </button>
+        @if (showReporte()) {
+        <div class="inline-form mt">
+          <label class="app-field">
+            <span>Motivo</span>
+            <input class="app-input" type="text" placeholder="Ej. Fotos engañosas" [value]="reporteMotivo()"
+              (input)="reporteMotivo.set($any($event.target).value)" />
+          </label>
+          <label class="app-field">
+            <span>Descripción</span>
+            <textarea class="app-input" rows="3" [value]="reporteDesc()"
+              (input)="reporteDesc.set($any($event.target).value)"></textarea>
+          </label>
+          <div class="inline-form__btns">
+            <button class="app-button app-button--secondary" (click)="crearReporte()"
+              [disabled]="!reporteMotivo() || !reporteDesc()">Enviar reporte</button>
+            <button class="app-button app-button--ghost" (click)="showReporte.set(false)">Cancelar</button>
+          </div>
+        </div>
+        }
+      </section>
+      }
+      @if (reporteOk()) {
+      <p class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Reporte enviado, gracias</p>
+      }
+    </main>
+
+    <!-- ── Sidebar ── -->
+    <aside class="detail-sidebar">
+      <div class="sidebar-card">
+        <p class="sidebar-card__price"><strong>S/ {{ habitacion()!.precio | number:'1.0-0' }}</strong> / mes</p>
+        <dl class="sidebar-dl">
+          <dt>Estado</dt>
+          <dd>{{ habitacion()!.estado | lowercase }}</dd>
+          @if (habitacion()!.distanciaUtpMinutos) {
+          <dt>Distancia UTP</dt>
+          <dd>{{ habitacion()!.distanciaUtpMinutos }} min caminando</dd>
+          }
+          @if (habitacion()!.servicios?.length) {
+          <dt>Servicios</dt>
+          <dd>{{ habitacion()!.servicios!.length }} incluidos</dd>
+          }
+          @if (habitacion()!.reglas?.length) {
+          <dt>Reglas</dt>
+          <dd>{{ habitacion()!.reglas!.length }} activas</dd>
+          }
+          <dt>Publicado</dt>
+          <dd>{{ habitacion()!.fechaPublicacion | date:'mediumDate' }}</dd>
+          <dt>Arrendador</dt>
+          <dd>{{ habitacion()!.arrendadorNombre }}</dd>
+        </dl>
+        @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
+        @if (auth.user()?.identidadVerificada === 'VERIFICADO') {
+        <button class="app-button app-button--primary sidebar-card__cta" (click)="showAlquiler.update(v=>!v)">
+          Alquilar ahora
+        </button>
+        } @else {
+        <div class="verification-warning-box mt" style="font-size: 0.8rem; padding: 0.6rem 0.8rem;">
+          <span>Requiere <a routerLink="/perfil" class="verification-link">identidad verificada</a>.</span>
+        </div>
+        }
+        }
+        @if (!auth.isAuthenticated()) {
+        <a routerLink="/login" class="app-button app-button--primary sidebar-card__cta">
+          Inicia sesión para alquilar
+        </a>
+        }
+      </div>
+
+      <!-- Tarjeta de Compartir en Redes Sociales -->
+      <div class="sidebar-card share-card" style="margin-top: 1.25rem;">
+        <h3
+          style="font-size: 0.95rem; font-weight: 800; margin: 0 0 0.75rem; display: flex; align-items: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2"
+            style="color: var(--brand-700);">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          Compartir Alojamiento
+        </h3>
+        <p class="muted" style="font-size: 0.78rem; margin: 0 0 1rem 0; line-height: 1.4;">Recomienda esta habitación a
+          tus compañeros o amigos.</p>
+        <div class="share-buttons-grid">
+          <div class="share-social-grid">
+            <button class="share-btn share-btn--whatsapp" (click)="compartir('whatsapp')" title="Compartir en WhatsApp">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
+              WhatsApp
+            </button>
+            <button class="share-btn share-btn--telegram" (click)="compartir('telegram')" title="Compartir en Telegram">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path
+                  d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+              </svg>
+              Telegram
+            </button>
+            <button class="share-btn share-btn--facebook" (click)="compartir('facebook')" title="Compartir en Facebook">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+              Facebook
+            </button>
+            <button class="share-btn share-btn--twitter" (click)="compartir('twitter')"
+              title="Compartir en X (Twitter)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              Twitter
+            </button>
+          </div>
+
+          <button class="share-btn share-btn--email" (click)="compartir('email')"
+            title="Compartir por Correo Electrónico">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
-            {{ esFavorito() ? 'En favoritos' : 'Guardar' }}
+            Enviar por correo
           </button>
 
-          @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
-            @if (auth.user()?.identidadVerificada === 'VERIFICADO') {
-              <button class="app-button app-button--primary" (click)="showAlquiler.update(v=>!v)">
-                Alquilar esta habitación
-              </button>
-            } @else {
-              <div class="verification-warning-box">
-                <ng-icon name="heroExclamationTriangle" size="16"></ng-icon>
-                <span>Debes <a routerLink="/perfil" class="verification-link">verificar tu identidad</a> antes de poder alquilar esta habitación.</span>
-              </div>
-            }
-          }
-          @if (alquilerOk()) {
-            <span class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Alquiler registrado</span>
+          @if (isShareSupported) {
+          <button class="share-btn share-btn--native" (click)="compartir('native')" title="Compartir usando el sistema">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            Compartir en otras apps
+          </button>
           }
 
-          @if (!auth.isAuthenticated()) {
-            <a routerLink="/login" class="app-button app-button--secondary">Inicia sesión para contactar</a>
+          <button class="share-btn share-btn--copy" (click)="compartir('copiar')"
+            [class.share-btn--copied]="compartirCopied()" title="Copiar enlace">
+            @if (compartirCopied()) {
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            ¡Enlace copiado!
+            } @else {
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copiar enlace
+            }
+          </button>
+
+          <button class="share-btn share-btn--qr" (click)="showQr.update(v => !v)"
+            [class.share-btn--qr-active]="showQr()" title="Mostrar código QR para escanear">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              <line x1="17" y1="7" x2="17.01" y2="7"></line>
+              <line x1="17" y1="17" x2="17.01" y2="17"></line>
+              <line x1="7" y1="17" x2="7.01" y2="17"></line>
+            </svg>
+            {{ showQr() ? 'Ocultar código QR' : 'Mostrar código QR' }}
+          </button>
+
+          @if (showQr()) {
+          <div class="qr-container"
+            style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 1rem; border-radius: 12px; background: #f8fafc; border: 1px dashed #cbd5e1; animation: qr-fade-in 0.25s ease-out;">
+            <img [src]="getQrCodeUrl()" alt="Código QR del alojamiento"
+              style="width: 140px; height: 140px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" />
+            <span class="muted"
+              style="font-size: 0.72rem; font-weight: 700; text-align: center; color: var(--slate-500);">¡Escanea con tu
+              celular para compartir o ver rápido!</span>
+          </div>
           }
         </div>
-
-        <!-- Alquiler form -->
-        @if (showAlquiler() && auth.isEstudiante() && auth.user()?.identidadVerificada === 'VERIFICADO') {
-          <div class="inline-form">
-            <h4>Confirmar alquiler</h4>
-
-            <!-- Disclaimer legal -->
-            <div class="disclaimer-box">
-              <strong>Deslinde de Responsabilidad de EduStay</strong>
-              <p>EduStay es únicamente una plataforma facilitadora que conecta estudiantes con arrendadores. No formamos parte de ninguna relación contractual ni nos hacemos responsables de las condiciones del arrendamiento, pagos, daños, disputas o cumplimiento de los contratos. Ambas partes son responsables de establecer y firmar el acuerdo formalmente.</p>
-            </div>
-
-            <label class="app-field">
-              <span>Monto mensual pactado (S/)</span>
-              <input class="app-input" type="number" [value]="montoPactado()"
-                     (input)="montoPactado.set($any($event.target).valueAsNumber)" />
-            </label>
-
-            <label class="app-field mt">
-              <span>URL del contrato de alquiler firmado (PDF público)</span>
-              <input class="app-input" type="url" placeholder="https://storage.edustay.com/contratos/mi-contrato.pdf"
-                     [value]="contratoUrlInput()" (input)="contratoUrlInput.set($any($event.target).value)" />
-              <small class="muted-info">Para tu seguridad y la del arrendador, debes subir y pegar aquí el contrato de arrendamiento firmado.</small>
-            </label>
-
-            @if (alquilerError()) {
-              <p class="app-error">{{ alquilerError() }}</p>
-            }
-
-            <div class="inline-form__btns mt">
-              <button class="app-button app-button--primary" (click)="crearAlquiler()" [disabled]="loadingAlquiler() || !contratoUrlInput()">
-                {{ loadingAlquiler() ? 'Registrando…' : 'Confirmar y Alquilar' }}
-              </button>
-              <button class="app-button app-button--ghost" (click)="showAlquiler.set(false)">Cancelar</button>
-            </div>
-          </div>
-        }
-
-        <!-- Description -->
-        <section class="detail-section">
-          <h2>Descripción</h2>
-          <p>{{ habitacion()!.descripcion }}</p>
-        </section>
-
-        @if (habitacion()!.servicios?.length || habitacion()!.reglas?.length) {
-          <section class="detail-section detail-section--catalogos">
-            @if (habitacion()!.servicios?.length) {
-              <div>
-                <h2>Servicios incluidos</h2>
-                <div class="catalog-list">
-                  @for (servicio of visibleCatalogos(habitacion()!.servicios, 3); track servicio.id) {
-                    <span class="catalog-chip">{{ catalogoLabel(servicio, 'Servicio', $index) }}</span>
-                  }
-                  @if (hiddenCatalogosCount(habitacion()!.servicios, 3) > 0) {
-                    <span class="catalog-chip catalog-chip--more">+{{ hiddenCatalogosCount(habitacion()!.servicios, 3) }}</span>
-                  }
-                </div>
-              </div>
-            }
-
-            @if (habitacion()!.reglas?.length) {
-              <div>
-                <h2>Reglas de la habitación</h2>
-                <div class="catalog-list">
-                  @for (regla of visibleCatalogos(habitacion()!.reglas, 3); track regla.id) {
-                    <span class="catalog-chip catalog-chip--rule">{{ catalogoLabel(regla, 'Regla', $index) }}</span>
-                  }
-                  @if (hiddenCatalogosCount(habitacion()!.reglas, 3) > 0) {
-                    <span class="catalog-chip catalog-chip--rule catalog-chip--more">+{{ hiddenCatalogosCount(habitacion()!.reglas, 3) }}</span>
-                  }
-                </div>
-              </div>
-            }
-          </section>
-        }
-
-        <!-- Datos del arrendador -->
-        <section class="detail-section">
-          <h2>Arrendador</h2>
-          <p class="owner-name">{{ habitacion()!.arrendadorNombre }}</p>
-        </section>
-
-        <!-- Mensaje al arrendador -->
-        @if (auth.isEstudiante()) {
-          <section class="detail-section">
-            <h2>Contactar al arrendador</h2>
-            @if (mensajeOk()) {
-              <p class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Mensaje enviado correctamente</p>
-            } @else {
-              <textarea
-                class="app-input"
-                rows="3"
-                placeholder="Hola, ¿sigue disponible la habitación?"
-                [value]="mensajeTexto()"
-                (input)="mensajeTexto.set($any($event.target).value)"
-              ></textarea>
-              @if (mensajeError()) { <p class="app-error">{{ mensajeError() }}</p> }
-              <button class="app-button app-button--primary mt" (click)="enviarMensaje()" [disabled]="!mensajeTexto().trim()">
-                Enviar mensaje
-              </button>
-            }
-          </section>
-        }
-
-        <!-- Reseñas -->
-        <section class="detail-section">
-          <div class="section-head">
-            <h2>Reseñas</h2>
-            @if (avgCalif()) {
-              <span class="rating-pill"><ng-icon name="heroStarSolid" size="13"></ng-icon> {{ avgCalif() }} <small>({{ resenas().length }})</small></span>
-            }
-          </div>
-
-          @if (resenas().length === 0) {
-            <p class="muted">Aún no hay reseñas para esta habitación.</p>
-          }
-          @for (r of resenas(); track r.id) {
-            <div class="resena-card">
-              <div class="resena-card__head">
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                  <div>
-                    <strong>{{ r.estudianteNombre }}</strong>
-                    <span class="stars" style="margin-left: 8px;">
-                      @for (s of stars(r.calificacion); track $index) {
-                        <ng-icon name="heroStarSolid" size="13" class="star-icon"></ng-icon>
-                      }
-                    </span>
-                  </div>
-                  <div style="display: flex; gap: 8px; align-items: center;">
-                    <time>{{ r.fecha | date:'mediumDate' }}</time>
-                    @if (auth.user()?.id === r.estudianteId) {
-                      <button class="app-button app-button--ghost" style="color: #dc2626; padding: 2px 6px;" (click)="eliminarResena(r.id)">
-                        <ng-icon name="heroTrash" size="14"></ng-icon>
-                      </button>
-                    }
-                  </div>
-                </div>
-              </div>
-              @if (r.comentario) { <p>{{ r.comentario }}</p> }
-            </div>
-          }
-
-          @if (auth.isEstudiante() && !resenaOk() && !yaCalificada()) {
-            <div class="inline-form mt">
-              <h4>Dejar una reseña</h4>
-              <label class="app-field">
-                <span>Calificación</span>
-                <select class="app-input" [value]="nuevaCalif()" (change)="nuevaCalif.set($any($event.target).valueAsNumber)">
-                  <option [value]="5">5 estrellas</option>
-                  <option [value]="4">4 estrellas</option>
-                  <option [value]="3">3 estrellas</option>
-                  <option [value]="2">2 estrellas</option>
-                  <option [value]="1">1 estrella</option>
-                </select>
-              </label>
-              <label class="app-field">
-                <span>Comentario (opcional)</span>
-                <textarea class="app-input" rows="2" [value]="nuevoComentario()"
-                          (input)="nuevoComentario.set($any($event.target).value)"></textarea>
-              </label>
-              <button class="app-button app-button--secondary mt" (click)="crearResena()">Publicar reseña</button>
-            </div>
-          }
-          @if (resenaOk()) {
-            <p class="success-pill mt"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Reseña publicada</p>
-          }
-        </section>
-
-        <!-- Reportar -->
-        @if (auth.isAuthenticated() && !reporteOk()) {
-          <section class="detail-section">
-            <button class="report-btn" (click)="showReporte.update(v=>!v)">
-              <ng-icon name="heroFlag" size="15"></ng-icon> Reportar esta habitación
-            </button>
-            @if (showReporte()) {
-              <div class="inline-form mt">
-                <label class="app-field">
-                  <span>Motivo</span>
-                  <input class="app-input" type="text" placeholder="Ej. Fotos engañosas"
-                         [value]="reporteMotivo()" (input)="reporteMotivo.set($any($event.target).value)" />
-                </label>
-                <label class="app-field">
-                  <span>Descripción</span>
-                  <textarea class="app-input" rows="3" [value]="reporteDesc()"
-                            (input)="reporteDesc.set($any($event.target).value)"></textarea>
-                </label>
-                <div class="inline-form__btns">
-                  <button class="app-button app-button--secondary" (click)="crearReporte()"
-                          [disabled]="!reporteMotivo() || !reporteDesc()">Enviar reporte</button>
-                  <button class="app-button app-button--ghost" (click)="showReporte.set(false)">Cancelar</button>
-                </div>
-              </div>
-            }
-          </section>
-        }
-        @if (reporteOk()) {
-          <p class="success-pill"><ng-icon name="heroCheckCircleSolid" size="15"></ng-icon> Reporte enviado, gracias</p>
-        }
-      </main>
-
-      <!-- ── Sidebar ── -->
-      <aside class="detail-sidebar">
-        <div class="sidebar-card">
-          <p class="sidebar-card__price"><strong>S/ {{ habitacion()!.precio | number:'1.0-0' }}</strong> / mes</p>
-          <dl class="sidebar-dl">
-            <dt>Estado</dt>
-            <dd>{{ habitacion()!.estado | lowercase }}</dd>
-            @if (habitacion()!.distanciaUtpMinutos) {
-              <dt>Distancia UTP</dt>
-              <dd>{{ habitacion()!.distanciaUtpMinutos }} min caminando</dd>
-            }
-            @if (habitacion()!.servicios?.length) {
-              <dt>Servicios</dt>
-              <dd>{{ habitacion()!.servicios!.length }} incluidos</dd>
-            }
-            @if (habitacion()!.reglas?.length) {
-              <dt>Reglas</dt>
-              <dd>{{ habitacion()!.reglas!.length }} activas</dd>
-            }
-            <dt>Publicado</dt>
-            <dd>{{ habitacion()!.fechaPublicacion | date:'mediumDate' }}</dd>
-            <dt>Arrendador</dt>
-            <dd>{{ habitacion()!.arrendadorNombre }}</dd>
-          </dl>
-          @if (auth.isEstudiante() && habitacion()!.estado === 'DISPONIBLE' && !alquilerOk()) {
-            @if (auth.user()?.identidadVerificada === 'VERIFICADO') {
-              <button class="app-button app-button--primary sidebar-card__cta" (click)="showAlquiler.update(v=>!v)">
-                Alquilar ahora
-              </button>
-            } @else {
-              <div class="verification-warning-box mt" style="font-size: 0.8rem; padding: 0.6rem 0.8rem;">
-                <span>Requiere <a routerLink="/perfil" class="verification-link">identidad verificada</a>.</span>
-              </div>
-            }
-          }
-          @if (!auth.isAuthenticated()) {
-            <a routerLink="/login" class="app-button app-button--primary sidebar-card__cta">
-              Inicia sesión para alquilar
-            </a>
-          }
-        </div>
-
-        <!-- Tarjeta de Compartir en Redes Sociales -->
-        <div class="sidebar-card share-card" style="margin-top: 1.25rem;">
-          <h3 style="font-size: 0.95rem; font-weight: 800; margin: 0 0 0.75rem; display: flex; align-items: center; gap: 8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2" style="color: var(--brand-700);"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-            Compartir Alojamiento
-          </h3>
-          <p class="muted" style="font-size: 0.78rem; margin: 0 0 1rem 0; line-height: 1.4;">Recomienda esta habitación a tus compañeros o amigos.</p>
-          <div class="share-buttons-grid">
-            <div class="share-social-grid">
-              <button class="share-btn share-btn--whatsapp" (click)="compartir('whatsapp')" title="Compartir en WhatsApp">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.504-5.713-1.465L0 24zm6.757-4.218c1.58.94 3.12 1.4 4.887 1.402 5.518 0 10.007-4.482 10.01-9.993.002-2.67-1.036-5.18-2.92-7.068C16.89 2.234 14.39 1.196 11.72 1.196 6.202 1.196 1.713 5.679 1.711 11.192c0 1.884.51 3.393 1.488 4.96L2.208 21.8l5.606-1.47z"/></svg>
-                WhatsApp
-              </button>
-              <button class="share-btn share-btn--telegram" (click)="compartir('telegram')" title="Compartir en Telegram">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.18l-1.89 8.9c-.14.63-.51.79-1.04.49l-2.88-2.12-1.39 1.34c-.15.15-.28.28-.58.28l.2-2.94 5.35-4.83c.23-.21-.05-.32-.35-.12L9.21 13.5l-2.85-.89c-.62-.19-.63-.62.13-.92L17.5 4.54c.51-.19.96.12.06 3.64z"/></svg>
-                Telegram
-              </button>
-              <button class="share-btn share-btn--facebook" (click)="compartir('facebook')" title="Compartir en Facebook">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M9 8H7v3h2v9h3v-9h3l.5-3H12V6c0-.9.2-1.2 1-1.2h2V1h-3c-3 0-5 1.5-5 4v3z"/></svg>
-                Facebook
-              </button>
-              <button class="share-btn share-btn--twitter" (click)="compartir('twitter')" title="Compartir en X (Twitter)">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                Twitter
-              </button>
-            </div>
-
-            <button class="share-btn share-btn--email" (click)="compartir('email')" title="Compartir por Correo Electrónico">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-              Enviar por correo
-            </button>
-
-            @if (isShareSupported) {
-              <button class="share-btn share-btn--native" (click)="compartir('native')" title="Compartir usando el sistema">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                Compartir en otras apps
-              </button>
-            }
-
-            <button class="share-btn share-btn--copy" (click)="compartir('copiar')" [class.share-btn--copied]="compartirCopied()" title="Copiar enlace">
-              @if (compartirCopied()) {
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                ¡Enlace copiado!
-              } @else {
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                Copiar enlace
-              }
-            </button>
-
-            <button class="share-btn share-btn--qr" (click)="showQr.update(v => !v)" [class.share-btn--qr-active]="showQr()" title="Mostrar código QR para escanear">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="7" y1="7" x2="7.01" y2="7"></line><line x1="17" y1="7" x2="17.01" y2="7"></line><line x1="17" y1="17" x2="17.01" y2="17"></line><line x1="7" y1="17" x2="7.01" y2="17"></line></svg>
-              {{ showQr() ? 'Ocultar código QR' : 'Mostrar código QR' }}
-            </button>
-
-            @if (showQr()) {
-              <div class="qr-container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 1rem; border-radius: 12px; background: #f8fafc; border: 1px dashed #cbd5e1; animation: qr-fade-in 0.25s ease-out;">
-                <img [src]="getQrCodeUrl()" alt="Código QR del alojamiento" style="width: 140px; height: 140px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" />
-                <span class="muted" style="font-size: 0.72rem; font-weight: 700; text-align: center; color: var(--slate-500);">¡Escanea con tu celular para compartir o ver rápido!</span>
-              </div>
-            }
-          </div>
-        </div>
-      </aside>
-    </div>
+      </div>
+    </aside>
   </div>
+</div>
 }

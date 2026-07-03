@@ -19,6 +19,13 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
         Verificaciones
       </a>
+      <a [class.active]="activeTab() === 'moderacion'" (click)="setTab('moderacion')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Moderación de Chats
+        @if (mensajesReportados().length > 0) {
+          <span class="tab-badge" style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{mensajesReportados().length}}</span>
+        }
+      </a>
     </nav>
     <div class="nav-section mt-4">CONFIGURACIÓN</div>
     <nav>
@@ -386,6 +393,175 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      }
+
+      <!-- MODERACIÓN DE CHATS -->
+      @if (activeTab() === 'moderacion') {
+        <div class="table-container">
+          <!-- Sub-tabs navigation -->
+          <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; gap: 1rem; background: #f9fafb;">
+            <button 
+              (click)="moderacionSubTab.set('activas')"
+              [style.font-weight]="moderacionSubTab() === 'activas' ? '800' : '500'"
+              [style.color]="moderacionSubTab() === 'activas' ? '#1d4ed8' : '#4b5563'"
+              [style.border-bottom]="moderacionSubTab() === 'activas' ? '2px solid #1d4ed8' : 'none'"
+              style="padding: 6px 12px; background: none; border: none; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">
+              Alertas Activas ({{ mensajesReportados().length }})
+            </button>
+            <button 
+              (click)="moderacionSubTab.set('historial')"
+              [style.font-weight]="moderacionSubTab() === 'historial' ? '800' : '500'"
+              [style.color]="moderacionSubTab() === 'historial' ? '#1d4ed8' : '#4b5563'"
+              [style.border-bottom]="moderacionSubTab() === 'historial' ? '2px solid #1d4ed8' : 'none'"
+              style="padding: 6px 12px; background: none; border: none; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">
+              Historial de Resoluciones ({{ mensajesHistorial().length }})
+            </button>
+          </div>
+
+          @if (moderacionSubTab() === 'activas') {
+            <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin: 0;">Chats Alertados</h2>
+                <p style="font-size: 0.875rem; color: #6b7280; margin: 0; margin-top: 4px;">Mensajes internos sospechosos marcados por IA o reglas locales.</p>
+              </div>
+              <span class="status-badge status-rechazado" style="font-weight: 800;">
+                {{ mensajesReportados().length }} alertas activas
+              </span>
+            </div>
+
+            @if (mensajesReportados().length === 0) {
+              <div class="state-center" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; color: #6b7280; font-weight: 700;">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" style="color: #10b981; margin-bottom: 1rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <p style="margin: 0; font-size: 1rem;">No hay chats con alertas activas</p>
+                <p style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #9ca3af; margin-top: 4px;">¡Todos los chats están libres de infracciones!</p>
+              </div>
+            } @else {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Habitación</th>
+                    <th>Emisor</th>
+                    <th>Receptor</th>
+                    <th>Mensaje</th>
+                    <th>Categoría</th>
+                    <th>Fecha</th>
+                    <th style="text-align: right;">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (msg of mensajesReportados(); track msg.id) {
+                    <tr>
+                      <td>
+                        <div style="font-weight: 700; color: #111827;">{{ msg.habitacionTitulo }}</div>
+                        <div style="font-size: 11px; color: #6b7280;">ID: {{ msg.habitacionId }}</div>
+                      </td>
+                      <td>{{ msg.emisorNombre }}</td>
+                      <td>{{ msg.receptorNombre }}</td>
+                      <td>
+                        <div style="max-width: 320px; font-size: 13px; color: #374151; word-break: break-word; background: #fffbeb; border-left: 3px solid #d97706; padding: 6px 10px; border-radius: 4px;">
+                          "{{ msg.contenido }}"
+                        </div>
+                      </td>
+                      <td>
+                        <span class="status-badge status-review" style="text-transform: uppercase; font-size: 11px; font-weight: 800;">
+                          {{ msg.categoriaModeracion || 'SOSPECHOSO' }}
+                        </span>
+                      </td>
+                      <td class="date-cell">{{ formatDate(msg.fechaEnvio) }}</td>
+                      <td class="actions-cell" style="text-align: right; white-space: nowrap;">
+                        <button class="action-btn btn-verify" (click)="desestimarMensaje(msg.id)" style="padding: 4px 8px; font-size: 11px; margin-right: 6px;">
+                          Desestimar
+                        </button>
+                        <button class="action-btn btn-reject" (click)="eliminarMensaje(msg.id)" style="padding: 4px 8px; font-size: 11px;">
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          }
+
+          @if (moderacionSubTab() === 'historial') {
+            <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin: 0;">Historial de Auditoría</h2>
+                <p style="font-size: 0.875rem; color: #6b7280; margin: 0; margin-top: 4px;">Registro de alertas resueltas por el equipo administrativo.</p>
+              </div>
+              <span class="status-badge status-verificado" style="font-weight: 800; background-color: #f0fdf4; color: #16a34a;">
+                {{ mensajesHistorial().length }} auditados
+              </span>
+            </div>
+
+            @if (mensajesHistorial().length === 0) {
+              <div class="state-center" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; color: #6b7280; font-weight: 700;">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" style="color: #9ca3af; margin-bottom: 1rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <p style="margin: 0; font-size: 1rem;">No hay auditorías registradas</p>
+                <p style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #9ca3af; margin-top: 4px;">Aún no se han auditado mensajes moderados.</p>
+              </div>
+            } @else {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Habitación</th>
+                    <th>De / Para</th>
+                    <th>Mensaje Resultante</th>
+                    <th>Infracción Flagged</th>
+                    <th>Fecha Envío</th>
+                    <th>Estado Resolución</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (msg of mensajesHistorial(); track msg.id) {
+                    <tr>
+                      <td>
+                        <div style="font-weight: 700; color: #111827;">{{ msg.habitacionTitulo }}</div>
+                        <div style="font-size: 11px; color: #6b7280;">ID: {{ msg.habitacionId }}</div>
+                      </td>
+                      <td>
+                        <div style="font-size: 13px; color: #374151;">De: <strong>{{ msg.emisorNombre }}</strong></div>
+                        <div style="font-size: 13px; color: #6b7280;">Para: {{ msg.receptorNombre }}</div>
+                      </td>
+                      <td>
+                        <div style="max-width: 320px; font-size: 13px; color: #374151; word-break: break-word; padding: 6px 10px; border-radius: 4px; background: #f3f4f6; border-left: 3px solid #9ca3af;"
+                             [style.background]="msg.estadoModeracion === 'ELIMINADO' ? '#fef2f2' : '#f3f4f6'"
+                             [style.border-left-color]="msg.estadoModeracion === 'ELIMINADO' ? '#ef4444' : '#10b981'">
+                          "{{ msg.contenido }}"
+                        </div>
+                      </td>
+                      <td>
+                        <span class="status-badge status-review" style="text-transform: uppercase; font-size: 11px; font-weight: 800;">
+                          {{ msg.categoriaModeracion || 'SOSPECHOSO' }}
+                        </span>
+                      </td>
+                      <td class="date-cell">{{ formatDate(msg.fechaEnvio) }}</td>
+                      <td>
+                        @if (msg.estadoModeracion === 'DESESTIMADO') {
+                          <span style="display: inline-flex; align-items: center; gap: 4px; background-color: #ecfdf5; color: #065f46; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                            🟢 APROBADO (DESESTIMADO)
+                          </span>
+                        } @else if (msg.estadoModeracion === 'ELIMINADO') {
+                          <span style="display: inline-flex; align-items: center; gap: 4px; background-color: #fef2f2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                            🔴 ELIMINADO
+                          </span>
+                        } @else if (msg.estadoModeracion === 'PENDIENTE') {
+                          <span style="display: inline-flex; align-items: center; gap: 4px; background-color: #fffbeb; color: #92400e; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                            🟡 PENDIENTE
+                          </span>
+                        } @else {
+                          <span style="font-size: 11px; font-weight: 700; color: #4b5563; text-transform: uppercase;">
+                            {{ msg.estadoModeracion }}
+                          </span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          }
         </div>
       }
 
