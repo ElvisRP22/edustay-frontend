@@ -16,7 +16,7 @@
       @for (h of favoritos(); track h.id) {
         <div class="fav-card">
           <a [routerLink]="['/habitaciones', h.id]" class="fav-card__link">
-            <div 
+            <div
               class="fav-card__image"
               [style.backgroundImage]="h.fotos && h.fotos.length > 0 ? 'url(' + h.fotos[0] + ')' : 'linear-gradient(135deg, #bfdbfe, #eff6ff)'"
             ></div>

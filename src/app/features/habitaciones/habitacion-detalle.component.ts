@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy, Component, inject, OnInit, signal
+  ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy, signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -16,6 +16,8 @@ import { ToastService } from '../../core/services/toast.service';
 import { HabitacionCatalogItem, HabitacionResponse, ResenaResponse } from '../../core/models/api.models';
 import { EDUSTAY_ICONS } from '../../core/icons';
 
+declare const L: any;
+
 @Component({
   selector: 'app-habitacion-detalle',
   standalone: true,
@@ -25,7 +27,7 @@ import { EDUSTAY_ICONS } from '../../core/icons';
   styleUrl: './habitacion-detalle.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HabitacionDetalleComponent implements OnInit {
+export class HabitacionDetalleComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private svc = inject(HabitacionesService);
@@ -36,6 +38,8 @@ export class HabitacionDetalleComponent implements OnInit {
   private mensajeSvc = inject(MensajesService);
   auth = inject(AuthService);
   toastSvc = inject(ToastService);
+
+  private map: any;
 
   habitacion = signal<HabitacionResponse | null>(null);
   resenas = signal<ResenaResponse[]>([]);
@@ -89,6 +93,7 @@ export class HabitacionDetalleComponent implements OnInit {
         this.habitacion.set(h);
         this.montoPactado.set(h.precio);
         this.loading.set(false);
+        setTimeout(() => this.initMap(h), 50);
       },
       error: () => { this.loading.set(false); }
     });
@@ -111,6 +116,112 @@ export class HabitacionDetalleComponent implements OnInit {
         });
       }
     }
+  }
+
+  ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
+  }
+
+  getGoogleMapsDirectionUrl(): string {
+    const h = this.habitacion();
+    if (!h || !h.latitud || !h.longitud) return '#';
+    return `https://www.google.com/maps/dir/?api=1&origin=${h.latitud},${h.longitud}&destination=-5.192,-80.632&travelmode=walking`;
+  }
+
+  private initMap(h: HabitacionResponse) {
+    if (typeof window === 'undefined' || typeof L === 'undefined') return;
+
+    const mapElement = document.getElementById('map');
+    if (!mapElement) return;
+
+    const roomLat = h.latitud;
+    const roomLng = h.longitud;
+    const utpLat = -5.192;
+    const utpLng = -80.632;
+
+    if (roomLat === null || roomLat === undefined || roomLng === null || roomLng === undefined) return;
+
+    if (this.map) {
+      this.map.remove();
+    }
+
+    this.map = L.map('map', {
+      zoomControl: true,
+      scrollWheelZoom: false
+    }).setView([roomLat, roomLng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
+
+    const uIcon = L.divIcon({
+      html: `
+        <div class="custom-pin-icon pin-utp">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+        </div>
+      `,
+      className: 'custom-pin-wrapper',
+      iconSize: [24, 24],
+      iconAnchor: [12, 24]
+    });
+
+    const rIcon = L.divIcon({
+      html: `
+        <div class="custom-pin-icon pin-room">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+        </div>
+      `,
+      className: 'custom-pin-wrapper',
+      iconSize: [24, 24],
+      iconAnchor: [12, 24]
+    });
+
+    const utpMarker = L.marker([utpLat, utpLng], { icon: uIcon }).addTo(this.map);
+    utpMarker.bindTooltip(`
+      <div class="map-tooltip-content tooltip-utp">
+        <strong>Universidad Tecnológica del Perú (UTP)</strong>
+        <span>${h.distanciaUtpMinutos || 5} min caminando</span>
+      </div>
+    `, {
+      permanent: true,
+      direction: 'top',
+      offset: [0, -20],
+      className: 'map-tooltip'
+    }).openTooltip();
+
+    const roomMarker = L.marker([roomLat, roomLng], { icon: rIcon }).addTo(this.map);
+    roomMarker.bindTooltip(`
+      <div class="map-tooltip-content tooltip-room-single">
+        ${h.direccion}
+      </div>
+    `, {
+      permanent: true,
+      direction: 'top',
+      offset: [0, -20],
+      className: 'map-tooltip'
+    }).openTooltip();
+
+    const routeCoordinates = [
+      [roomLat, roomLng],
+      [utpLat, utpLng]
+    ];
+    const polyline = L.polyline(routeCoordinates as any, {
+      color: '#1d4ed8',
+      weight: 3,
+      dashArray: '6, 8',
+      opacity: 0.8
+    }).addTo(this.map);
+
+    this.map.fitBounds(polyline.getBounds(), {
+      padding: [40, 40]
+    });
   }
 
   toggleFav() {

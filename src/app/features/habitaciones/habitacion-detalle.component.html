@@ -163,6 +163,53 @@
       </section>
       }
 
+      <!-- Ubicación -->
+      <section class="detail-section detail-section--location">
+        <h2>Ubicación</h2>
+        <div class="location-container">
+          <div class="location-map-wrapper">
+            <div id="map" class="location-map"></div>
+            <a [href]="getGoogleMapsDirectionUrl()" target="_blank" class="location-map-btn">
+              Abrir en Google Maps
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+          <div class="location-features-card">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <ng-icon name="heroMapPin" size="18"></ng-icon>
+              </div>
+              <div class="feature-content">
+                <strong>{{ habitacion()!.distanciaUtpMinutos || 5 }} min caminando</strong>
+                <span>a la UTP</span>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <ng-icon name="heroShieldCheck" size="18"></ng-icon>
+              </div>
+              <div class="feature-content">
+                <strong>Zona segura</strong>
+                <span>Iluminada y transitada</span>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <ng-icon name="heroBuildingOffice2" size="18"></ng-icon>
+              </div>
+              <div class="feature-content">
+                <strong>Cerca de todo</strong>
+                <span>Tiendas, restaurantes y transporte público</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Datos del arrendador -->
       <section class="detail-section">
         <h2>Arrendador</h2>
