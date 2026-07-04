@@ -5,32 +5,35 @@
   </div>
 
   @if (loading()) {
-    <div class="state-center"><div class="spinner"></div><p>Cargando…</p></div>
+  <div class="state-center">
+    <div class="spinner"></div>
+    <p>Cargando…</p>
+  </div>
   } @else if (favoritos().length === 0) {
-    <div class="state-center">
-      <p>Aún no tienes habitaciones guardadas.</p>
-      <a routerLink="/habitaciones" class="app-button app-button--primary">Explorar alojamientos</a>
-    </div>
+  <div class="state-center">
+    <p>Aún no tienes habitaciones guardadas.</p>
+    <a routerLink="/habitaciones" class="app-button app-button--primary">Explorar alojamientos</a>
+  </div>
   } @else {
-    <div class="cards-grid">
-      @for (h of favoritos(); track h.id) {
-        <div class="fav-card">
-          <a [routerLink]="['/habitaciones', h.id]" class="fav-card__link">
-            <div 
-              class="fav-card__image"
-              [style.backgroundImage]="h.fotos && h.fotos.length > 0 ? 'url(' + h.fotos[0] + ')' : 'linear-gradient(135deg, #bfdbfe, #eff6ff)'"
-            ></div>
-            <div class="fav-card__body">
-              <h3>{{ h.titulo }}</h3>
-              <p>{{ h.direccion }}</p>
-              <strong>S/ {{ h.precio | number:'1.0-0' }} / mes</strong>
-            </div>
-          </a>
-          <button class="fav-card__remove" (click)="quitar(h.id)" aria-label="Quitar de favoritos">
-            <ng-icon name="heroXMark" size="14"></ng-icon> Quitar
-          </button>
+  <div class="cards-grid">
+    @for (h of favoritos(); track h.id) {
+    <div class="fav-card">
+      <a [routerLink]="['/habitaciones', h.id]" class="fav-card__link">
+        <div
+          class="fav-card__image"
+          [style.backgroundImage]="h.fotos && h.fotos.length > 0 ? 'url(' + h.fotos[0] + ')' : 'linear-gradient(135deg, #bfdbfe, #eff6ff)'"
+        ></div>
+        <div class="fav-card__body">
+          <h3>{{ h.titulo }}</h3>
+          <p>{{ h.direccion }}</p>
+          <strong>S/ {{ h.precio | number:'1.0-0' }} / mes</strong>
         </div>
-      }
+      </a>
+      <button class="fav-card__remove" (click)="quitar(h.id)" aria-label="Quitar de favoritos">
+        <ng-icon name="heroXMark" size="14"></ng-icon> Quitar
+      </button>
     </div>
+    }
+  </div>
   }
 </div>
