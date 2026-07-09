@@ -650,5 +650,43 @@
     &.pin-room {
       color: #dc2626;
     }
+
+    &.pin-user {
+      color: #2563eb;
+      position: relative;
+
+      .user-pulse {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 36px;
+        height: 36px;
+        margin-top: -18px;
+        margin-left: -18px;
+        border-radius: 50%;
+        background: rgba(37, 99, 235, 0.25);
+        animation: userPulse 2s ease-out infinite;
+        z-index: -1;
+      }
+
+      svg {
+        filter: drop-shadow(0 0 4px rgba(37, 99, 235, 0.5));
+      }
+    }
+  }
+}
+
+.tooltip-user strong {
+  color: #2563eb;
+}
+
+@keyframes userPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
   }
 }

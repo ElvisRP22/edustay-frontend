@@ -238,6 +238,52 @@ export class HabitacionDetalleComponent implements OnInit, OnDestroy {
         });
       }
     }, 150);
+
+    // Geolocalización del usuario
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const userLat = pos.coords.latitude;
+          const userLng = pos.coords.longitude;
+
+          const userIcon = L.divIcon({
+            html: `
+              <div class="custom-pin-icon pin-user">
+                <div class="user-pulse"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="12" r="8"/>
+                </svg>
+              </div>
+            `,
+            className: 'custom-pin-wrapper',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          });
+
+          const userMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(this.map);
+          userMarker.bindTooltip(`
+            <div class="map-tooltip-content tooltip-user">
+              <strong>Tu ubicación</strong>
+            </div>
+          `, {
+            permanent: false,
+            direction: 'top',
+            offset: [0, -14],
+            className: 'map-tooltip'
+          });
+
+          // Re-ajustar bounds para incluir los 3 puntos
+          const allBounds = L.latLngBounds([
+            [roomLat, roomLng],
+            [utpLat, utpLng],
+            [userLat, userLng]
+          ]);
+          this.map.fitBounds(allBounds, { padding: [50, 50] });
+        },
+        () => { /* Usuario denegó permisos, no hacer nada */ },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
   }
 
   toggleFav() {
