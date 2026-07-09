@@ -4,43 +4,94 @@
     <div class="nav-section">GESTIÓN</div>
     <nav>
       <a [class.active]="activeTab() === 'dashboard'" (click)="setTab('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
         Dashboard
       </a>
       <a [class.active]="activeTab() === 'reportes'" (click)="setTab('reportes')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
         Reportes
       </a>
       <a [class.active]="activeTab() === 'alquileres'" (click)="setTab('alquileres')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
         Alquileres
       </a>
       <a [class.active]="activeTab() === 'verificaciones'" (click)="setTab('verificaciones')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <polyline points="9 12 11 14 15 10"></polyline>
+        </svg>
         Verificaciones
       </a>
       <a [class.active]="activeTab() === 'moderacion'" (click)="setTab('moderacion')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
         Moderación de Chats
         @if (mensajesReportados().length > 0) {
-          <span class="tab-badge" style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{mensajesReportados().length}}</span>
+        <span class="tab-badge"
+          style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{mensajesReportados().length}}</span>
         }
       </a>
     </nav>
     <div class="nav-section mt-4">CONFIGURACIÓN</div>
     <nav>
       <a [class.active]="activeTab() === 'configuracion'" (click)="setTab('configuracion')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+          </path>
+        </svg>
         Configuración
       </a>
       <a [class.active]="activeTab() === 'usuarios'" (click)="setTab('usuarios')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
         Usuarios
+      </a>
+      <a routerLink="/admin/roles-permisos" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path
+            d="M12 3a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-2V7a4 4 0 0 0-4-4z">
+          </path>
+          <path d="M9 7a3 3 0 1 1 6 0v2H9z"></path>
+        </svg>
+        Roles y permisos
       </a>
     </nav>
     <div class="spacer"></div>
     <a class="logout-link" (click)="logout()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
       Cerrar sesión
     </a>
   </aside>
@@ -49,13 +100,18 @@
     <header class="top-nav">
       <div class="user-profile" style="position: relative; cursor: pointer;" (click)="toggleProfileMenu()">
         <span>Administrador</span>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
         <div class="avatar">A</div>
 
         @if (showProfileMenu()) {
-          <div class="profile-dropdown" style="position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); padding: 8px 0; min-width: 150px; z-index: 50;">
-            <a style="display: block; padding: 8px 16px; color: #dc2626; text-decoration: none; font-size: 14px; font-weight: 500;" (click)="logout(); $event.stopPropagation()">Cerrar sesión</a>
-          </div>
+        <div class="profile-dropdown"
+          style="position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); padding: 8px 0; min-width: 150px; z-index: 50;">
+          <a style="display: block; padding: 8px 16px; color: #dc2626; text-decoration: none; font-size: 14px; font-weight: 500;"
+            (click)="logout(); $event.stopPropagation()">Cerrar sesión</a>
+        </div>
         }
       </div>
     </header>
@@ -67,502 +123,564 @@
           <p>Resumen general de la plataforma</p>
         </div>
         <div class="date-selector">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
           Últimos 7 días
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
         </div>
       </div>
 
       @if (activeTab() === 'dashboard') {
-        <div class="stats-cards">
-          <div class="stat-card">
-            <div class="icon-wrapper blue-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            </div>
-            <div class="stat-info">
-              <h3>Cuentas totales</h3>
-              <div class="stat-value">{{stats.usuarios}}</div>
-              <span class="stat-trend trend-up">{{stats.usuariosCrecimiento}} vs semana anterior</span>
-            </div>
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="icon-wrapper blue-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
           </div>
-
-          <div class="stat-card">
-            <div class="icon-wrapper green-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            </div>
-            <div class="stat-info">
-              <h3>Clientes</h3>
-              <div class="stat-value">{{stats.clientes}}</div>
-              <span class="stat-trend trend-up">{{stats.clientesCrecimiento}} vs semana anterior</span>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="icon-wrapper purple-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            </div>
-            <div class="stat-info">
-              <h3>Arrendadores</h3>
-              <div class="stat-value">{{stats.arrendadores}}</div>
-              <span class="stat-trend trend-up purple-text">{{stats.arrendadoresCrecimiento}} vs semana anterior</span>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="icon-wrapper yellow-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            </div>
-            <div class="stat-info">
-              <h3>Pendientes verificación</h3>
-              <div class="stat-value">{{stats.pendientes}}</div>
-              <span class="stat-trend yellow-text">Ver pendientes</span>
-            </div>
+          <div class="stat-info">
+            <h3>Cuentas totales</h3>
+            <div class="stat-value">{{stats.usuarios}}</div>
+            <span class="stat-trend trend-up">{{stats.usuariosCrecimiento}} vs semana anterior</span>
           </div>
         </div>
 
-        <div class="charts-row">
-          <div class="chart-card line-chart-card">
-            <h3>Cuentas nuevas</h3>
-            <div class="line-chart">
-              <svg viewBox="0 0 400 160" class="svg-chart">
-                <path class="grid-line" d="M 30 30 L 400 30 M 30 70 L 400 70 M 30 110 L 400 110 M 30 150 L 400 150"></path>
-                <text x="20" y="34" class="y-label">60</text>
-                <text x="20" y="74" class="y-label">40</text>
-                <text x="20" y="114" class="y-label">20</text>
-                <text x="20" y="154" class="y-label">0</text>
-                
-                <text x="60" y="175" class="x-label">12 May</text>
-                <text x="115" y="175" class="x-label">13 May</text>
-                <text x="170" y="175" class="x-label">14 May</text>
-                <text x="225" y="175" class="x-label">15 May</text>
-                <text x="280" y="175" class="x-label">16 May</text>
-                <text x="335" y="175" class="x-label">17 May</text>
-                <text x="390" y="175" class="x-label">18 May</text>
-
-                <polyline points="60,130 115,90 170,40 225,65 280,85 335,55 390,90" class="chart-line"></polyline>
-                <circle cx="60" cy="130" r="4" class="chart-point"></circle>
-                <circle cx="115" cy="90" r="4" class="chart-point"></circle>
-                <circle cx="170" cy="40" r="4" class="chart-point"></circle>
-                <circle cx="225" cy="65" r="4" class="chart-point"></circle>
-                <circle cx="280" cy="85" r="4" class="chart-point"></circle>
-                <circle cx="335" cy="55" r="4" class="chart-point"></circle>
-                <circle cx="390" cy="90" r="4" class="chart-point"></circle>
-              </svg>
-            </div>
+        <div class="stat-card">
+          <div class="icon-wrapper green-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
           </div>
+          <div class="stat-info">
+            <h3>Clientes</h3>
+            <div class="stat-value">{{stats.clientes}}</div>
+            <span class="stat-trend trend-up">{{stats.clientesCrecimiento}} vs semana anterior</span>
+          </div>
+        </div>
 
-          <div class="chart-card donut-chart-card">
-            <h3>Cuentas por tipo</h3>
-            <div class="donut-chart-container">
-              <div class="donut-chart"></div>
-              <div class="donut-legend">
-                <div class="legend-item">
-                  <span class="legend-dot blue-dot"></span>
-                  <div class="legend-text">
-                    <strong>Clientes</strong>
-                    <span>842 (67%)</span>
-                  </div>
+        <div class="stat-card">
+          <div class="icon-wrapper purple-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <h3>Arrendadores</h3>
+            <div class="stat-value">{{stats.arrendadores}}</div>
+            <span class="stat-trend trend-up purple-text">{{stats.arrendadoresCrecimiento}} vs semana anterior</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="icon-wrapper yellow-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <h3>Pendientes verificación</h3>
+            <div class="stat-value">{{stats.pendientes}}</div>
+            <span class="stat-trend yellow-text">Ver pendientes</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card line-chart-card">
+          <h3>Cuentas nuevas</h3>
+          <div class="line-chart">
+            <svg viewBox="0 0 400 160" class="svg-chart">
+              <path class="grid-line" d="M 30 30 L 400 30 M 30 70 L 400 70 M 30 110 L 400 110 M 30 150 L 400 150">
+              </path>
+              <text x="20" y="34" class="y-label">60</text>
+              <text x="20" y="74" class="y-label">40</text>
+              <text x="20" y="114" class="y-label">20</text>
+              <text x="20" y="154" class="y-label">0</text>
+
+              <text x="60" y="175" class="x-label">12 May</text>
+              <text x="115" y="175" class="x-label">13 May</text>
+              <text x="170" y="175" class="x-label">14 May</text>
+              <text x="225" y="175" class="x-label">15 May</text>
+              <text x="280" y="175" class="x-label">16 May</text>
+              <text x="335" y="175" class="x-label">17 May</text>
+              <text x="390" y="175" class="x-label">18 May</text>
+
+              <polyline points="60,130 115,90 170,40 225,65 280,85 335,55 390,90" class="chart-line"></polyline>
+              <circle cx="60" cy="130" r="4" class="chart-point"></circle>
+              <circle cx="115" cy="90" r="4" class="chart-point"></circle>
+              <circle cx="170" cy="40" r="4" class="chart-point"></circle>
+              <circle cx="225" cy="65" r="4" class="chart-point"></circle>
+              <circle cx="280" cy="85" r="4" class="chart-point"></circle>
+              <circle cx="335" cy="55" r="4" class="chart-point"></circle>
+              <circle cx="390" cy="90" r="4" class="chart-point"></circle>
+            </svg>
+          </div>
+        </div>
+
+        <div class="chart-card donut-chart-card">
+          <h3>Cuentas por tipo</h3>
+          <div class="donut-chart-container">
+            <div class="donut-chart"></div>
+            <div class="donut-legend">
+              <div class="legend-item">
+                <span class="legend-dot blue-dot"></span>
+                <div class="legend-text">
+                  <strong>Clientes</strong>
+                  <span>842 (67%)</span>
                 </div>
-                <div class="legend-item mt-3">
-                  <span class="legend-dot green-dot"></span>
-                  <div class="legend-text">
-                    <strong>Arrendadores</strong>
-                    <span>406 (33%)</span>
-                  </div>
+              </div>
+              <div class="legend-item mt-3">
+                <span class="legend-dot green-dot"></span>
+                <div class="legend-text">
+                  <strong>Arrendadores</strong>
+                  <span>406 (33%)</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      }      @if (activeTab() === 'verificaciones') {
-        <div class="table-card">
-          <div class="table-header">
-            <h2>Documentos Pendientes</h2>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Usuario</th>
-                <th>Documento</th>
-                <th>Fecha de subida</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="pendientes().length === 0">
-                <td colspan="5" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay verificaciones pendientes.</td>
-              </tr>
-              <tr *ngFor="let doc of pendientes()">
-                <td class="user-cell">
-                  <div class="user-initials initials-purple">{{getInitials(doc.usuarioNombre)}}</div>
-                  <div style="display:flex; flex-direction:column;">
-                    <span>{{doc.usuarioNombre}}</span>
-                    <span style="font-size: 11px; color:#6b7280;">{{doc.usuarioEmail}}</span>
-                  </div>
-                </td>
-                <td>
-                  <div style="display:flex; flex-direction:column; gap:4px;">
-                    <span class="type-badge type-arrendador" style="text-transform: capitalize; width: fit-content;">{{formatType(doc.tipo)}}</span>
-                    <a [href]="doc.archivoUrl" target="_blank" class="view-doc-link">Ver documento adjunto</a>
-                    <input 
-                      type="text" 
-                      class="app-input" 
-                      placeholder="Escribe una observación (ej: motivo de rechazo)..." 
-                      [value]="comentarios()[doc.id] || ''"
-                      (input)="updateComentario(doc.id, $any($event.target).value)"
-                      style="margin-top: 6px; font-size: 11px; padding: 4px 8px; width: 100%; max-width: 250px; border-radius: 6px; border: 1px solid #d1d5db;"
-                    />
-                  </div>
-                </td>
-                <td class="date-cell">{{formatDate(doc.fechaSubida)}}</td>
-                <td>
-                  <span class="status-badge status-pendiente">
-                    Pendiente
-                  </span>
-                </td>
-                <td class="actions-cell" style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
-                  <button class="action-btn btn-approve" (click)="resolverDocumento(doc.id, 'VERIFICADO')" [disabled]="adminSavingId() === doc.id">Aprobar</button>
-                  <button class="action-btn btn-reject" (click)="resolverDocumento(doc.id, 'RECHAZADO')" [disabled]="adminSavingId() === doc.id">Rechazar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+      } @if (activeTab() === 'verificaciones') {
+      <div class="table-card">
+        <div class="table-header">
+          <h2>Documentos Pendientes</h2>
         </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Documento</th>
+              <th>Fecha de subida</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="pendientes().length === 0">
+              <td colspan="5" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay verificaciones
+                pendientes.</td>
+            </tr>
+            <tr *ngFor="let doc of pendientes()">
+              <td class="user-cell">
+                <div class="user-initials initials-purple">{{getInitials(doc.usuarioNombre)}}</div>
+                <div style="display:flex; flex-direction:column;">
+                  <span>{{doc.usuarioNombre}}</span>
+                  <span style="font-size: 11px; color:#6b7280;">{{doc.usuarioEmail}}</span>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <span class="type-badge type-arrendador"
+                    style="text-transform: capitalize; width: fit-content;">{{formatType(doc.tipo)}}</span>
+                  <a [href]="doc.archivoUrl" target="_blank" class="view-doc-link">Ver documento adjunto</a>
+                  <input type="text" class="app-input" placeholder="Escribe una observación (ej: motivo de rechazo)..."
+                    [value]="comentarios()[doc.id] || ''" (input)="updateComentario(doc.id, $any($event.target).value)"
+                    style="margin-top: 6px; font-size: 11px; padding: 4px 8px; width: 100%; max-width: 250px; border-radius: 6px; border: 1px solid #d1d5db;" />
+                </div>
+              </td>
+              <td class="date-cell">{{formatDate(doc.fechaSubida)}}</td>
+              <td>
+                <span class="status-badge status-pendiente">
+                  Pendiente
+                </span>
+              </td>
+              <td class="actions-cell" style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                <button class="action-btn btn-approve" (click)="resolverDocumento(doc.id, 'VERIFICADO')"
+                  [disabled]="adminSavingId() === doc.id">Aprobar</button>
+                <button class="action-btn btn-reject" (click)="resolverDocumento(doc.id, 'RECHAZADO')"
+                  [disabled]="adminSavingId() === doc.id">Rechazar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       }
 
       @if (activeTab() === 'reportes') {
-        <div class="table-card">
-          <div class="table-header">
-            <h2>Todos los Reportes</h2>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Motivo</th>
-                <th>Descripción</th>
-                <th>Emisor</th>
-                <th>Habitación</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th style="text-align: right;">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="reportes().length === 0">
-                <td colspan="7" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay reportes.</td>
-              </tr>
-              <tr *ngFor="let rep of reportes()">
-                <td><strong>{{ rep.motivo }}</strong></td>
-                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" [title]="rep.descripcion">{{ rep.descripcion }}</td>
-                <td>{{ rep.emisorNombre }}</td>
-                <td>{{ rep.habitacionTitulo }}</td>
-                <td class="date-cell">{{ formatDate(rep.fecha) }}</td>
-                <td>
-                  <span class="status-badge" 
-                        [class.status-pendiente]="rep.estado === 'ABIERTO'" 
-                        [class.status-review]="rep.estado === 'EN_REVISION'"
-                        [class.status-verificado]="rep.estado === 'RESUELTO'"
-                        [class.status-rechazado]="rep.estado === 'DESESTIMADO'">
-                    {{ rep.estado | lowercase | titlecase }}
-                  </span>
-                </td>
-                <td class="actions-cell" style="text-align: right; display: flex; justify-content: flex-end; gap: 8px; align-items: center;">
-                  @if (rep.estado === 'ABIERTO' || rep.estado === 'EN_REVISION') {
-                    <button class="action-btn btn-approve" (click)="resolverReporte(rep.id, 'RESUELTO')" style="padding: 4px 8px; font-size: 11px;">Resolver</button>
-                    <button class="action-btn btn-reject" (click)="resolverReporte(rep.id, 'DESESTIMADO')" style="padding: 4px 8px; font-size: 11px;">Desestimar</button>
-                    @if (rep.estado === 'ABIERTO') {
-                      <button class="action-btn btn-review" (click)="resolverReporte(rep.id, 'EN_REVISION')" style="padding: 4px 8px; font-size: 11px; background: #dbeafe; color: #1e40af; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;">Revisar</button>
-                    }
-                  } @else {
-                    <span class="muted" style="font-size: 11px;">Finalizado</span>
-                  }
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="table-card">
+        <div class="table-header">
+          <h2>Todos los Reportes</h2>
         </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Motivo</th>
+              <th>Descripción</th>
+              <th>Emisor</th>
+              <th>Habitación</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="reportes().length === 0">
+              <td colspan="7" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay reportes.</td>
+            </tr>
+            <tr *ngFor="let rep of reportes()">
+              <td><strong>{{ rep.motivo }}</strong></td>
+              <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                [title]="rep.descripcion">{{ rep.descripcion }}</td>
+              <td>{{ rep.emisorNombre }}</td>
+              <td>{{ rep.habitacionTitulo }}</td>
+              <td class="date-cell">{{ formatDate(rep.fecha) }}</td>
+              <td>
+                <span class="status-badge" [class.status-pendiente]="rep.estado === 'ABIERTO'"
+                  [class.status-review]="rep.estado === 'EN_REVISION'"
+                  [class.status-verificado]="rep.estado === 'RESUELTO'"
+                  [class.status-rechazado]="rep.estado === 'DESESTIMADO'">
+                  {{ rep.estado | lowercase | titlecase }}
+                </span>
+              </td>
+              <td class="actions-cell"
+                style="text-align: right; display: flex; justify-content: flex-end; gap: 8px; align-items: center;">
+                @if (rep.estado === 'ABIERTO' || rep.estado === 'EN_REVISION') {
+                <button class="action-btn btn-approve" (click)="resolverReporte(rep.id, 'RESUELTO')"
+                  style="padding: 4px 8px; font-size: 11px;">Resolver</button>
+                <button class="action-btn btn-reject" (click)="resolverReporte(rep.id, 'DESESTIMADO')"
+                  style="padding: 4px 8px; font-size: 11px;">Desestimar</button>
+                @if (rep.estado === 'ABIERTO') {
+                <button class="action-btn btn-review" (click)="resolverReporte(rep.id, 'EN_REVISION')"
+                  style="padding: 4px 8px; font-size: 11px; background: #dbeafe; color: #1e40af; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;">Revisar</button>
+                }
+                } @else {
+                <span class="muted" style="font-size: 11px;">Finalizado</span>
+                }
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       }
 
       @if (activeTab() === 'alquileres') {
-        <div class="table-card">
-          <div class="table-header">
-            <h2>Todos los Alquileres</h2>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Estudiante</th>
-                <th>Arrendador</th>
-                <th>Habitación</th>
-                <th>Monto</th>
-                <th>Fecha de Inicio</th>
-                <th>Contrato</th>
-                <th style="text-align: right;">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="alquileres().length === 0">
-                <td colspan="7" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay alquileres.</td>
-              </tr>
-              <tr *ngFor="let alq of alquileres()">
-                <td>{{ alq.estudianteNombre }}</td>
-                <td>{{ alq.arrendadorNombre }}</td>
-                <td>{{ alq.habitacionTitulo }}</td>
-                <td>S/ {{ alq.montoPactado }}</td>
-                <td class="date-cell">{{ formatDate(alq.fechaInicio) }}</td>
-                <td>
-                  @if (alq.contratoUrl) {
-                    <a [href]="alq.contratoUrl" target="_blank" class="view-doc-link">Ver Contrato (PDF)</a>
-                  } @else {
-                    <span class="muted" style="font-size: 12px;">Sin contrato</span>
-                  }
-                </td>
-                <td class="actions-cell" style="text-align: right;">
-                  <button class="action-btn btn-reject" (click)="finalizarAlquiler(alq.id)" style="padding: 4px 8px; font-size: 11px;">Finalizar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="table-card">
+        <div class="table-header">
+          <h2>Todos los Alquileres</h2>
         </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Estudiante</th>
+              <th>Arrendador</th>
+              <th>Habitación</th>
+              <th>Monto</th>
+              <th>Fecha de Inicio</th>
+              <th>Contrato</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="alquileres().length === 0">
+              <td colspan="7" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay alquileres.</td>
+            </tr>
+            <tr *ngFor="let alq of alquileres()">
+              <td>{{ alq.estudianteNombre }}</td>
+              <td>{{ alq.arrendadorNombre }}</td>
+              <td>{{ alq.habitacionTitulo }}</td>
+              <td>S/ {{ alq.montoPactado }}</td>
+              <td class="date-cell">{{ formatDate(alq.fechaInicio) }}</td>
+              <td>
+                @if (alq.contratoUrl) {
+                <a [href]="alq.contratoUrl" target="_blank" class="view-doc-link">Ver Contrato (PDF)</a>
+                } @else {
+                <span class="muted" style="font-size: 12px;">Sin contrato</span>
+                }
+              </td>
+              <td class="actions-cell" style="text-align: right;">
+                <button class="action-btn btn-reject" (click)="finalizarAlquiler(alq.id)"
+                  style="padding: 4px 8px; font-size: 11px;">Finalizar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       }
 
       @if (activeTab() === 'configuracion') {
-        <div style="background: white; border-radius: 12px; padding: 48px 24px; text-align: center; border: 1px solid #e5e7eb;">
-          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-          <h2 style="color: #111827; font-size: 1.5rem; margin-bottom: 8px;">Configuración</h2>
-          <p style="color: #6b7280;">Esta sección estará disponible en futuras actualizaciones.</p>
-        </div>
+      <div
+        style="background: white; border-radius: 12px; padding: 48px 24px; text-align: center; border: 1px solid #e5e7eb;">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#9ca3af" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px;">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+          </path>
+        </svg>
+        <h2 style="color: #111827; font-size: 1.5rem; margin-bottom: 8px;">Configuración</h2>
+        <p style="color: #6b7280;">Esta sección estará disponible en futuras actualizaciones.</p>
+      </div>
       }
 
       @if (activeTab() === 'usuarios') {
-        <div class="table-card">
-          <div class="table-header">
-            <h2>Todos los Usuarios</h2>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Email Verificado</th>
-                <th>Identidad</th>
-                <th>Fecha de Registro</th>
-                <th style="text-align: right;">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="usuarios().length === 0">
-                <td colspan="6" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay usuarios registrados.</td>
-              </tr>
-              <tr *ngFor="let user of usuarios()">
-                <td class="user-cell">
-                  <div class="user-initials initials-purple">{{getInitials(user.nombre + ' ' + user.apellido)}}</div>
-                  <div style="display:flex; flex-direction:column;">
-                    <span><strong>{{user.nombre}} {{user.apellido}}</strong></span>
-                    <span style="font-size: 11px; color:#6b7280;">{{user.email}}</span>
-                    <span style="font-size: 11px; color:#6b7280;" *ngIf="user.telefono">Tel: {{user.telefono}}</span>
-                    <span style="font-size: 11px; color:#6b7280;" *ngIf="user.dni">DNI: {{user.dni}}</span>
-                  </div>
-                </td>
-                <td>
-                  <select class="app-input" [value]="user.rol" (change)="cambiarRol(user.id, $any($event.target).value)" style="padding: 4px 8px; font-size: 12px; font-weight: 700; border-radius: 6px; width: auto; border: 1px solid #d1d5db;">
-                    <option value="ESTUDIANTE">Estudiante</option>
-                    <option value="ARRENDADOR">Arrendador</option>
-                    <option value="ADMIN">Admin</option>
-                  </select>
-                </td>
-                <td>
-                  <span class="status-badge" [class.status-verificado]="user.emailVerificado" [class.status-rechazado]="!user.emailVerificado">
-                    {{ user.emailVerificado ? 'Verificado' : 'Pendiente' }}
-                  </span>
-                </td>
-                <td>
-                  <span class="status-badge" 
-                        [class.status-verificado]="user.identidadVerificada === 'VERIFICADO'" 
-                        [class.status-pendiente]="user.identidadVerificada === 'PENDIENTE'"
-                        [class.status-review]="user.identidadVerificada === 'EN_PROCESO'"
-                        [class.status-rechazado]="user.identidadVerificada === 'RECHAZADO'">
-                    {{ user.identidadVerificada | lowercase | titlecase }}
-                  </span>
-                </td>
-                <td class="date-cell">{{ formatDate(user.fechaRegistro) }}</td>
-                <td class="actions-cell" style="text-align: right;">
-                  <button class="action-btn btn-reject" (click)="eliminarUsuario(user.id)" style="padding: 4px 8px; font-size: 11px;">Eliminar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="table-card">
+        <div class="table-header">
+          <h2>Todos los Usuarios</h2>
         </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Email Verificado</th>
+              <th>Identidad</th>
+              <th>Fecha de Registro</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="usuarios().length === 0">
+              <td colspan="6" style="text-align: center; color: #6b7280; padding: 32px 0;">No hay usuarios registrados.
+              </td>
+            </tr>
+            <tr *ngFor="let user of usuarios()">
+              <td class="user-cell">
+                <div class="user-initials initials-purple">{{getInitials(user.nombre + ' ' + user.apellido)}}</div>
+                <div style="display:flex; flex-direction:column;">
+                  <span><strong>{{user.nombre}} {{user.apellido}}</strong></span>
+                  <span style="font-size: 11px; color:#6b7280;">{{user.email}}</span>
+                  <span style="font-size: 11px; color:#6b7280;" *ngIf="user.telefono">Tel: {{user.telefono}}</span>
+                  <span style="font-size: 11px; color:#6b7280;" *ngIf="user.dni">DNI: {{user.dni}}</span>
+                </div>
+              </td>
+              <td>
+                <select class="app-input" [value]="user.rol" (change)="cambiarRol(user.id, $any($event.target).value)"
+                  style="padding: 4px 8px; font-size: 12px; font-weight: 700; border-radius: 6px; width: auto; border: 1px solid #d1d5db;">
+                  <option value="ESTUDIANTE">Estudiante</option>
+                  <option value="ARRENDADOR">Arrendador</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </td>
+              <td>
+                <span class="status-badge" [class.status-verificado]="user.emailVerificado"
+                  [class.status-rechazado]="!user.emailVerificado">
+                  {{ user.emailVerificado ? 'Verificado' : 'Pendiente' }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [class.status-verificado]="user.identidadVerificada === 'VERIFICADO'"
+                  [class.status-pendiente]="user.identidadVerificada === 'PENDIENTE'"
+                  [class.status-review]="user.identidadVerificada === 'EN_PROCESO'"
+                  [class.status-rechazado]="user.identidadVerificada === 'RECHAZADO'">
+                  {{ user.identidadVerificada | lowercase | titlecase }}
+                </span>
+              </td>
+              <td class="date-cell">{{ formatDate(user.fechaRegistro) }}</td>
+              <td class="actions-cell" style="text-align: right;">
+                <button class="action-btn btn-reject" (click)="eliminarUsuario(user.id)"
+                  style="padding: 4px 8px; font-size: 11px;">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       }
 
       <!-- MODERACIÓN DE CHATS -->
       @if (activeTab() === 'moderacion') {
-        <div class="table-container">
-          <!-- Sub-tabs navigation -->
-          <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; gap: 1rem; background: #f9fafb;">
-            <button 
-              (click)="moderacionSubTab.set('activas')"
-              [style.font-weight]="moderacionSubTab() === 'activas' ? '800' : '500'"
-              [style.color]="moderacionSubTab() === 'activas' ? '#1d4ed8' : '#4b5563'"
-              [style.border-bottom]="moderacionSubTab() === 'activas' ? '2px solid #1d4ed8' : 'none'"
-              style="padding: 6px 12px; background: none; border: none; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">
-              Alertas Activas ({{ mensajesReportados().length }})
-            </button>
-            <button 
-              (click)="moderacionSubTab.set('historial')"
-              [style.font-weight]="moderacionSubTab() === 'historial' ? '800' : '500'"
-              [style.color]="moderacionSubTab() === 'historial' ? '#1d4ed8' : '#4b5563'"
-              [style.border-bottom]="moderacionSubTab() === 'historial' ? '2px solid #1d4ed8' : 'none'"
-              style="padding: 6px 12px; background: none; border: none; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">
-              Historial de Resoluciones ({{ mensajesHistorial().length }})
-            </button>
-          </div>
-
-          @if (moderacionSubTab() === 'activas') {
-            <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin: 0;">Chats Alertados</h2>
-                <p style="font-size: 0.875rem; color: #6b7280; margin: 0; margin-top: 4px;">Mensajes internos sospechosos marcados por IA o reglas locales.</p>
-              </div>
-              <span class="status-badge status-rechazado" style="font-weight: 800;">
-                {{ mensajesReportados().length }} alertas activas
-              </span>
-            </div>
-
-            @if (mensajesReportados().length === 0) {
-              <div class="state-center" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; color: #6b7280; font-weight: 700;">
-                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" style="color: #10b981; margin-bottom: 1rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <p style="margin: 0; font-size: 1rem;">No hay chats con alertas activas</p>
-                <p style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #9ca3af; margin-top: 4px;">¡Todos los chats están libres de infracciones!</p>
-              </div>
-            } @else {
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Habitación</th>
-                    <th>Emisor</th>
-                    <th>Receptor</th>
-                    <th>Mensaje</th>
-                    <th>Categoría</th>
-                    <th>Fecha</th>
-                    <th style="text-align: right;">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (msg of mensajesReportados(); track msg.id) {
-                    <tr>
-                      <td>
-                        <div style="font-weight: 700; color: #111827;">{{ msg.habitacionTitulo }}</div>
-                        <div style="font-size: 11px; color: #6b7280;">ID: {{ msg.habitacionId }}</div>
-                      </td>
-                      <td>{{ msg.emisorNombre }}</td>
-                      <td>{{ msg.receptorNombre }}</td>
-                      <td>
-                        <div style="max-width: 320px; font-size: 13px; color: #374151; word-break: break-word; background: #fffbeb; border-left: 3px solid #d97706; padding: 6px 10px; border-radius: 4px;">
-                          "{{ msg.contenido }}"
-                        </div>
-                      </td>
-                      <td>
-                        <span class="status-badge status-review" style="text-transform: uppercase; font-size: 11px; font-weight: 800;">
-                          {{ msg.categoriaModeracion || 'SOSPECHOSO' }}
-                        </span>
-                      </td>
-                      <td class="date-cell">{{ formatDate(msg.fechaEnvio) }}</td>
-                      <td class="actions-cell" style="text-align: right; white-space: nowrap;">
-                        <button class="action-btn btn-verify" (click)="desestimarMensaje(msg.id)" style="padding: 4px 8px; font-size: 11px; margin-right: 6px;">
-                          Desestimar
-                        </button>
-                        <button class="action-btn btn-reject" (click)="eliminarMensaje(msg.id)" style="padding: 4px 8px; font-size: 11px;">
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            }
-          }
-
-          @if (moderacionSubTab() === 'historial') {
-            <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin: 0;">Historial de Auditoría</h2>
-                <p style="font-size: 0.875rem; color: #6b7280; margin: 0; margin-top: 4px;">Registro de alertas resueltas por el equipo administrativo.</p>
-              </div>
-              <span class="status-badge status-verificado" style="font-weight: 800; background-color: #f0fdf4; color: #16a34a;">
-                {{ mensajesHistorial().length }} auditados
-              </span>
-            </div>
-
-            @if (mensajesHistorial().length === 0) {
-              <div class="state-center" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; color: #6b7280; font-weight: 700;">
-                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" style="color: #9ca3af; margin-bottom: 1rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <p style="margin: 0; font-size: 1rem;">No hay auditorías registradas</p>
-                <p style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #9ca3af; margin-top: 4px;">Aún no se han auditado mensajes moderados.</p>
-              </div>
-            } @else {
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Habitación</th>
-                    <th>De / Para</th>
-                    <th>Mensaje Resultante</th>
-                    <th>Infracción Flagged</th>
-                    <th>Fecha Envío</th>
-                    <th>Estado Resolución</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (msg of mensajesHistorial(); track msg.id) {
-                    <tr>
-                      <td>
-                        <div style="font-weight: 700; color: #111827;">{{ msg.habitacionTitulo }}</div>
-                        <div style="font-size: 11px; color: #6b7280;">ID: {{ msg.habitacionId }}</div>
-                      </td>
-                      <td>
-                        <div style="font-size: 13px; color: #374151;">De: <strong>{{ msg.emisorNombre }}</strong></div>
-                        <div style="font-size: 13px; color: #6b7280;">Para: {{ msg.receptorNombre }}</div>
-                      </td>
-                      <td>
-                        <div style="max-width: 320px; font-size: 13px; color: #374151; word-break: break-word; padding: 6px 10px; border-radius: 4px; background: #f3f4f6; border-left: 3px solid #9ca3af;"
-                             [style.background]="msg.estadoModeracion === 'ELIMINADO' ? '#fef2f2' : '#f3f4f6'"
-                             [style.border-left-color]="msg.estadoModeracion === 'ELIMINADO' ? '#ef4444' : '#10b981'">
-                          "{{ msg.contenido }}"
-                        </div>
-                      </td>
-                      <td>
-                        <span class="status-badge status-review" style="text-transform: uppercase; font-size: 11px; font-weight: 800;">
-                          {{ msg.categoriaModeracion || 'SOSPECHOSO' }}
-                        </span>
-                      </td>
-                      <td class="date-cell">{{ formatDate(msg.fechaEnvio) }}</td>
-                      <td>
-                        @if (msg.estadoModeracion === 'DESESTIMADO') {
-                          <span style="display: inline-flex; align-items: center; gap: 4px; background-color: #ecfdf5; color: #065f46; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
-                            🟢 APROBADO (DESESTIMADO)
-                          </span>
-                        } @else if (msg.estadoModeracion === 'ELIMINADO') {
-                          <span style="display: inline-flex; align-items: center; gap: 4px; background-color: #fef2f2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
-                            🔴 ELIMINADO
-                          </span>
-                        } @else if (msg.estadoModeracion === 'PENDIENTE') {
-                          <span style="display: inline-flex; align-items: center; gap: 4px; background-color: #fffbeb; color: #92400e; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
-                            🟡 PENDIENTE
-                          </span>
-                        } @else {
-                          <span style="font-size: 11px; font-weight: 700; color: #4b5563; text-transform: uppercase;">
-                            {{ msg.estadoModeracion }}
-                          </span>
-                        }
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            }
-          }
+      <div class="table-container">
+        <!-- Sub-tabs navigation -->
+        <div
+          style="padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; gap: 1rem; background: #f9fafb;">
+          <button (click)="moderacionSubTab.set('activas')"
+            [style.font-weight]="moderacionSubTab() === 'activas' ? '800' : '500'"
+            [style.color]="moderacionSubTab() === 'activas' ? '#1d4ed8' : '#4b5563'"
+            [style.border-bottom]="moderacionSubTab() === 'activas' ? '2px solid #1d4ed8' : 'none'"
+            style="padding: 6px 12px; background: none; border: none; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">
+            Alertas Activas ({{ mensajesReportados().length }})
+          </button>
+          <button (click)="moderacionSubTab.set('historial')"
+            [style.font-weight]="moderacionSubTab() === 'historial' ? '800' : '500'"
+            [style.color]="moderacionSubTab() === 'historial' ? '#1d4ed8' : '#4b5563'"
+            [style.border-bottom]="moderacionSubTab() === 'historial' ? '2px solid #1d4ed8' : 'none'"
+            style="padding: 6px 12px; background: none; border: none; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">
+            Historial de Resoluciones ({{ mensajesHistorial().length }})
+          </button>
         </div>
+
+        @if (moderacionSubTab() === 'activas') {
+        <div
+          style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin: 0;">Chats Alertados</h2>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0; margin-top: 4px;">Mensajes internos sospechosos
+              marcados por IA o reglas locales.</p>
+          </div>
+          <span class="status-badge status-rechazado" style="font-weight: 800;">
+            {{ mensajesReportados().length }} alertas activas
+          </span>
+        </div>
+
+        @if (mensajesReportados().length === 0) {
+        <div class="state-center"
+          style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; color: #6b7280; font-weight: 700;">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2"
+            style="color: #10b981; margin-bottom: 1rem;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p style="margin: 0; font-size: 1rem;">No hay chats con alertas activas</p>
+          <p style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #9ca3af; margin-top: 4px;">¡Todos los chats
+            están libres de infracciones!</p>
+        </div>
+        } @else {
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Habitación</th>
+              <th>Emisor</th>
+              <th>Receptor</th>
+              <th>Mensaje</th>
+              <th>Categoría</th>
+              <th>Fecha</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (msg of mensajesReportados(); track msg.id) {
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: #111827;">{{ msg.habitacionTitulo }}</div>
+                <div style="font-size: 11px; color: #6b7280;">ID: {{ msg.habitacionId }}</div>
+              </td>
+              <td>{{ msg.emisorNombre }}</td>
+              <td>{{ msg.receptorNombre }}</td>
+              <td>
+                <div
+                  style="max-width: 320px; font-size: 13px; color: #374151; word-break: break-word; background: #fffbeb; border-left: 3px solid #d97706; padding: 6px 10px; border-radius: 4px;">
+                  "{{ msg.contenido }}"
+                </div>
+              </td>
+              <td>
+                <span class="status-badge status-review"
+                  style="text-transform: uppercase; font-size: 11px; font-weight: 800;">
+                  {{ msg.categoriaModeracion || 'SOSPECHOSO' }}
+                </span>
+              </td>
+              <td class="date-cell">{{ formatDate(msg.fechaEnvio) }}</td>
+              <td class="actions-cell" style="text-align: right; white-space: nowrap;">
+                <button class="action-btn btn-verify" (click)="desestimarMensaje(msg.id)"
+                  style="padding: 4px 8px; font-size: 11px; margin-right: 6px;">
+                  Desestimar
+                </button>
+                <button class="action-btn btn-reject" (click)="eliminarMensaje(msg.id)"
+                  style="padding: 4px 8px; font-size: 11px;">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+        }
+        }
+
+        @if (moderacionSubTab() === 'historial') {
+        <div
+          style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin: 0;">Historial de Auditoría</h2>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0; margin-top: 4px;">Registro de alertas resueltas
+              por el equipo administrativo.</p>
+          </div>
+          <span class="status-badge status-verificado"
+            style="font-weight: 800; background-color: #f0fdf4; color: #16a34a;">
+            {{ mensajesHistorial().length }} auditados
+          </span>
+        </div>
+
+        @if (mensajesHistorial().length === 0) {
+        <div class="state-center"
+          style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; color: #6b7280; font-weight: 700;">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2"
+            style="color: #9ca3af; margin-bottom: 1rem;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p style="margin: 0; font-size: 1rem;">No hay auditorías registradas</p>
+          <p style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #9ca3af; margin-top: 4px;">Aún no se han
+            auditado mensajes moderados.</p>
+        </div>
+        } @else {
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Habitación</th>
+              <th>De / Para</th>
+              <th>Mensaje Resultante</th>
+              <th>Infracción Flagged</th>
+              <th>Fecha Envío</th>
+              <th>Estado Resolución</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (msg of mensajesHistorial(); track msg.id) {
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: #111827;">{{ msg.habitacionTitulo }}</div>
+                <div style="font-size: 11px; color: #6b7280;">ID: {{ msg.habitacionId }}</div>
+              </td>
+              <td>
+                <div style="font-size: 13px; color: #374151;">De: <strong>{{ msg.emisorNombre }}</strong></div>
+                <div style="font-size: 13px; color: #6b7280;">Para: {{ msg.receptorNombre }}</div>
+              </td>
+              <td>
+                <div
+                  style="max-width: 320px; font-size: 13px; color: #374151; word-break: break-word; padding: 6px 10px; border-radius: 4px; background: #f3f4f6; border-left: 3px solid #9ca3af;"
+                  [style.background]="msg.estadoModeracion === 'ELIMINADO' ? '#fef2f2' : '#f3f4f6'"
+                  [style.border-left-color]="msg.estadoModeracion === 'ELIMINADO' ? '#ef4444' : '#10b981'">
+                  "{{ msg.contenido }}"
+                </div>
+              </td>
+              <td>
+                <span class="status-badge status-review"
+                  style="text-transform: uppercase; font-size: 11px; font-weight: 800;">
+                  {{ msg.categoriaModeracion || 'SOSPECHOSO' }}
+                </span>
+              </td>
+              <td class="date-cell">{{ formatDate(msg.fechaEnvio) }}</td>
+              <td>
+                @if (msg.estadoModeracion === 'DESESTIMADO') {
+                <span
+                  style="display: inline-flex; align-items: center; gap: 4px; background-color: #ecfdf5; color: #065f46; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                  🟢 APROBADO (DESESTIMADO)
+                </span>
+                } @else if (msg.estadoModeracion === 'ELIMINADO') {
+                <span
+                  style="display: inline-flex; align-items: center; gap: 4px; background-color: #fef2f2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                  🔴 ELIMINADO
+                </span>
+                } @else if (msg.estadoModeracion === 'PENDIENTE') {
+                <span
+                  style="display: inline-flex; align-items: center; gap: 4px; background-color: #fffbeb; color: #92400e; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                  🟡 PENDIENTE
+                </span>
+                } @else {
+                <span style="font-size: 11px; font-weight: 700; color: #4b5563; text-transform: uppercase;">
+                  {{ msg.estadoModeracion }}
+                </span>
+                }
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+        }
+        }
+      </div>
       }
 
     </div>
