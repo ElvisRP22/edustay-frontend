@@ -68,7 +68,7 @@ export const routes: Routes = [
   { path: 'habitaciones/:id', component: HabitacionDetalleComponent },
   // Admin
   { path: 'admin', component: AdminComponent, canActivate: [authOnlyGuard, adminOnlyGuard] },
-  { path: 'admin/roles-permisos', component: RolesPermisosComponent, canActivate: [authOnlyGuard, adminOnlyGuard] },
+  { path: 'admin/roles-permisos', redirectTo: () => '/admin?tab=roles-permisos', pathMatch: 'full' },
   // Autenticadas
   { path: 'favoritos', component: FavoritosComponent, canActivate: [authOnlyGuard] },
   { path: 'mis-alquileres', component: MisAlquileresComponent, canActivate: [authOnlyGuard] },

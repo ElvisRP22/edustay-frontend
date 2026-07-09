@@ -73,7 +73,7 @@
         </svg>
         Usuarios
       </a>
-      <a routerLink="/admin/roles-permisos" routerLinkActive="active">
+      <a [class.active]="activeTab() === 'roles-permisos'" (click)="setTab('roles-permisos')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
           <path
@@ -673,6 +673,10 @@
         }
         }
       </div>
+      }
+
+      @if (activeTab() === 'roles-permisos') {
+        <app-roles-permisos (back)="setTab('dashboard')"></app-roles-permisos>
       }
 
     </div>

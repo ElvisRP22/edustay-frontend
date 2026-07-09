@@ -2,18 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, ActivatedRoute } from '@angular/router';
 import { AlquilerResponse, MensajeResponse, ReporteResponse, UsuarioAdminResponse, VerificacionAdminResponse, VerificacionRequest } from '../../../core/models/api.models';
 import { AdminService } from '../../../core/services/admin.service';
 import { AlquileresService } from '../../../core/services/alquileres.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { DocumentosService } from '../../../core/services/documentos.service';
 import { ReportesService } from '../../../core/services/reportes.service';
+import { RolesPermisosComponent } from '../roles-permisos/roles-permisos.component';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, RolesPermisosComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
@@ -25,6 +26,8 @@ export class AdminComponent implements OnInit {
   private alquileresSvc = inject(AlquileresService);
   private adminSvc = inject(AdminService);
   auth = inject(AuthService);
+
+  private route = inject(ActivatedRoute);
 
   stats = {
     usuarios: '0',
@@ -38,7 +41,7 @@ export class AdminComponent implements OnInit {
     alquileres: '0'
   };
 
-  activeTab = signal<'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios' | 'moderacion'>('dashboard');
+  activeTab = signal<'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios' | 'moderacion' | 'roles-permisos'>('dashboard');
   showProfileMenu = signal(false);
   moderacionSubTab = signal<'activas' | 'historial'>('activas');
 
@@ -55,6 +58,12 @@ export class AdminComponent implements OnInit {
   adminSavingId = signal<number | null>(null);
 
   ngOnInit() {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      const tabParam = params['tab'];
+      if (tabParam && ['dashboard', 'verificaciones', 'reportes', 'alquileres', 'configuracion', 'usuarios', 'moderacion', 'roles-permisos'].includes(tabParam)) {
+        this.activeTab.set(tabParam as any);
+      }
+    });
     this.loadPendientes();
     this.loadReportes();
     this.loadAlquileres();
@@ -63,7 +72,7 @@ export class AdminComponent implements OnInit {
     this.loadMensajesHistorial();
   }
 
-  setTab(tab: 'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios' | 'moderacion') {
+  setTab(tab: 'dashboard' | 'verificaciones' | 'reportes' | 'alquileres' | 'configuracion' | 'usuarios' | 'moderacion' | 'roles-permisos') {
     this.activeTab.set(tab);
   }
 

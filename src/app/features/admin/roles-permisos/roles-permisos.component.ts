@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -52,6 +52,8 @@ interface RoleFormValue {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RolesPermisosComponent {
+    @Output() readonly back = new EventEmitter<void>();
+
     private fb = inject(FormBuilder);
     private adminSvc = inject(AdminService);
 

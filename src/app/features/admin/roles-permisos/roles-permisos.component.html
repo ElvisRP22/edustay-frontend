@@ -9,7 +9,9 @@
             </p>
 
             <div class="roles-hero__actions">
-                <a routerLink="/admin" class="app-button app-button--secondary">Volver al panel</a>
+                <button type="button" class="app-button app-button--secondary" (click)="back.emit()">
+                    Volver al panel
+                </button>
                 <button type="button" class="app-button app-button--primary" (click)="resetSelectedRole()">
                     Restaurar permisos base
                 </button>
