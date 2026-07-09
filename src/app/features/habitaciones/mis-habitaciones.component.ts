@@ -62,7 +62,7 @@ export class MisHabitacionesComponent implements OnInit, OnDestroy {
   }
 
   resetForm(h?: HabitacionResponse) {
-    const fotosControls = h?.fotos ? h.fotos.map(url => this.fb.control(url, [Validators.required])) : [];
+    const fotosControls = h?.fotos ? h.fotos.map(url => this.fb.control(url)) : [];
 
     this.form = this.fb.group({
       titulo: [h?.titulo ?? '', [Validators.required, Validators.minLength(1)]],
@@ -87,7 +87,7 @@ export class MisHabitacionesComponent implements OnInit, OnDestroy {
   }
 
   addFotoUrl(url = '') {
-    this.fotosFormArray.push(this.fb.control(url, [Validators.required]));
+    this.fotosFormArray.push(this.fb.control(url));
   }
 
   removeFotoUrl(index: number) {
@@ -224,7 +224,9 @@ export class MisHabitacionesComponent implements OnInit, OnDestroy {
       longitud: raw.longitud,
       servicioIds: this.selectedServiceIds(),
       reglaIds: this.selectedReglaIds(),
-      fotos: raw.fotos ? raw.fotos.filter((url: string) => url && url.trim() !== '') : []
+      fotos: raw.fotos && raw.fotos.filter((url: string) => url && url.trim() !== '').length > 0
+        ? raw.fotos.filter((url: string) => url && url.trim() !== '')
+        : ['https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80']
     };
 
     const obs = this.editId()
