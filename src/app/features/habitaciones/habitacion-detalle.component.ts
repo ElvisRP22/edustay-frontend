@@ -272,13 +272,26 @@ export class HabitacionDetalleComponent implements OnInit, OnDestroy {
             className: 'map-tooltip'
           });
 
+          // Línea punteada desde el usuario hasta la habitación
+          L.polyline(
+            [[userLat, userLng], [roomLat, roomLng]],
+            { color: '#10b981', weight: 3, dashArray: '6, 8', opacity: 0.75 }
+          ).addTo(this.map);
+
           // Re-ajustar bounds para incluir los 3 puntos
           const allBounds = L.latLngBounds([
             [roomLat, roomLng],
             [utpLat, utpLng],
             [userLat, userLng]
           ]);
+          this.map.invalidateSize();
           this.map.fitBounds(allBounds, { padding: [50, 50] });
+          setTimeout(() => {
+            if (this.map) {
+              this.map.invalidateSize();
+              this.map.fitBounds(allBounds, { padding: [50, 50] });
+            }
+          }, 200);
         },
         () => { /* Usuario denegó permisos, no hacer nada */ },
         { enableHighAccuracy: true, timeout: 8000 }
