@@ -133,6 +133,7 @@
     </header>
 
     <div class="dashboard-content">
+      @if (activeTab() === 'dashboard' && auth.hasPermission('Ver panel y reportes')) {
       <div class="header-row">
         <div>
           <h1>Dashboard</h1>
@@ -154,7 +155,6 @@
         </div>
       </div>
 
-      @if (activeTab() === 'dashboard' && auth.hasPermission('Ver panel y reportes')) {
       <div class="stats-cards">
         <div class="stat-card">
           <div class="icon-wrapper blue-icon">
