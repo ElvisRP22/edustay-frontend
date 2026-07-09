@@ -270,3 +270,42 @@ export interface UsuarioAdminResponse {
   identidadVerificada: IdentidadVerificadaEstado;
   fechaRegistro: string;
 }
+
+// ─── Roles y permisos ───────────────────────────────────────────────────────
+
+export type RolePermissionStatus = 'ACTIVO' | 'PAUSADO' | 'BLOQUEADO';
+
+export interface PermissionCatalogResponse {
+  id: number;
+  title: string;
+  description: string;
+  area: string;
+  icon: string;
+}
+
+export interface RolePermissionRequest {
+  name: string;
+  description: string;
+  color: string;
+  status: RolePermissionStatus;
+  users: number;
+  permissions?: number[];
+}
+
+export interface RolePermissionResponse {
+  id: number;
+  name: string;
+  description: string;
+  color: string;
+  status: RolePermissionStatus;
+  users: number;
+  updatedAt: string;
+  permissions: number[];
+}
+
+export interface RolesPermissionsSummaryResponse {
+  rolesActivos: number;
+  permisosDisponibles: number;
+  permisosAsignados: number;
+  usuariosCubiertos: number;
+}

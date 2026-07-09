@@ -1,18 +1,19 @@
-import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { DocumentosService } from '../../../core/services/documentos.service';
-import { ReportesService } from '../../../core/services/reportes.service';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AlquilerResponse, MensajeResponse, ReporteResponse, UsuarioAdminResponse, VerificacionAdminResponse, VerificacionRequest } from '../../../core/models/api.models';
+import { AdminService } from '../../../core/services/admin.service';
 import { AlquileresService } from '../../../core/services/alquileres.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { AdminService } from '../../../core/services/admin.service';
-import { VerificacionAdminResponse, VerificacionRequest, ReporteResponse, AlquilerResponse, UsuarioAdminResponse, MensajeResponse } from '../../../core/models/api.models';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DocumentosService } from '../../../core/services/documentos.service';
+import { ReportesService } from '../../../core/services/reportes.service';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
@@ -127,9 +128,9 @@ export class AdminComponent implements OnInit {
   resolverDocumento(documentoId: number, estado: 'VERIFICADO' | 'RECHAZADO') {
     this.adminSavingId.set(documentoId);
     const comment = this.comentarios()[documentoId] || '';
-    const payload: VerificacionRequest = { 
-      estado, 
-      comentarioAdmin: comment.trim() || undefined 
+    const payload: VerificacionRequest = {
+      estado,
+      comentarioAdmin: comment.trim() || undefined
     };
 
     this.docSvc.actualizarEstado(documentoId, payload)
