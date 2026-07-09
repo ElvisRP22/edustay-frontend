@@ -127,7 +127,7 @@ export class HabitacionDetalleComponent implements OnInit, OnDestroy {
   getGoogleMapsDirectionUrl(): string {
     const h = this.habitacion();
     if (!h || !h.latitud || !h.longitud) return '#';
-    return `https://www.google.com/maps/dir/?api=1&origin=${h.latitud},${h.longitud}&destination=-5.1966,-80.6277&travelmode=walking`;
+    return `https://www.google.com/maps/dir/?api=1&origin=${h.latitud},${h.longitud}&destination=-5.18217742523052,-80.6403270199579&travelmode=walking`;
   }
 
   private initMap(h: HabitacionResponse, retries = 0) {
@@ -145,8 +145,8 @@ export class HabitacionDetalleComponent implements OnInit, OnDestroy {
 
     const roomLat = h.latitud;
     const roomLng = h.longitud;
-    const utpLat = -5.1966;
-    const utpLng = -80.6277;
+    const utpLat = -5.18217742523052;
+    const utpLng = -80.6403270199579;
 
     if (roomLat === null || roomLat === undefined || roomLng === null || roomLng === undefined) return;
 
