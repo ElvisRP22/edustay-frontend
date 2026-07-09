@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AlquilerResponse, MensajeResponse, ReporteResponse, UsuarioAdminResponse, VerificacionAdminResponse, VerificacionRequest } from '../../../core/models/api.models';
 import { AdminService } from '../../../core/services/admin.service';
 import { AlquileresService } from '../../../core/services/alquileres.service';
@@ -14,7 +14,7 @@ import { RolesPermisosComponent } from '../roles-permisos/roles-permisos.compone
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, RolesPermisosComponent],
+  imports: [CommonModule, FormsModule, RolesPermisosComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })

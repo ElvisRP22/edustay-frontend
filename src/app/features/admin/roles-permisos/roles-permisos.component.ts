@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { forkJoin } from 'rxjs';
 import { EDUSTAY_ICONS } from '../../../core/icons';
@@ -45,7 +44,7 @@ interface RoleFormValue {
 @Component({
     selector: 'app-roles-permisos',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterLink, NgIcon],
+    imports: [CommonModule, ReactiveFormsModule, NgIcon],
     providers: [provideIcons(EDUSTAY_ICONS)],
     templateUrl: './roles-permisos.component.html',
     styleUrl: './roles-permisos.component.scss',
