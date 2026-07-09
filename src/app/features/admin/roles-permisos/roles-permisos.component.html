@@ -1,0 +1,223 @@
+<section class="roles-page">
+    <header class="roles-hero">
+        <div class="roles-hero__copy">
+            <span class="app-badge">Administración de accesos</span>
+            <h1>Roles y permisos</h1>
+            <p>
+                Organiza qué puede hacer cada perfil con datos reales del backend.
+                Esta vista ya consume el catálogo y las plantillas administradas por el servidor.
+            </p>
+
+            <div class="roles-hero__actions">
+                <a routerLink="/admin" class="app-button app-button--secondary">Volver al panel</a>
+                <button type="button" class="app-button app-button--primary" (click)="resetSelectedRole()">
+                    Restaurar permisos base
+                </button>
+            </div>
+        </div>
+
+        <div class="roles-hero__stats">
+            @for (stat of heroStats(); track stat.label) {
+            <article class="metric-card">
+                <span class="metric-card__label">{{ stat.label }}</span>
+                <strong class="metric-card__value">{{ stat.value }}</strong>
+            </article>
+            }
+        </div>
+    </header>
+
+    @if (isLoading()) {
+    <div class="panel" style="padding: 24px; text-align: center; margin-bottom: 1.5rem;">
+        Cargando roles y permisos...
+    </div>
+    }
+
+    @if (errorMessage()) {
+    <div class="panel"
+        style="padding: 16px 20px; margin-bottom: 1.5rem; border-left: 4px solid #dc2626; color: #991b1b; background: #fef2f2;">
+        {{ errorMessage() }}
+    </div>
+    }
+
+    <div class="roles-layout">
+        <section class="panel panel--list" aria-labelledby="roles-list-title">
+            <div class="panel__header">
+                <div>
+                    <span class="panel__kicker">Roles activos</span>
+                    <h2 id="roles-list-title">Plantillas disponibles</h2>
+                </div>
+                <span class="panel__count">{{ filteredRoles().length }}</span>
+            </div>
+
+            <label class="app-field search-field">
+                <span class="sr-only">Buscar rol</span>
+                <input class="app-input" type="search" name="roleSearch" placeholder="Buscar por nombre o descripción"
+                    [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+            </label>
+
+            <div class="role-list">
+                @for (role of filteredRoles(); track role.id) {
+                <button type="button" class="role-card" [class.role-card--selected]="selectedRoleId() === role.id"
+                    (click)="selectRole(role.id)">
+                    <span class="role-card__swatch" [style.backgroundColor]="role.color"></span>
+
+                    <div class="role-card__copy">
+                        <div class="role-card__title-row">
+                            <strong>{{ role.name }}</strong>
+                            <span class="role-status">{{ role.status | lowercase | titlecase }}</span>
+                        </div>
+                        <p>{{ role.description }}</p>
+                        <div class="role-card__meta">
+                            <span>{{ role.users }} usuarios</span>
+                            <span>{{ role.permissions.length }} permisos</span>
+                        </div>
+                    </div>
+                </button>
+                }
+            </div>
+        </section>
+
+        <section class="panel panel--detail" aria-labelledby="role-detail-title">
+            <div class="panel__header panel__header--stacked">
+                <div>
+                    <span class="panel__kicker">Detalle</span>
+                    <h2 id="role-detail-title">{{ selectedRole() ? selectedRole()!.name : 'Selecciona un rol' }}</h2>
+                </div>
+
+                @if (selectedRole()) {
+                <div class="role-state" [style.borderColor]="selectedRole()!.color">
+                    <span class="role-state__dot" [style.backgroundColor]="selectedRole()!.color"></span>
+                    <div>
+                        <strong>{{ selectedRole()!.status | lowercase | titlecase }}</strong>
+                        <span>Actualizado {{ formatDate(selectedRole()!.updatedAt) }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+
+            @if (selectedRole()) {
+            <div class="detail-summary">
+                <article>
+                    <span>Usuarios asignados</span>
+                    <strong>{{ selectedRole()!.users }}</strong>
+                </article>
+                <article>
+                    <span>Permisos activos</span>
+                    <strong>{{ selectedRole()!.permissions.length }}</strong>
+                </article>
+                <article>
+                    <span>Regla visual</span>
+                    <strong>{{ selectedRole()!.name }}</strong>
+                </article>
+            </div>
+
+            <p class="panel__description">{{ selectedRole()!.description }}</p>
+
+            <div class="permission-groups">
+                @for (group of groupedPermissions(); track group.area) {
+                <section class="permission-group">
+                    <div class="permission-group__header">
+                        <h3>{{ group.area }}</h3>
+                        <span>{{ group.permissions.length }} permisos</span>
+                    </div>
+
+                    <div class="permission-grid">
+                        @for (permission of group.permissions; track permission.id) {
+                        <article class="permission-card"
+                            [class.permission-card--active]="isPermissionEnabled(permission.id)">
+                            <div class="permission-card__top">
+                                <span class="permission-card__icon">
+                                    <ng-icon [name]="permission.icon" size="18"></ng-icon>
+                                </span>
+                                <span class="permission-card__tag">{{ group.area }}</span>
+                            </div>
+
+                            <div class="permission-card__copy">
+                                <strong>{{ permission.title }}</strong>
+                                <p>{{ permission.description }}</p>
+                            </div>
+
+                            <button type="button" class="permission-toggle"
+                                [class.permission-toggle--active]="isPermissionEnabled(permission.id)"
+                                [attr.aria-pressed]="isPermissionEnabled(permission.id)"
+                                (click)="togglePermission(permission.id)">
+                                @if (isPermissionEnabled(permission.id)) {
+                                <ng-icon name="heroCheckSolid" size="14"></ng-icon>
+                                Habilitado
+                                } @else {
+                                <ng-icon name="heroLockClosed" size="14"></ng-icon>
+                                Deshabilitado
+                                }
+                            </button>
+                        </article>
+                        }
+                    </div>
+                </section>
+                }
+            </div>
+            } @else {
+            <div class="empty-state">Selecciona un rol para ver sus permisos.</div>
+            }
+        </section>
+
+        <section class="panel panel--form" aria-labelledby="role-form-title">
+            <div class="panel__header">
+                <div>
+                    <span class="panel__kicker">Nuevo rol</span>
+                    <h2 id="role-form-title">Crear plantilla</h2>
+                </div>
+            </div>
+
+            <form class="role-form" [formGroup]="roleForm" (ngSubmit)="createRole()">
+                <div class="app-field">
+                    <label for="roleName">Nombre</label>
+                    <input id="roleName" class="app-input" type="text" formControlName="name"
+                        placeholder="Ej. COORDINADOR" [class.is-error]="hasRoleError('name')" />
+                    @if (hasRoleError('name')) {
+                    <small class="app-error">El nombre debe tener al menos 3 caracteres.</small>
+                    }
+                </div>
+
+                <div class="app-field">
+                    <label for="roleDescription">Descripción</label>
+                    <textarea id="roleDescription" class="app-input" formControlName="description" rows="4"
+                        placeholder="Describe el alcance del rol y su propósito..."
+                        [class.is-error]="hasRoleError('description')"></textarea>
+                    @if (hasRoleError('description')) {
+                    <small class="app-error">La descripción es obligatoria.</small>
+                    }
+                </div>
+
+                <div class="form-grid">
+                    <div class="app-field">
+                        <label for="roleColor">Color</label>
+                        <input id="roleColor" class="app-input color-input" type="color" formControlName="color"
+                            [class.is-error]="hasRoleError('color')" />
+                    </div>
+
+                    <div class="app-field">
+                        <label for="roleStatus">Estado</label>
+                        <select id="roleStatus" class="app-input" formControlName="status"
+                            [class.is-error]="hasRoleError('status')">
+                            <option value="ACTIVO">Activo</option>
+                            <option value="PAUSADO">Pausado</option>
+                            <option value="BLOQUEADO">Bloqueado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="app-field">
+                    <label for="roleUsers">Usuarios estimados</label>
+                    <input id="roleUsers" class="app-input" type="number" min="0" formControlName="users"
+                        placeholder="0" [class.is-error]="hasRoleError('users')" />
+                </div>
+
+                <button type="submit" class="app-button app-button--primary">Guardar plantilla</button>
+
+                <p class="panel__note">
+                    Los cambios se guardan en el backend y se reflejan de inmediato en la lista de roles.
+                </p>
+            </form>
+        </section>
+    </div>
+</section>
