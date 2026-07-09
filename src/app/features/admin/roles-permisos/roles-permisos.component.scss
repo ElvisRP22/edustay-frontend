@@ -83,8 +83,8 @@
 
 .roles-layout {
     display: grid;
-    grid-template-columns: minmax(250px, 0.9fr) minmax(0, 1.4fr) minmax(290px, 0.85fr);
-    gap: 1rem;
+    grid-template-columns: minmax(290px, 1fr) minmax(0, 2fr);
+    gap: 1.25rem;
     align-items: start;
 }
 

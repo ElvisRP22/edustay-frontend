@@ -63,6 +63,7 @@ export class RolesPermisosComponent {
     readonly isLoading = signal(false);
     readonly errorMessage = signal<string | null>(null);
     readonly summary = signal<RolesPermissionsSummaryResponse | null>(null);
+    readonly isCreating = signal(false);
 
     readonly roleForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]],
@@ -166,6 +167,11 @@ export class RolesPermisosComponent {
 
     selectRole(roleId: number): void {
         this.selectedRoleId.set(roleId);
+        this.isCreating.set(false);
+    }
+
+    startCreating(): void {
+        this.isCreating.set(true);
     }
 
     isPermissionEnabled(permissionId: number): boolean {
@@ -204,6 +210,7 @@ export class RolesPermisosComponent {
             next: nextRole => {
                 this.roles.update(prev => [this.toRoleItem(nextRole), ...prev]);
                 this.selectedRoleId.set(nextRole.id);
+                this.isCreating.set(false);
                 this.roleForm.reset({
                     name: '',
                     description: '',

@@ -43,12 +43,17 @@
 
     <div class="roles-layout">
         <section class="panel panel--list" aria-labelledby="roles-list-title">
-            <div class="panel__header">
+            <div class="panel__header" style="align-items: center;">
                 <div>
                     <span class="panel__kicker">Roles activos</span>
-                    <h2 id="roles-list-title">Plantillas disponibles</h2>
+                    <h2 id="roles-list-title">Plantillas</h2>
                 </div>
-                <span class="panel__count">{{ filteredRoles().length }}</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="panel__count" style="margin: 0;">{{ filteredRoles().length }}</span>
+                    <button type="button" class="app-button app-button--primary" style="padding: 6px 12px; font-size: 0.8rem;" (click)="startCreating()">
+                        + Nuevo rol
+                    </button>
+                </div>
             </div>
 
             <label class="app-field search-field">
@@ -59,7 +64,7 @@
 
             <div class="role-list">
                 @for (role of filteredRoles(); track role.id) {
-                <button type="button" class="role-card" [class.role-card--selected]="selectedRoleId() === role.id"
+                <button type="button" class="role-card" [class.role-card--selected]="selectedRoleId() === role.id && !isCreating()"
                     (click)="selectRole(role.id)">
                     <span class="role-card__swatch" [style.backgroundColor]="role.color"></span>
 
@@ -79,6 +84,70 @@
             </div>
         </section>
 
+        @if (isCreating()) {
+        <section class="panel panel--form" aria-labelledby="role-form-title">
+            <div class="panel__header">
+                <div>
+                    <span class="panel__kicker">Nuevo rol</span>
+                    <h2 id="role-form-title">Crear plantilla</h2>
+                </div>
+            </div>
+
+            <form class="role-form" [formGroup]="roleForm" (ngSubmit)="createRole()">
+                <div class="app-field">
+                    <label for="roleName">Nombre</label>
+                    <input id="roleName" class="app-input" type="text" formControlName="name"
+                        placeholder="Ej. COORDINADOR" [class.is-error]="hasRoleError('name')" />
+                    @if (hasRoleError('name')) {
+                    <small class="app-error">El nombre debe tener al menos 3 caracteres.</small>
+                    }
+                </div>
+
+                <div class="app-field">
+                    <label for="roleDescription">Descripción</label>
+                    <textarea id="roleDescription" class="app-input" formControlName="description" rows="4"
+                        placeholder="Describe el alcance del rol y su propósito..."
+                        [class.is-error]="hasRoleError('description')"></textarea>
+                    @if (hasRoleError('description')) {
+                    <small class="app-error">La descripción es obligatoria.</small>
+                    }
+                </div>
+
+                <div class="form-grid">
+                    <div class="app-field">
+                        <label for="roleColor">Color</label>
+                        <input id="roleColor" class="app-input color-input" type="color" formControlName="color"
+                            [class.is-error]="hasRoleError('color')" />
+                    </div>
+
+                    <div class="app-field">
+                        <label for="roleStatus">Estado</label>
+                        <select id="roleStatus" class="app-input" formControlName="status"
+                            [class.is-error]="hasRoleError('status')">
+                            <option value="ACTIVO">Activo</option>
+                            <option value="PAUSADO">Pausado</option>
+                            <option value="BLOQUEADO">Bloqueado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="app-field">
+                    <label for="roleUsers">Usuarios estimados</label>
+                    <input id="roleUsers" class="app-input" type="number" min="0" formControlName="users"
+                        placeholder="0" [class.is-error]="hasRoleError('users')" />
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+                    <button type="submit" class="app-button app-button--primary" style="flex: 1;">Guardar plantilla</button>
+                    <button type="button" class="app-button app-button--secondary" style="flex: 1;" (click)="isCreating.set(false)">Cancelar</button>
+                </div>
+
+                <p class="panel__note">
+                    Los cambios se guardan en el backend y se reflejan de inmediato en la lista de roles.
+                </p>
+            </form>
+        </section>
+        } @else {
         <section class="panel panel--detail" aria-labelledby="role-detail-title">
             <div class="panel__header panel__header--stacked">
                 <div>
@@ -161,65 +230,6 @@
             <div class="empty-state">Selecciona un rol para ver sus permisos.</div>
             }
         </section>
-
-        <section class="panel panel--form" aria-labelledby="role-form-title">
-            <div class="panel__header">
-                <div>
-                    <span class="panel__kicker">Nuevo rol</span>
-                    <h2 id="role-form-title">Crear plantilla</h2>
-                </div>
-            </div>
-
-            <form class="role-form" [formGroup]="roleForm" (ngSubmit)="createRole()">
-                <div class="app-field">
-                    <label for="roleName">Nombre</label>
-                    <input id="roleName" class="app-input" type="text" formControlName="name"
-                        placeholder="Ej. COORDINADOR" [class.is-error]="hasRoleError('name')" />
-                    @if (hasRoleError('name')) {
-                    <small class="app-error">El nombre debe tener al menos 3 caracteres.</small>
-                    }
-                </div>
-
-                <div class="app-field">
-                    <label for="roleDescription">Descripción</label>
-                    <textarea id="roleDescription" class="app-input" formControlName="description" rows="4"
-                        placeholder="Describe el alcance del rol y su propósito..."
-                        [class.is-error]="hasRoleError('description')"></textarea>
-                    @if (hasRoleError('description')) {
-                    <small class="app-error">La descripción es obligatoria.</small>
-                    }
-                </div>
-
-                <div class="form-grid">
-                    <div class="app-field">
-                        <label for="roleColor">Color</label>
-                        <input id="roleColor" class="app-input color-input" type="color" formControlName="color"
-                            [class.is-error]="hasRoleError('color')" />
-                    </div>
-
-                    <div class="app-field">
-                        <label for="roleStatus">Estado</label>
-                        <select id="roleStatus" class="app-input" formControlName="status"
-                            [class.is-error]="hasRoleError('status')">
-                            <option value="ACTIVO">Activo</option>
-                            <option value="PAUSADO">Pausado</option>
-                            <option value="BLOQUEADO">Bloqueado</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="app-field">
-                    <label for="roleUsers">Usuarios estimados</label>
-                    <input id="roleUsers" class="app-input" type="number" min="0" formControlName="users"
-                        placeholder="0" [class.is-error]="hasRoleError('users')" />
-                </div>
-
-                <button type="submit" class="app-button app-button--primary">Guardar plantilla</button>
-
-                <p class="panel__note">
-                    Los cambios se guardan en el backend y se reflejan de inmediato en la lista de roles.
-                </p>
-            </form>
-        </section>
+        }
     </div>
 </section>

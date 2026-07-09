@@ -28,6 +28,9 @@ export class AuthService {
   readonly permisos = computed(() => this._user()?.permisos ?? []);
 
   hasPermission(permiso: string): boolean {
+    if (this.isAdmin()) {
+      return true;
+    }
     return this.permisos().includes(permiso);
   }
 
