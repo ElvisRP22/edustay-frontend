@@ -30,6 +30,7 @@ export interface AuthResponse {
   emailVerificado?: boolean;
   identidadVerificada?: IdentidadVerificadaEstado;
   message?: string;
+  permisos?: string[];
 }
 
 // ─── Habitaciones ────────────────────────────────────────────────────────────

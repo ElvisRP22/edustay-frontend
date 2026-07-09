@@ -25,6 +25,11 @@ export class AuthService {
   readonly isAdmin = computed(() => this.rol() === 'ADMIN');
   readonly isEstudiante = computed(() => this.rol() === 'ESTUDIANTE');
   readonly isArrendador = computed(() => this.rol() === 'ARRENDADOR');
+  readonly permisos = computed(() => this._user()?.permisos ?? []);
+
+  hasPermission(permiso: string): boolean {
+    return this.permisos().includes(permiso);
+  }
 
   constructor(private http: HttpClient, private router: Router) {}
 

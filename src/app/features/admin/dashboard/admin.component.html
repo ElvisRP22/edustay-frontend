@@ -3,6 +3,7 @@
     <div class="logo">EduStay</div>
     <div class="nav-section">GESTIÓN</div>
     <nav>
+      @if (auth.hasPermission('Ver panel y reportes')) {
       <a [class.active]="activeTab() === 'dashboard'" (click)="setTab('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -13,6 +14,8 @@
         </svg>
         Dashboard
       </a>
+      }
+      @if (auth.hasPermission('Ver panel y reportes')) {
       <a [class.active]="activeTab() === 'reportes'" (click)="setTab('reportes')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -23,6 +26,8 @@
         </svg>
         Reportes
       </a>
+      }
+      @if (auth.hasPermission('Administrar alquileres')) {
       <a [class.active]="activeTab() === 'alquileres'" (click)="setTab('alquileres')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -31,6 +36,8 @@
         </svg>
         Alquileres
       </a>
+      }
+      @if (auth.hasPermission('Resolver verificaciones')) {
       <a [class.active]="activeTab() === 'verificaciones'" (click)="setTab('verificaciones')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -39,6 +46,8 @@
         </svg>
         Verificaciones
       </a>
+      }
+      @if (auth.hasPermission('Moderar mensajes')) {
       <a [class.active]="activeTab() === 'moderacion'" (click)="setTab('moderacion')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -52,9 +61,11 @@
           style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{mensajesReportados().length}}</span>
         }
       </a>
+      }
     </nav>
     <div class="nav-section mt-4">CONFIGURACIÓN</div>
     <nav>
+      @if (auth.hasPermission('Gestionar credenciales')) {
       <a [class.active]="activeTab() === 'configuracion'" (click)="setTab('configuracion')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -65,6 +76,8 @@
         </svg>
         Configuración
       </a>
+      }
+      @if (auth.hasPermission('Ver usuarios')) {
       <a [class.active]="activeTab() === 'usuarios'" (click)="setTab('usuarios')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -73,6 +86,8 @@
         </svg>
         Usuarios
       </a>
+      }
+      @if (auth.hasPermission('Editar roles')) {
       <a [class.active]="activeTab() === 'roles-permisos'" (click)="setTab('roles-permisos')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round">
@@ -83,6 +98,7 @@
         </svg>
         Roles y permisos
       </a>
+      }
     </nav>
     <div class="spacer"></div>
     <a class="logout-link" (click)="logout()">
@@ -138,7 +154,7 @@
         </div>
       </div>
 
-      @if (activeTab() === 'dashboard') {
+      @if (activeTab() === 'dashboard' && auth.hasPermission('Ver panel y reportes')) {
       <div class="stats-cards">
         <div class="stat-card">
           <div class="icon-wrapper blue-icon">
@@ -247,7 +263,7 @@
           </div>
         </div>
       </div>
-      } @if (activeTab() === 'verificaciones') {
+      } @if (activeTab() === 'verificaciones' && auth.hasPermission('Resolver verificaciones')) {
       <div class="table-card">
         <div class="table-header">
           <h2>Documentos Pendientes</h2>
@@ -303,7 +319,7 @@
       </div>
       }
 
-      @if (activeTab() === 'reportes') {
+      @if (activeTab() === 'reportes' && auth.hasPermission('Ver panel y reportes')) {
       <div class="table-card">
         <div class="table-header">
           <h2>Todos los Reportes</h2>
@@ -360,7 +376,7 @@
       </div>
       }
 
-      @if (activeTab() === 'alquileres') {
+      @if (activeTab() === 'alquileres' && auth.hasPermission('Administrar alquileres')) {
       <div class="table-card">
         <div class="table-header">
           <h2>Todos los Alquileres</h2>
@@ -404,7 +420,7 @@
       </div>
       }
 
-      @if (activeTab() === 'configuracion') {
+      @if (activeTab() === 'configuracion' && auth.hasPermission('Gestionar credenciales')) {
       <div
         style="background: white; border-radius: 12px; padding: 48px 24px; text-align: center; border: 1px solid #e5e7eb;">
         <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#9ca3af" stroke-width="2"
@@ -419,7 +435,7 @@
       </div>
       }
 
-      @if (activeTab() === 'usuarios') {
+      @if (activeTab() === 'usuarios' && auth.hasPermission('Ver usuarios')) {
       <div class="table-card">
         <div class="table-header">
           <h2>Todos los Usuarios</h2>
@@ -484,7 +500,7 @@
       }
 
       <!-- MODERACIÓN DE CHATS -->
-      @if (activeTab() === 'moderacion') {
+      @if (activeTab() === 'moderacion' && auth.hasPermission('Moderar mensajes')) {
       <div class="table-container">
         <!-- Sub-tabs navigation -->
         <div
@@ -675,7 +691,7 @@
       </div>
       }
 
-      @if (activeTab() === 'roles-permisos') {
+      @if (activeTab() === 'roles-permisos' && auth.hasPermission('Editar roles')) {
         <app-roles-permisos (back)="setTab('dashboard')"></app-roles-permisos>
       }
 
