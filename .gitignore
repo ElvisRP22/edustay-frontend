@@ -48,3 +48,12 @@ edustayapi.json
 parse_api.js
 scratch/
 
+# Marp Presentation & Diagrams
+/Presentation.marp.md
+/Presentation-Gemini.md
+/Presentation.pdf
+/presentacion.md
+/docs/
+/scripts/
+/theme/
+

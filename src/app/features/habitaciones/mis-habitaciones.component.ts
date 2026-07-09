@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal
+  ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, OnDestroy, signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -12,6 +12,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { HabitacionCatalogItem, HabitacionRequest, HabitacionResponse } from '../../core/models/api.models';
 import { EDUSTAY_ICONS } from '../../core/icons';
 
+declare const L: any;
+
 @Component({
   selector: 'app-mis-habitaciones',
   standalone: true,
@@ -21,11 +23,14 @@ import { EDUSTAY_ICONS } from '../../core/icons';
   styleUrl: './mis-habitaciones.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MisHabitacionesComponent implements OnInit {
+export class MisHabitacionesComponent implements OnInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
   private svc = inject(HabitacionesService);
   auth = inject(AuthService);
   private fb = inject(FormBuilder);
+
+  private map: any;
+  private marker: any;
 
   habitaciones = signal<HabitacionResponse[]>([]);
   serviciosCatalogo = signal<HabitacionCatalogItem[]>([]);
@@ -98,6 +103,7 @@ export class MisHabitacionesComponent implements OnInit {
     this.saveOk.set(false);
     this.saveError.set(null);
     this.showForm.set(true);
+    setTimeout(() => this.initFormMap(), 100);
   }
 
   abrirEditar(h: HabitacionResponse) {
@@ -106,6 +112,101 @@ export class MisHabitacionesComponent implements OnInit {
     this.saveOk.set(false);
     this.saveError.set(null);
     this.showForm.set(true);
+    setTimeout(() => this.initFormMap(h.latitud, h.longitud), 100);
+  }
+
+  ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
+  }
+
+  private initFormMap(lat?: number, lng?: number, retries = 0) {
+    if (typeof window === 'undefined') return;
+
+    if (typeof L === 'undefined') {
+      if (retries < 15) {
+        setTimeout(() => this.initFormMap(lat, lng, retries + 1), 100);
+      }
+      return;
+    }
+
+    const mapElement = document.getElementById('formMap');
+    if (!mapElement) {
+      if (retries < 15) {
+        setTimeout(() => this.initFormMap(lat, lng, retries + 1), 100);
+      }
+      return;
+    }
+
+    // Default to UTP Piura if no coordinates provided
+    const initialLat = (lat !== undefined && lat !== null && lat !== 0) ? lat : -5.1966;
+    const initialLng = (lng !== undefined && lng !== null && lng !== 0) ? lng : -80.6277;
+
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+      this.marker = null;
+    }
+
+    this.map = L.map('formMap', {
+      zoomControl: true,
+      scrollWheelZoom: true
+    }).setView([initialLat, initialLng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
+
+    const rIcon = L.divIcon({
+      html: `
+        <div class="custom-pin-icon pin-room">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+        </div>
+      `,
+      className: 'custom-pin-wrapper',
+      iconSize: [24, 24],
+      iconAnchor: [12, 24]
+    });
+
+    this.marker = L.marker([initialLat, initialLng], {
+      icon: rIcon,
+      draggable: true
+    }).addTo(this.map);
+
+    // If coordinates were not preset, patch them so the form starts with these defaults
+    if (lat === undefined || lat === null || lat === 0) {
+      this.form.patchValue({ latitud: initialLat, longitud: initialLng });
+    }
+
+    // Drag marker event
+    this.marker.on('dragend', () => {
+      const position = this.marker.getLatLng();
+      this.form.patchValue({
+        latitud: Number(position.lat.toFixed(6)),
+        longitud: Number(position.lng.toFixed(6))
+      });
+    });
+
+    // Map click event to relocate marker
+    this.map.on('click', (e: any) => {
+      const position = e.latlng;
+      this.marker.setLatLng(position);
+      this.form.patchValue({
+        latitud: Number(position.lat.toFixed(6)),
+        longitud: Number(position.lng.toFixed(6))
+      });
+    });
+
+    // Invalidate size shortly after load to ensure Leaflet renders all tiles correctly
+    setTimeout(() => {
+      if (this.map) {
+        this.map.invalidateSize();
+      }
+    }, 150);
   }
 
   guardar() {

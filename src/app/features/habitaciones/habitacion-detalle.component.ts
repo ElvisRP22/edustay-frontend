@@ -127,19 +127,26 @@ export class HabitacionDetalleComponent implements OnInit, OnDestroy {
   getGoogleMapsDirectionUrl(): string {
     const h = this.habitacion();
     if (!h || !h.latitud || !h.longitud) return '#';
-    return `https://www.google.com/maps/dir/?api=1&origin=${h.latitud},${h.longitud}&destination=-5.192,-80.632&travelmode=walking`;
+    return `https://www.google.com/maps/dir/?api=1&origin=${h.latitud},${h.longitud}&destination=-5.1966,-80.6277&travelmode=walking`;
   }
 
-  private initMap(h: HabitacionResponse) {
-    if (typeof window === 'undefined' || typeof L === 'undefined') return;
+  private initMap(h: HabitacionResponse, retries = 0) {
+    if (typeof window === 'undefined') return;
+
+    if (typeof L === 'undefined') {
+      if (retries < 15) {
+        setTimeout(() => this.initMap(h, retries + 1), 100);
+      }
+      return;
+    }
 
     const mapElement = document.getElementById('map');
     if (!mapElement) return;
 
     const roomLat = h.latitud;
     const roomLng = h.longitud;
-    const utpLat = -5.192;
-    const utpLng = -80.632;
+    const utpLat = -5.1966;
+    const utpLng = -80.6277;
 
     if (roomLat === null || roomLat === undefined || roomLng === null || roomLng === undefined) return;
 
@@ -222,6 +229,15 @@ export class HabitacionDetalleComponent implements OnInit, OnDestroy {
     this.map.fitBounds(polyline.getBounds(), {
       padding: [40, 40]
     });
+
+    setTimeout(() => {
+      if (this.map) {
+        this.map.invalidateSize();
+        this.map.fitBounds(polyline.getBounds(), {
+          padding: [40, 40]
+        });
+      }
+    }, 150);
   }
 
   toggleFav() {

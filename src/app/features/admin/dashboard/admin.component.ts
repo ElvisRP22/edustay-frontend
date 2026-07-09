@@ -270,4 +270,82 @@ export class AdminComponent implements OnInit {
         });
     }
   }
+
+  getClientesPercentage(): number {
+    const total = Number(this.stats.usuarios);
+    if (!total) return 0;
+    const clientes = Number(this.stats.clientes);
+    return Math.round((clientes / total) * 100);
+  }
+
+  getArrendadoresPercentage(): number {
+    const total = Number(this.stats.usuarios);
+    if (!total) return 0;
+    const arrendadores = Number(this.stats.arrendadores);
+    return Math.round((arrendadores / total) * 100);
+  }
+
+  getDonutChartStyle(): string {
+    const total = Number(this.stats.usuarios);
+    if (!total) {
+      return 'conic-gradient(#e5e7eb 0% 100%)';
+    }
+    const clientesPct = this.getClientesPercentage();
+    return `conic-gradient(#3b82f6 0% ${clientesPct}%, #10b981 ${clientesPct}% 100%)`;
+  }
+
+  getChartDays(): { label: string; count: number; cx: number; cy: number }[] {
+    const list = this.usuarios();
+    const days: { label: string; count: number; cx: number; cy: number }[] = [];
+    const maxDays = 7;
+
+    const dates: Date[] = [];
+    for (let i = maxDays - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      dates.push(d);
+    }
+
+    const counts = dates.map(date => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+
+      return list.filter(u => u.fechaRegistro && u.fechaRegistro.startsWith(dateStr)).length;
+    });
+
+    const maxCount = Math.max(...counts, 5);
+
+    dates.forEach((date, idx) => {
+      const count = counts[idx];
+      const label = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+      const cx = 60 + idx * 55;
+      const cy = 150 - (count / maxCount) * 120;
+      days.push({ label, count, cx, cy });
+    });
+
+    return days;
+  }
+
+  getPolylinePoints(days: { cx: number; cy: number }[]): string {
+    return days.map(d => `${d.cx},${d.cy}`).join(' ');
+  }
+
+  getChartMaxCount(): number {
+    const days = this.getChartDays();
+    return Math.max(...days.map(d => d.count), 5);
+  }
+
+  getChartLabelMax(): number {
+    return this.getChartMaxCount();
+  }
+
+  getChartLabel67(): number {
+    return Math.round(this.getChartMaxCount() * 0.67);
+  }
+
+  getChartLabel33(): number {
+    return Math.round(this.getChartMaxCount() * 0.33);
+  }
 }

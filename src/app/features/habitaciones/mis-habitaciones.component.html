@@ -95,16 +95,22 @@
                      [class.is-error]="form.get('direccion')?.invalid && form.get('direccion')?.touched" />
             </div>
 
+            <!-- Mapa Selector Interactivo -->
+            <div class="app-field app-field--fullwidth" style="grid-column: span 2; margin-bottom: 0.5rem;">
+              <label>Ubicación en el mapa <span style="font-weight: 500; font-size: 0.8rem; color: var(--slate-500);">(Haz clic o arrastra el marcador para fijar la ubicación)</span></label>
+              <div id="formMap" class="form-map"></div>
+            </div>
+
             <div class="app-field">
               <label for="latitud">Latitud</label>
               <input id="latitud" class="app-input" type="number" step="any" formControlName="latitud"
-                     placeholder="-12.0464" />
+                     placeholder="-12.0464" readonly style="background-color: var(--slate-50); cursor: not-allowed;" />
             </div>
 
             <div class="app-field">
               <label for="longitud">Longitud</label>
               <input id="longitud" class="app-input" type="number" step="any" formControlName="longitud"
-                     placeholder="-77.0428" />
+                     placeholder="-77.0428" readonly style="background-color: var(--slate-50); cursor: not-allowed;" />
             </div>
           </div>
 

@@ -122,31 +122,24 @@
 
         <div class="charts-row">
           <div class="chart-card line-chart-card">
-            <h3>Cuentas nuevas</h3>
+            <h3>Cuentas nuevas (Últimos 7 días)</h3>
             <div class="line-chart">
               <svg viewBox="0 0 400 160" class="svg-chart">
                 <path class="grid-line" d="M 30 30 L 400 30 M 30 70 L 400 70 M 30 110 L 400 110 M 30 150 L 400 150"></path>
-                <text x="20" y="34" class="y-label">60</text>
-                <text x="20" y="74" class="y-label">40</text>
-                <text x="20" y="114" class="y-label">20</text>
+                <text x="20" y="34" class="y-label">{{ getChartLabelMax() }}</text>
+                <text x="20" y="74" class="y-label">{{ getChartLabel67() }}</text>
+                <text x="20" y="114" class="y-label">{{ getChartLabel33() }}</text>
                 <text x="20" y="154" class="y-label">0</text>
                 
-                <text x="60" y="175" class="x-label">12 May</text>
-                <text x="115" y="175" class="x-label">13 May</text>
-                <text x="170" y="175" class="x-label">14 May</text>
-                <text x="225" y="175" class="x-label">15 May</text>
-                <text x="280" y="175" class="x-label">16 May</text>
-                <text x="335" y="175" class="x-label">17 May</text>
-                <text x="390" y="175" class="x-label">18 May</text>
+                @for (day of getChartDays(); track day.label) {
+                  <text [attr.x]="day.cx" y="175" class="x-label">{{ day.label }}</text>
+                }
 
-                <polyline points="60,130 115,90 170,40 225,65 280,85 335,55 390,90" class="chart-line"></polyline>
-                <circle cx="60" cy="130" r="4" class="chart-point"></circle>
-                <circle cx="115" cy="90" r="4" class="chart-point"></circle>
-                <circle cx="170" cy="40" r="4" class="chart-point"></circle>
-                <circle cx="225" cy="65" r="4" class="chart-point"></circle>
-                <circle cx="280" cy="85" r="4" class="chart-point"></circle>
-                <circle cx="335" cy="55" r="4" class="chart-point"></circle>
-                <circle cx="390" cy="90" r="4" class="chart-point"></circle>
+                <polyline [attr.points]="getPolylinePoints(getChartDays())" class="chart-line"></polyline>
+                
+                @for (day of getChartDays(); track day.label) {
+                  <circle [attr.cx]="day.cx" [attr.cy]="day.cy" r="4" class="chart-point"></circle>
+                }
               </svg>
             </div>
           </div>
@@ -154,20 +147,20 @@
           <div class="chart-card donut-chart-card">
             <h3>Cuentas por tipo</h3>
             <div class="donut-chart-container">
-              <div class="donut-chart"></div>
+              <div class="donut-chart" [style.background]="getDonutChartStyle()"></div>
               <div class="donut-legend">
                 <div class="legend-item">
                   <span class="legend-dot blue-dot"></span>
                   <div class="legend-text">
                     <strong>Clientes</strong>
-                    <span>842 (67%)</span>
+                    <span>{{ stats.clientes }} ({{ getClientesPercentage() }}%)</span>
                   </div>
                 </div>
                 <div class="legend-item mt-3">
                   <span class="legend-dot green-dot"></span>
                   <div class="legend-text">
                     <strong>Arrendadores</strong>
-                    <span>406 (33%)</span>
+                    <span>{{ stats.arrendadores }} ({{ getArrendadoresPercentage() }}%)</span>
                   </div>
                 </div>
               </div>
