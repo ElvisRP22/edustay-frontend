@@ -57,6 +57,26 @@ export class AdminComponent implements OnInit {
 
   adminSavingId = signal<number | null>(null);
 
+  // Configuración del sistema
+  configOpenAiModeration = signal(true);
+  configSensitivity = signal('MEDIA');
+  configCommission = signal(8);
+  configExpiryHours = signal(24);
+  configMaxPhotos = signal(6);
+  configMaintenanceMode = signal(false);
+  configSaving = signal(false);
+  configSavedOk = signal(false);
+
+  saveConfig() {
+    this.configSaving.set(true);
+    this.configSavedOk.set(false);
+    setTimeout(() => {
+      this.configSaving.set(false);
+      this.configSavedOk.set(true);
+      setTimeout(() => this.configSavedOk.set(false), 3000);
+    }, 1200);
+  }
+
   ngOnInit() {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const tabParam = params['tab'];
